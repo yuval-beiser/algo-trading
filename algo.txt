@@ -212,7 +212,6 @@ buyingPower = 10;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shar
 TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
 StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
 valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
-//print(Date, Time, "bar=", BarNumber, marketposition, valsdbg ); 
 
 //BB
 vBub1= BollingerBand(close,BUpperBand,BStedDev1);
@@ -259,26 +258,6 @@ Zscore = (Ratio - MeanRatio) / DevRatio ;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //PL for a day
 if DATE <> DATE[1] 
 then 
@@ -289,10 +268,10 @@ PLTarget = Netprofit - NetProf;
 
 
 //Conditions Entry Long
-if marketposition = 0   and( (PLTarget < PForDay) and (PLTarget > LForDay)) 
- //and PLTarget > PLForDay and ) //1
-//and
-//(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2 
+if marketposition = 0  
+ and( (PLTarget < PForDay) and (PLTarget > LForDay)) 
+and
+(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2 
 and zscore < longminzscore  and close > open 
 and close > close[1] //or (close [1] > close[2]))
 and close < vBlb1 and close <= DonchianMid 
@@ -306,19 +285,14 @@ End;
 //Short
 //Conditions Entry Short 
 if marketposition = 0   and ( (PLTarget < PForDay) and (PLTarget > LForDay) ) 
- //and PLTarget > PLForDay) //and ) //1 //and //(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2     
-and zscore > shortminzscore 
+and (Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2     
+and zscore > shortminzscore // 2
 and
 close < open
 and
 close < close[1] //or (Close [1] < Close [2])) //B
-and
-(
-(open[1] <= Close [1]) or (open [2] <= Close [2])
-)
+and( (open[1] <= Close [1]) or (open [2] <= Close [2]) )
 
-//and
-//close < low [1] //C
 and
 close > vBub1
 and
@@ -340,7 +314,7 @@ and
 then 
 begin
 valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
-trailProfit = Highest(high , Barssinceentry); 
+trailProfit = Highest(high , Barssinceentry); // how many bars moved from start >=2 
 trailExit = trailProfit + valuePercentTrail; //          
 sell next bar at trailExit  stop;
 end;
