@@ -1,6 +1,9 @@
 // LOGS 
 
 
+// BLOCK 1 - START - LONG TAG
+
+
 if marketposition = 0 then 
 begin
 //Long Prints - No position - dbug tag
@@ -23,6 +26,11 @@ if close <= DonchianMid then
 buydbg = buydbg + "7" else buydbg = buydbg + "X";
 if close cross above emafast then
 buydbg = buydbg + "8" else buydbg = buydbg + "X";
+
+// BLOCK 1 - END - LONG TAG
+
+
+// BLOCK 2 - START - SH0RT TAG
 
 //Short Prints - No position - dbug tag
 // CONDITIONS FOR OPEN SHORT POSISION 
@@ -79,7 +87,9 @@ selldbg = selldbg + "G" else selldbg = selldbg + "X";
 if DonchianDown < DonchianUp * (1-Mingap/100)  then                                                                                                                                                                                                                                                                                                                 
 selldbg = selldbg + "H" else selldbg = selldbg + "X";
 
+// BLOCK 2 - END - SH0RT TAG
 
+// PRINT 1
 
 if marketposition = 0  
 and
