@@ -58,7 +58,7 @@ MaxBarsForMove(2),
 minbarsforcrossback (10), //12
 AvgVolumeLength(30), //20 previus
 volumeUP (10), //10 previus
-double AccountBalance(60000), // Account balance 10,000 //80000
+double AccountBalance(12000), // Account balance 10,000 //80000
 PctPerTrade(50),
 Pctforadd (25),
 TakeProfit (200),
