@@ -61,7 +61,7 @@ then
 //close long position with trail start moving after minimum profit 
 if marketposition = 1 //there is long position open
 and (Close/entryprice-1)*100 >= SmallMinProfit 
-and barssinceentry <= 2 //  number of bars from begining . 
+and barssinceentry <= 1 //  number of bars from begining . 
  
 then begin
 valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
@@ -84,7 +84,7 @@ end;
 
 if marketposition = 1 //there is long position open
 and (close/entryprice-1)*100 >= smallbaseProfit 
-and barssinceentry > 2
+and barssinceentry > 1
 
 then begin
 // Calculate the trailing stop price
@@ -99,7 +99,7 @@ end;
 //close long position with trail start moving aafter the first bar from entry
 if marketposition = 1 //there is long position open
 and (close/entryprice-1)*100 >= smallbaseProfit 
-and barssinceentry > 2
+and barssinceentry > 1
 and Close < longStop 
 Then begin
 Sell Next Bar at Market;

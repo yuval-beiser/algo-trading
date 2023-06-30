@@ -34,10 +34,10 @@ MinEMAGap (0.16), // 11.2.23, Increased from 0.16 for filtering false cross // d
 MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 1.5 just for testing
 Mingap (1),
 MinFromCloseD1 (1),
-SmallMinProfit (0.1), //1.4 //1.5
+SmallMinProfit (0.12), //1.4 //1.5
 smallbaseProfit (0.05),
 LargeMinProfit (2.5),
-SmallTrail (0.03), //0.04375 with stochastic //0.00625 //0.3
+SmallTrail (0.05), //0.04375 with stochastic //0.00625 //0.3
 largeTrail (1.6),
 FastTrail (0.22),
 
@@ -64,8 +64,8 @@ StopPct (2.1), //30.4.23, Change from 2.5%
 SL(200),
 PForDay (2000), //1500
 LForDay (-50), //-1100
-longSL(160), //
-shortSL(160), //300
+longSL(240), //
+shortSL(240), //300
 
 
 //BB
