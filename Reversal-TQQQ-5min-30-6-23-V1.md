@@ -1,192 +1,108 @@
-if marketposition = 0 //Conditions Entry Long
-//and
-//(
-//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-//)  
-//and
-//(Time > 0700.00 and Time < 2200.00) //2
-and
-close > Open //3
-//and
-//(close-open) >(close[1]-open[1])* 1.3
-and
-close > high5 //5 open and close of 5 previus bars
-and
-close > high [1] //high previuos bar
-and
-close > emaMid //20
-and
-close > emaverySlow //200
-
-//and
-//emaMid >= emaverySlow * (1+Mingap/100) //from 10 
-//and
-//emaMid <= emaverySlow * (1+Maxgap/100) //till 10 
-//and
-//close <= emaverySlow * (1+Maxgap1/100) //till 8 
-
-
-then 
-begin
-buy longbuyingPower Shares next bar at market  ;
-end;
-
-
-
-if         
-marketposition = 0 //Conditions Entry short
-and
-//(
-//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-//)  
-//and
-(Time > 0700.00 and Time < 2200.00) //1
-and
-close < Open //3
-//and
-//(close-open) >(close[1]-open[1])* 1.3
-and
-close < low5
-and
-close < low [1]
-and
-close < emaMid //20
-and
-close < emaverySlow //200
-//and
-//emaMid <= emaverySlow * (1-Mingap/100) //till 10 
-//and
-//emaMid >= emaverySlow * (1-Maxgap/100) //till 10 
-//and
-//close >= emaverySlow * (1-Maxgap1/100) //till 8
-
-then 
-begin
-sellshort shortbuyingPower Shares next bar at market  ;
-end;
-
-
-
-{
-if marketposition = -1 //Scale In - Conditions Add Entry Short
-and
-close < Open
-and
-close < open [1]
-//and
-//close[1] >= open[1]
-and
-close < emaFast
-and
-(close/entryprice-1)*100 > MinProfitforadd 
-//and
-//(1-close/entryprice)*100 > 0
-//and
-//barssinceentry > 20
-and
-CurShares < maxpositions 
-then 
-begin
-sellshort shortbuyingPower1 Shares next bar at market  ;
-end;
-}
-
-
-{
-
-if marketposition = -1 //add for short position
-and
-(1-Close/entryprice)*100 >= SmallMinProfitforadd 
-then 
-begin
-sellshort buyingPower Shares next bar at market  ;
-end;
-}
-
-{
-//sell more after fast minimum profit
-if marketposition = -1 //there is long position open
-and
-(1-Close/entryprice)*100 >= SmallMinProfitforadd 
-and
-barssinceentry < MaxBarsforadd
-and
-MarketPosition_at_Broker < maxpositions 
-//and
-//AngleLong = False
-//entryprice >= vBlb2
-then 
-begin
-sellshort buyingPower Shares next bar at market  ;
-end;
-}
-
-
-
-
-//close long position 
-if marketposition = 1 //there is long position open
-and
-close < close [1]
-and
-(close/entryprice-1)*100 >= SmallMinProfit 
-
-then 
-begin
-sell next bar at market;
-end;
-
-//close long position 
-if marketposition = 1 //there is long position open
+//Conditions Entry Long
+if marketposition = 0  
 and
 (
-(close [1] <= open [1]) and (close [2] <= open [2]) and (close [3] <= open [3])
-)
+(PLTarget < PForDay) and (PLTarget > LForDay)
+)  //and PLTarget > PLForDay and ) //1
 and
-(close/entryprice-1)*100 >= SmallMinProfit 
-
+(Time > 940.00 and Time < 1425.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2 
+and
+zscore < longminzscore 
+and
+close > open
+and
+close > close[1] //or (close [1] > close[2])) //B
+and
+close < vBlb1
+and
+close <= DonchianMid
+and
+close cross above emafast
 then 
-begin
-sell next bar at market;
-end;
+Begin
+buy Floor(buyingPower) Shares next bar at market  ;
+End;
 
-
-//close short position 
-if marketposition = -1 //there is long position open
-and
-close > close [1]
-and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-then 
-begin
-buytocover Next Bar at Market;
-end;
-
-
-//close short position 
-if marketposition = -1 //there is long position open
-and
-(
-(close [1] >= open [1]) and (close [2] >= open [2]) and (close [3] >= open [3])
-)
-and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-then 
-begin
-buytocover Next Bar at Market;
-end;
-
-//SetProfitTarget;
+//close long position with trail
 if marketposition = 1
 then
+[IntrabarOrderGeneration = True] //trade intra-bar
+
+
+//close long position with trail start moving after minimum profit 
+if marketposition = 1 //there is long position open
+and
+(Close/entryprice-1)*100 >= SmallMinProfit 
+and
+barssinceentry <= 3
+
+//and
+//close of data2 > ema2Fast
+//and
+//close of data2 < ema2verySlow
+//(
+//(close of data2 < ema2verySlow  and is_long_symbol = False) //no fear
+//or
+//(close of data2 > ema2verySlow          and is_long_symbol = True)
+//) 
+//and
+//barssinceentry > MinBarsForMove
+//and
+//barssinceentry > Minbarsfortake 
+then 
 begin
-SetStopLoss(longSL);
+valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
+trailProfit = Highest(high , Barssinceentry); 
+trailExit = trailProfit + valuePercentTrail; //          
+sell next bar at trailExit  stop;
 end;
 
 
-if marketposition = -1
+//close long position with cross previous low
+if marketposition = 0
 then
 begin
-SetStopLoss(shortSL);
+longStop = -9999999;
 end;
 
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= smallbaseProfit 
+and 
+barssinceentry > 3
+then
+begin
+// Calculate the trailing stop price
+if low [1] > longStop 
+then
+begin
+longStop = low[1];
+end;
+end;
+
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= smallbaseProfit 
+and
+barssinceentry > 3
+and
+Close < longStop 
+Then
+begin
+Sell Next Bar at Market;
+end;
+
+//close long position at the EOD
+if marketposition = 1
+and Time = 1600.00 
+then sell next bar at market;
+
+//Take profit for Long
+if marketposition = 1
+then
+SetProfitTarget(TakeProfitAmt);
+
+//Initial Stop Loss for Long
+if marketposition = 1
+then
+SetStopLoss(StopAmt);
