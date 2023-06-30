@@ -17,7 +17,7 @@ and( (PLTarget < PForDay) and (PLTarget > LForDay) )
 and(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2 
 and zscore < longminzscore 
 and close > open
-and close > close[1] //or (close [1] > close[2])) //B
+and close > maxlist (open [1], close [1], open [2], close [2], open [3], close [3])
 and close < vBlb1
 and close <= DonchianMid
 and close > emafast
@@ -36,7 +36,7 @@ if marketposition = 0  and ( (PLTarget < PForDay) and (PLTarget > LForDay))
 and (Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open("no trade zone") //2     
 and zscore > shortminzscore 
 and close < open
-and close < close[1] 
+and close < minlist (open [1], close [1], open [2], close [2], open [3], close [3])
 and ((open[1] <= Close [1]) or (open [2] <= Close [2]) )
 and close > vBub1
 and close >= DonchianMid
@@ -73,8 +73,6 @@ end;
 // END - EXIT LONG BASE OF PRECENT -------------------------------------------------------
 
 
-
-
 // START - EXIT LONG BASE ON CROSS PREVEVIOS LOW -------------------------------------------------------
 //  initilias longStop
 if marketposition = 0
@@ -93,8 +91,6 @@ then begin
 longStop = low[1];
 end;
 end;
-
-
 
 //close long position with trail start moving aafter the first bar from entry
 if marketposition = 1 //there is long position open
@@ -119,7 +115,7 @@ then
 //close short position with trail start moving after minimum profit
 if marketposition = -1 //there is long position open 
 and (1-Close/entryprice)*100 >= SmallMinProfit 
-and barssinceentry <= 2
+and barssinceentry <= 1
 then begin
 valuePercentTrail = ((entryprice * SmallTrail) /100);
 trailProfit = Lowest(low , Barssinceentry); 
@@ -141,7 +137,7 @@ end;
 
 if marketposition = -1 //there is long position open
 and (1-Close/entryprice)*100 >= smallbaseProfit 
-and barssinceentry > 2
+and barssinceentry > 1
 then begin
 // Calculate the trailing stop price
 if High[1] < shortStop 
@@ -150,12 +146,10 @@ shortStop = High[1];
 end;
 end;
 
-
-
 //close short position with trail start moving aafter the first bar from entry
 if marketposition = -1 //there is long position open
 and (1-Close/entryprice)*100 >= smallbaseProfit 
-and barssinceentry > 2
+and barssinceentry > 1
 and Close > shortStop 
 Then begin
 buytocover Next Bar at Market;
@@ -164,7 +158,16 @@ end;
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 
 
-// START - Exit on first stop loss -------------------------------------------------------
+// START - Exit long on first stop loss -------------------------------------------------------
+
+if marketposition = 1
+then begin
+SetStopLoss(longSL);
+end;
+
+// END - Exit on first stop loss -------------------------------------------------------
+
+// START - Exit short on first stop loss -------------------------------------------------------
 
 if marketposition = -1
 then begin
@@ -172,4 +175,5 @@ SetStopLoss(shortSL);
 end;
 
 // END - Exit on first stop loss -------------------------------------------------------
+
 

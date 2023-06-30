@@ -64,9 +64,8 @@ StopPct (2.1), //30.4.23, Change from 2.5%
 SL(200),
 PForDay (2000), //1500
 LForDay (-50), //-1100
-longSL(240), //
-shortSL(240), //300
-
+longSL(120), //
+shortSL(120), //300
 
 //BB
 BStedDev1(1),
@@ -86,7 +85,6 @@ StochLength2( 3 ),
 StochOverBot(74), //78
 StochOverSold(26), //22
 stochmid (50),
-
 
 //RSI
 RSIOverbot (60),
