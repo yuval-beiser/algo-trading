@@ -1,11 +1,3 @@
-TLow (0),
-LTBreak (0),
-STBreak (0),
-
-//Extreme points
-high5 (0),
-low5 (0);
-                
 //PL for a day
 if DATE <> DATE[1] 
 then 
@@ -15,7 +7,7 @@ end;
 PLTarget = Netprofit - NetProf;
 
                         
-//[IntrabarOrderGeneration = True] //trade intra-bar
+[IntrabarOrderGeneration = True] //trade intra-bar
 
 emaFast = XAverage(close,FastLength);
 emaMid = XAverage(close,MidLength);
@@ -27,9 +19,9 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 //ema2verySlow = 0;//XAverage(close,VerySlowLength)of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
+longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
 longbuyingPower1 = 2;
-shortbuyingPower = 4 ;
+shortbuyingPower = 3 ;
 shortbuyingPower1 = 2 ;
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -47,14 +39,49 @@ vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
 vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
 HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
 
+HLOC2 = (HIGH of data2 +LOW of data2+OPEN of data2+CLOSE of data2)/4;
+
+{
+HLOC3 = (HIGH of data3 +LOW of data3+OPEN of data3+CLOSE of data3)/4;
+HLOC4 = (HIGH of data4 +LOW of data4+OPEN of data4+CLOSE of data4)/4;
+HLOC5 = (HIGH of data5 +LOW of data5+OPEN of data5+CLOSE of data5)/4;
+}
+	
 emaHLOC = XAverage (HLOC , BUpperBandHLOC);
 stdHLOC = StdDev(HLOC , BUpperBandHLOC);
 
+emaHLOC2 = XAverage (HLOC2 , BUpperBandHLOC);
+stdHLOC2 = StdDev(HLOC2 , BUpperBandHLOC);
+
+{
+emaHLOC3 = XAverage (HLOC3 , BUpperBandHLOC);
+stdHLOC3 = StdDev(HLOC3 , BUpperBandHLOC);
+
+emaHLOC4 = XAverage (HLOC4 , BUpperBandHLOC);
+stdHLOC4 = StdDev(HLOC4 , BUpperBandHLOC);
+
+emaHLOC5 = XAverage (HLOC5 , BUpperBandHLOC);
+stdHLOC5 = StdDev(HLOC5 , BUpperBandHLOC);
+}
+
 EHLOCupband = emaHLOC + stdHLOC ;
 EHLOCdownband = emaHLOC  - stdHLOC ;
-EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
-EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
-EHLOCqtr3band = EHLOCupband-((EHLOCupband-EHLOCdownband)/4);
+
+EHLOCupband2 = emaHLOC2 + stdHLOC2 ;
+
+{
+EHLOCupband3 = emaHLOC3 + stdHLOC3 ;
+EHLOCupband4 = emaHLOC4 + stdHLOC4 ;
+EHLOCupband5 = emaHLOC5 + stdHLOC5 ;
+}
+
+EHLOCdownband2 = emaHLOC2 - stdHLOC2 ;
+
+{
+EHLOCdownband3 = emaHLOC3 - stdHLOC3 ;
+EHLOCdownband4 = emaHLOC4 - stdHLOC4 ;
+EHLOCdownband5 = emaHLOC5 - stdHLOC5 ;
+}
 
 //BB 200 Regular
 vBub1= BollingerBand(close,BUpperBand,BStedDev1);
@@ -87,6 +114,13 @@ vKeltDown = KeltnerChannel(HLOC ,KLowerBand,-KStdAtr);
 
 //ATR
 atr =  AvgTrueRange (AtrLength);
+
+//Zcore - Ratio between 2 stocks
+Ratio = close / close of data2;
+MeanRatio = Average (Ratio , RatioLength);
+DevRatio = StdDev (MeanRatio , RatioLength);
+Zscore = (Ratio - MeanRatio) / DevRatio ;
+
 
 // Calculate a switch for identify long or short (for the connection with VXX)
 if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
@@ -137,8 +171,44 @@ LTBreak = THign  + (TLow - THign)* LTpct;
 STBreak = THign  + (TLow - THign)* STpct;
 
 //high and low level
-high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
+high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5],
+close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9], close [10] 
+);
+
+{, open [10],
+close [11] , open [11], close [12] , open [12], close [13] , open [13], close [14] , open [14], close [15] , open [15] ,
+close [16] , open [16], close [17] , open [17], close [18] , open [18], close [18] , open [19], close [19] , open [19] ,
+close [20] , open [20]
+);
+}
+{
+close [21] , open [21], close [22] , open [22], close [23] , open [23], close [24] , open [24] ,
+close [25] , open [25], close [26] , open [26], close [27] , open [27], close [28] , open [28], close [29] , open [29] ,
+close [30], open [30], close [31] , open [31], close [32] , open [32], close [33] , open [33], close [34] , open [34],
+close [35] , open [35], close [36] , open [36], close [37] , open [37], close [38] , open [38], close [39] , open [39],
+close [40] , open [40]
+}
+
+
+low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5],
+close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9], close [10] 
+);
+
+{
+ open [10],
+close [11] , open [11], close [12] , open [12], close [13] , open [13], close [14] , open [14], close [15] , open [15] ,
+close [16] , open [16], close [17] , open [17], close [18] , open [18], close [18] , open [19], close [19] , open [19] ,
+close [20] , open [20]
+);
+}
+
+{
+close [21] , open [21], close [22] , open [22], close [23] , open [23], close [24] , open [24] ,
+close [25] , open [25], close [26] , open [26], close [27] , open [27], close [28] , open [28], close [29] , open [29] ,
+close [30] , open [30] , close [31] , open [31], close [32] , open [32], close [33] , open [33], close [34] , open [34],
+close [35] , open [35], close [36] , open [36], close [37] , open [37], close [38] , open [38], close [39] , open [39],
+close [40] , open [40]
+}
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
