@@ -1,11 +1,3 @@
-TLow (0),
-LTBreak (0),
-STBreak (0),
-
-//Extreme points
-high5 (0),
-low5 (0);
-                
 //PL for a day
 if DATE <> DATE[1] 
 then 
@@ -22,15 +14,15 @@ emaMid = XAverage(close,MidLength);
 emaSlow = XAverage(close,SlowLength);
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
-emaverySlow = XAverage(close,VerySlowLength);
+//emaverySlow = XAverage(close,VerySlowLength);
 //ema2Fast = 0;//XAverage(close,FastLength) of data2;
 //ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 //ema2verySlow = 0;//XAverage(close,VerySlowLength)of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
-longbuyingPower1 = 2;
-shortbuyingPower = 4 ;
-shortbuyingPower1 = 2 ;
+longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
+longbuyingPower1 = 6;
+shortbuyingPower = 3 ;
+shortbuyingPower1 = 6 ;
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
 
@@ -41,20 +33,21 @@ valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2)
 //print(Date, Time, "bar=", BarNumber, marketposition, valsdbg ); 
 
 
-//BB HLOC 21
-vBubHLOC = BollingerBand(HLOC ,BUpperBandHLOC,BStedDevHLOC);
-vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
-vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
-HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
+//BB HLC 21
+vBubHLOC = BollingerBand(HLC ,BUpperBandHLOC,BStedDevHLOC);
+vBlbHLOC = BollingerBand(HLC ,BLowerBandHLOC, - BStedDevHLOC);
+vBmbHLOC = (vBubHLC+vBlbHLC)/2;
+HLC = (HIGH+LOW+CLOSE)/3;
 
-emaHLOC = XAverage (HLOC , BUpperBandHLOC);
-stdHLOC = StdDev(HLOC , BUpperBandHLOC);
+emaHLC = XAverage (HLC , BUpperBandHLC);
+stdHLC = StdDev(HLC , BUpperBandHLC);
 
-EHLOCupband = emaHLOC + stdHLOC ;
-EHLOCdownband = emaHLOC  - stdHLOC ;
-EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
-EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
-EHLOCqtr3band = EHLOCupband-((EHLOCupband-EHLOCdownband)/4);
+EHLCupband = emaHLC + stdHLC ;
+EHLCdownband = emaHLC  - stdHLC ;
+EHLC0.3band = (EHLCupband+EHLCdownband)/3+EHLCdownband;
+EHLC0.6band = EHLCupband-(EHLCupband+EHLCdownband)/3;
+EHLCqtr1band = EHLCdownband+((EHLCupband-EHLCdownband)/4);
+EHLCqtr3band = EHLCupband-((EHLCupband-EHLCdownband)/4);
 
 //BB 200 Regular
 vBub1= BollingerBand(close,BUpperBand,BStedDev1);
@@ -68,9 +61,9 @@ vBlb3= BollingerBand(close,BLowerBand, - BStedDev3);
 
 
 //BB 200 Exponencial
-stdclose = StdDev (close, VerySlowLength);
-evBub2 = emaverySlow + (stdDevMultiplier2 * stdclose) ;
-evBlb2 = emaverySlow - (stdDevMultiplier2 * stdclose) ;
+//stdclose = StdDev (close, VerySlowLength);
+//evBub2 = emaverySlow + (stdDevMultiplier2 * stdclose) ;
+//evBlb2 = emaverySlow - (stdDevMultiplier2 * stdclose) ;
 
 {
 //VWAP crossing
@@ -135,10 +128,6 @@ TLow = Lowest(low, TLength);
 //breakout level
 LTBreak = THign  + (TLow - THign)* LTpct;
 STBreak = THign  + (TLow - THign)* STpct;
-
-//high and low level
-high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
