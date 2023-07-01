@@ -1,21 +1,4 @@
-TLow (0),
-LTBreak (0),
-STBreak (0),
-
-//Extreme points
-high5 (0),
-low5 (0);
-                
-//PL for a day
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
-end;
-PLTarget = Netprofit - NetProf;
-
-                        
-//[IntrabarOrderGeneration = True] //trade intra-bar
+[IntrabarOrderGeneration = True] //trade intra-bar
 
 emaFast = XAverage(close,FastLength);
 emaMid = XAverage(close,MidLength);
@@ -27,14 +10,7 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 //ema2verySlow = 0;//XAverage(close,VerySlowLength)of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
-longbuyingPower1 = 2;
-shortbuyingPower = 4 ;
-shortbuyingPower1 = 2 ;
-
-CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
-
-
+buyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
 //TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
 //StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
 valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
@@ -47,14 +23,31 @@ vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
 vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
 HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
 
+HLOC2 = (HIGH of data2 +LOW of data2+OPEN of data2+CLOSE of data2)/4;
+HLOC3 = (HIGH of data3 +LOW of data3+OPEN of data3+CLOSE of data3)/4;
+
 emaHLOC = XAverage (HLOC , BUpperBandHLOC);
 stdHLOC = StdDev(HLOC , BUpperBandHLOC);
 
+emaHLOC2 = XAverage (HLOC2 , BUpperBandHLOC);
+stdHLOC2 = StdDev(HLOC2 , BUpperBandHLOC);
+
+emaHLOC3 = XAverage (HLOC3 , BUpperBandHLOC);
+stdHLOC3 = StdDev(HLOC3 , BUpperBandHLOC);
+
 EHLOCupband = emaHLOC + stdHLOC ;
 EHLOCdownband = emaHLOC  - stdHLOC ;
-EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
-EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
-EHLOCqtr3band = EHLOCupband-((EHLOCupband-EHLOCdownband)/4);
+
+EHLOCupband2 = emaHLOC2 + stdHLOC2 ;
+EHLOCupband3 = emaHLOC3 + stdHLOC3 ;
+
+EHLOCdownband2 = emaHLOC2 - stdHLOC2 ;
+EHLOCdownband3 = emaHLOC3 - stdHLOC3 ;
+
+//macd
+vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
+vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
+vDiff = vMacd - vMacdAvg ; // Histogram
 
 //BB 200 Regular
 vBub1= BollingerBand(close,BUpperBand,BStedDev1);
@@ -72,10 +65,10 @@ stdclose = StdDev (close, VerySlowLength);
 evBub2 = emaverySlow + (stdDevMultiplier2 * stdclose) ;
 evBlb2 = emaverySlow - (stdDevMultiplier2 * stdclose) ;
 
-{
+
 //VWAP crossing
 vwap = Average(HLOC * Volume, vwapLength ) / Average(Volume, vwapLength );
-}
+
 //macd
 vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
 vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
@@ -136,32 +129,14 @@ TLow = Lowest(low, TLength);
 LTBreak = THign  + (TLow - THign)* LTpct;
 STBreak = THign  + (TLow - THign)* STpct;
 
-//high and low level
-high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-
-//Macd
-MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
-SignalLine = XAverage(MACDLine, 9); // Signal line is a 9-period EMA of the MACD line
-Histogram = MACDLine - SignalLine;
-
-//PP
-// Calculate Support and Resistance Levels
-PP = 
-(
-HighestFC(high,ppLength) + LowestFC(low,ppLength) + Close[1] 
-) /3;
-S1 = (2 * PP) - HighestFC(high, ppLength);
-S2 = PP - (HighestFC (high, ppLength) - LowestFC(low, ppLength));
-S3 = LowestFC(low, ppLength) - 2 * (HighestFC (high, ppLength) - PP);
-R1 = (2 * PP) - LowestFC(low, ppLength);
-R2 = PP + (HighestFC(high, ppLength) - LowestFC(low, ppLength));
-R3 = HighestFC(high, ppLength) + 2 * (PP - LowestFC (low, ppLength));
-
-{
 //Zcore - Ratio between 2 stocks
 Ratio = close / close of data2;
 MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
-}
+
+//Zcore - Ratio between 2 stocks
+Ratio2 = close / close of data3;
+MeanRatio2 = Average (Ratio , RatioLength);
+DevRatio2 = StdDev (MeanRatio , RatioLength);
+Zscore2 = (Ratio - MeanRatio) / DevRatio ;

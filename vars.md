@@ -22,10 +22,7 @@ mom (0),
 vwap(0), 
 atr (0),
 adxcalc (0),
-longbuyingPower(0),
-shortbuyingPower(0),
-longbuyingPower1 (0),
-shortbuyingPower1 (0),
+buyingPower(0),
 curProfit(0),
 TakeProfitAmt (0),
 StopAmt (0),
@@ -33,7 +30,6 @@ SwitchLargeSmall (0),
 buydbg(""),
 selldbg(""),
 valsdbg(""),
-CurShares (0),
 
 //macd
 vMacd(0), 
@@ -48,14 +44,6 @@ vBub2(0),
 vBlb2(0),
 vBub3(0),
 vBlb3(0),
-
-
-//Satistical Arbitrage
-Ratio (0),
-MeanRatio (0),
-devRatio (0),
-Zscore (0),
-
 
 //E-BB
 stdclose (0),
@@ -74,26 +62,20 @@ EHLOCdownband  (0),
 
 HLOC2 (0), 
 HLOC3 (0), 
-HLOC4 (0), 
-HLOC5 (0), 
 stdHLOC2 (0),
 stdHLOC3 (0),
-stdHLOC4 (0),
-stdHLOC5 (0),
 emaHLOC2 (0),
 emaHLOC3 (0),
-emaHLOC4 (0),
-emaHLOC5 (0),
 EHLOCupband2  (0),
 EHLOCupband3 (0),
-EHLOCupband4 (0),
-EHLOCupband5 (0),
 EHLOCdownband2  (0),
 EHLOCdownband3  (0),
-EHLOCdownband4  (0),
-EHLOCdownband5  (0),
 
-//Keltner
+//Macd
+MACDLine (0),
+SignalLine (0),
+Histogram (0),
+
 vKeltUp(0),
 vKeltDown(0),
 
@@ -103,21 +85,26 @@ vAvgVol(0),
 vTicks(0),
 vAvgTicks(0),
 
+//Satistical Arbitrage
+Ratio (0),
+MeanRatio (0),
+devRatio (0),
+Zscore (0),
+
+//Satistical Arbitrage
+Ratio2 (0),
+MeanRatio2 (0),
+devRatio2 (0),
+Zscore2 (0),
+
 //sqqq and tqqq gap
 TQQQdaychange (0),
 SQQQdaychange (0),
 GapDAYTQQQSQQQ (0),
 GapDAYSQQQTQQQ (0),
 
-//PP
-// Calculate Support and Resistance Levels
-PP (0),
-S1 (0),
-S2 (0),
-S3 (0),
-R1 (0),
-R2 (0),
-R3 (0),
+
+
 
 // Trailing
 barCount(0), // count from the first bar
@@ -168,20 +155,12 @@ oData1SlowD( 0 ),
 stochData1(0),
 stochData2(0),
 
-//Macd
-MACDLine (0),
-SignalLine (0),
-Histogram (0),
-
 //Triangle
 THign  (0),
 TLow (0),
 LTBreak (0),
-STBreak (0),
+STBreak (0);
 
-//Extreme points
-high5 (0),
-low5 (0);
                 
 //PL for a day
 if DATE <> DATE[1] 
