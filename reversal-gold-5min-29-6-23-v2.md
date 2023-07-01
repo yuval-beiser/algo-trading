@@ -22,6 +22,8 @@ and close < vBlb1
 and close <= DonchianMid
 and close > emafast
 and Histogram > 0
+and
+close > maxlist (open [1], close [1], open [2], close [2], open [3], close [3])
 then Begin
 buy Floor(buyingPower) Shares next bar at market  ;
 End;
@@ -42,6 +44,7 @@ and close > vBub1
 and close >= DonchianMid
 and close < emafast
 and Histogram < 0
+close < minlist (open [1], close [1], open [2], close [2], open [3], close [3])
 then Begin
 sellshort Floor(buyingPower) Shares next bar at market;
 End;
@@ -62,7 +65,6 @@ then
 if marketposition = 1 //there is long position open
 and (Close/entryprice-1)*100 >= SmallMinProfit 
 and barssinceentry <= 1 //  number of bars from begining . 
- 
 then begin
 valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
 trailProfit = Highest(high , Barssinceentry); 
