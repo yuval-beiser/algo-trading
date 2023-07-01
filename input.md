@@ -36,12 +36,13 @@ MinFromLHentry (0.15),
 MinKeltnerCross (0.08),
 MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
-Mingap (0.29), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
-Maxgap (0.09), //
+Mingap (0.003), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
+MingapVwapVb (0.03),
+Maxgap (0.0667), //10$
 Maxgap1 (0.09), //0.2
 MinProfit (0.00625),
 smallbaseProfit (0.1), //0.035
-SmallMinProfit (0.25), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2
+SmallMinProfit (0.0267), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.03125
 largeMinProfit (0.04375), //after 10 pips start trail of 8 pips //0.09375
 SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel
 SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
@@ -50,7 +51,7 @@ MaxProfitForAdd (0.1),
 FastMinProfit (0.0625), //0.1125
 MinBaseProfit (0.03),
 MinLossForAdd (0.1), //0.1
-SmallTrail (0.03), //0.04375 with stochastic //0.00625 //0.0125 //0.025
+SmallTrail (0.0133), //0.04375 with stochastic //0.00625 //0.0125 //0.025
 largeTrail (0.025),
 MinSQQQTQQQGap (0.09),
 Minbarsfortake (5), //2
@@ -62,7 +63,7 @@ ExitCrossOS (0.14),
 StopLossOS (0.01875),
 adxperiod (14),
 adxmin(25),
-vwapLength (20),
+vwapLength (21),
 SQQQTQQQGap(0.15),
 AtrLength (14),
 AtrMin(15), //0.6
@@ -81,11 +82,8 @@ RatioLength (200),
 ppLength (5),
 os1 (0.015),
 
-PForDay (1000), //1500 //1950 //100 //800
+PForDay (400), //1500 //1950 //100 //800
 LForDay (-100), //-1100 //-500 //-50
-
-longminzscore (-2),
-shortminzscore (2),
 
 //Donchian 
 DonchianLength (20), 
@@ -96,9 +94,13 @@ macdSlowLength( 26 ),
 MACDlineLength( 9 ) ,
 
 //BB
-BStedDev1(1),
-BStedDev2(1.5), //1.5
-BStedDev3(3),
+BStedDev1(0.5),
+BStedDev2(1), 
+BStedDev3(1.5),
+BStedDev4(2),
+BStedDev5 (2.5),
+BStedDev6(3),
+
 BUpperBand(200),
 BLowerBand(200),
 MinFromBB (0.24),
@@ -108,6 +110,11 @@ MaxFromBB (0.8),
 BStedDevHLOC (2), 
 BUpperBandHLOC(21), //39
 BLowerBandHLOC(21), //39
+
+//vwap BB
+BvwapUpperBand (21),
+BvwapLowerBand (21),
+
 
 //Keltner
 KStdAtr(1.5),
@@ -133,5 +140,9 @@ PctPerTrade(50),
 TakeProfit (200),
 TakeProfitPct (6.5),
 StopPct (0.025),
-longSL(180), //180 with stochastic //140 //80 //450 //400 //300
-shortSL(180); //300
+longSL(80), //180 with stochastic //140 //80 //450 //400 //300 //160
+shortSL(80), //300 //160
+
+//Zscore
+longminzscore (-2),
+shortminzscore (2);
