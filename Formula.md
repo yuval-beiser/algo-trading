@@ -1,11 +1,3 @@
-TLow (0),
-LTBreak (0),
-STBreak (0),
-
-//Extreme points
-high5 (0),
-low5 (0);
-                
 //PL for a day
 if DATE <> DATE[1] 
 then 
