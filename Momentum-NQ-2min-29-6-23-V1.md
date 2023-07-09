@@ -65,6 +65,10 @@ if marketposition = 1 //Scale In x2 - Conditions Add Entry long
 //close > emaMid
 and
 high5 < emaMid
+and
+low < low [1]
+
+
 //and
 //close < open [1]
 //and
@@ -279,6 +283,9 @@ sell  next bar at trailExit  stop;
 end;
 
 
+vars:
+longStop (-9999999);
+
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
 then
@@ -441,7 +448,8 @@ buytocover next bar at trailExit  stop;
 end;
 
 
-
+vars:
+shortStop (9999999);
 
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
@@ -590,3 +598,4 @@ then
 begin
 SetStopLoss(shortSL);
 end;
+

@@ -1,3 +1,12 @@
+//PL for a day
+if DATE <> DATE[1] 
+then 
+begin
+NetProf = NetProf + NetProfit - NetProf[1];
+end;
+PLTarget = Netprofit - NetProf;
+
+
 //[IntrabarOrderGeneration = True] //trade intra-bar
 
 //when no position use close bar
@@ -157,4 +166,3 @@ MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
-
