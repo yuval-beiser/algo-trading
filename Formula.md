@@ -1,13 +1,10 @@
-//PL for a day
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
-end;
-PLTarget = Netprofit - NetProf;
-
-                        
 //[IntrabarOrderGeneration = True] //trade intra-bar
+
+//when no position use close bar
+if marketposition = 0
+then
+[IntrabarOrderGeneration = true] //trade intra-bar
+
 
 emaFast = XAverage(close,FastLength);
 emaMid = XAverage(close,MidLength);
@@ -19,10 +16,13 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 //ema2verySlow = 0;//XAverage(close,VerySlowLength)of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
+longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
 longbuyingPower1 = 2;
-shortbuyingPower = 4 ;
+longbuyingPower2 = 3;
+shortbuyingPower = 1 ;
 shortbuyingPower1 = 2 ;
+shortbuyingPower2 = 3 ;
+
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
 
@@ -157,3 +157,4 @@ MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
+
