@@ -1,3 +1,4 @@
+
 if marketposition = 0 //Conditions Entry Long
 //and
 //(
@@ -283,8 +284,7 @@ sell  next bar at trailExit  stop;
 end;
 
 
-vars:
-longStop (-9999999);
+
 
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
@@ -447,9 +447,6 @@ trailExit = trailProfit + valuePercentTrail; //
 buytocover next bar at trailExit  stop;
 end;
 
-
-vars:
-shortStop (9999999);
 
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0

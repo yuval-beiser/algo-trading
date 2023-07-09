@@ -1,4 +1,6 @@
 vars:
+shortStop (9999999),
+longStop (-9999999),
 smaFast(0),
 smaMid(0),
 ema3VerySlow (0),
@@ -19,7 +21,7 @@ rsiFast(0),
 AvgVolumeLength(50), //50
 volumeUP (30), //10
 mom (0),
-vwap(0), 
+//vwap(0), 
 atr (0),
 adxcalc (0),
 longbuyingPower(0),
