@@ -42,11 +42,11 @@ Maxgap1 (0.02), //0.2
 Maxgap2 (0.05), //0.2
 
 MinProfit (0.00625),
-smallbaseProfit (0.0067), //0.035 //0.19
-SmallMinProfit (0.05), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2
+smallbaseProfit (0.02), //0.035 //0.19
+SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04375), //after 10 pips start trail of 8 pips //0.09375
-SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel
+SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
 SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
 MinProfitforadd (0.01),
 MaxProfitForAdd (0.1),
@@ -82,7 +82,7 @@ LTpct (0.3),
 STpct (0.3),
 RatioLength (200),
 ppLength (5),
-os1 (0.03),
+os1 (0.0133), //0.03
 os2 (0.01),
 
 PForDay (400), //1500 //1950 //100 //800
@@ -134,8 +134,9 @@ PctPerTrade(50),
 TakeProfit (200),
 TakeProfitPct (6.5),
 StopPct (0.025),
-longSL(60), //180 with stochastic //140 //80 //450 //400 //300
-shortSL(60), //300
+
+//longSL(50),
+//shortSL(50), 
 
 //Zscore
 longminzscore (-2),

@@ -1,3 +1,4 @@
+
 //PL for a day
 if DATE <> DATE[1] 
 then 
@@ -8,6 +9,11 @@ PLTarget = Netprofit - NetProf;
 
 
 //[IntrabarOrderGeneration = True] //trade intra-bar
+
+//when no position reset CurShares 
+if marketposition = 0
+then
+CurShares = 0;
 
 //when no position use close bar
 if marketposition = 0
@@ -34,6 +40,22 @@ shortbuyingPower2 = 3 ;
 
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
+
+// long stoploss
+if 
+CurShares = 1 
+then 
+longSL = startlongSL
+else 
+longSL = updatedlongSL;
+
+// short stoploss
+if 
+CurShares = 1
+then 
+shortSL = startshortSL
+else 
+shortSL = updatedshortSL;
 
 
 //TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
@@ -166,3 +188,4 @@ MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
+

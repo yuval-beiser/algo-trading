@@ -21,7 +21,7 @@ rsiFast(0),
 AvgVolumeLength(50), //50
 volumeUP (30), //10
 mom (0),
-//vwap(0), 
+vwap(0), 
 atr (0),
 adxcalc (0),
 longbuyingPower(0),
@@ -168,4 +168,12 @@ STBreak (0),
 
 //Extreme points
 high5 (0),
-low5 (0);
+low5 (0),
+
+//stop
+startlongSL(50),
+updatedlongSL(200),
+startshortSL(50),
+updatedshortSL(200),
+longSL (0),
+shortSL (0);

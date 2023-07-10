@@ -40,8 +40,12 @@ and
 emaMid <= emaverySlow * (1+Maxgap/100) //till 10 
 and
 close <= emaverySlow * (1+Maxgap1/100) //till 8 
-and
-close cross above emaFast
+
+//and
+//low < low [1]
+
+//and
+//close cross above emaFast
 
 //and
 //close >= emaMid * (1+Mingap1/100) //till 8 
@@ -61,15 +65,33 @@ buy longbuyingPower Shares next bar at market  ;
 end;
 
 
-if marketposition = 1 //Scale In x2 - Conditions Add Entry long
+if marketposition = 1 //Scale In  - Conditions Add Entry long
+and
+close > open
+//and
+//close [1] <= open [1]
+
+//close > high [1]
+//high5 < emaVerySlow
+and
+close cross above EHLOCupband
+and
+close cross above high5
+//and
+//close cross above emaFast
+//and
+//close >= DonchianUp
+//and
+//Histogram > 0
+//and
+//close cross above emaFast
+
 //and
 //close > emaMid
-and
-high5 < emaMid
-and
-low < low [1]
-
-
+//and
+//high5 < emaMid
+//and
+//low < low [1]
 //and
 //close < open [1]
 //and
@@ -89,6 +111,7 @@ begin
 buy longbuyingPower1 Shares next bar at market  ;
 end;
 
+{
 if marketposition = 1 //Scale In x3 - Conditions Add Entry long
 //and
 //close > emaMid
@@ -120,7 +143,7 @@ then
 begin
 buy longbuyingPower2 Shares next bar at market  ;
 end;
-
+}
 
 
 if         
@@ -156,11 +179,14 @@ emaMid >= emaverySlow * (1-Maxgap/100) //till 10
 and
 close >= emaverySlow * (1-Maxgap1/100) //till 8
 //and
+//high > high [1]
+
+//and
 //close <= emaMid * (1-Mingap1/100) //till 8 
 //and
 //close >= emaMid * (1-Maxgap2/100) //till 8 
-and
-close cross below emaFast
+//and
+//close cross below emaFast
 //and
 //
 //(close cross below emaFast) or (close [1] cross below emaFast[1]) or  (close [2] cross below emaFast[2])
@@ -174,11 +200,31 @@ sellshort shortbuyingPower Shares next bar at market  ;
 end;
 
 
-if marketposition = -1 //Scale In x2 - Conditions Add Entry Short
+if marketposition = -1 //Scale In  - Conditions Add Entry Short
+and
+close < Open
+//and
+//close [1] >= open [1]
+
+//and
+//close < low [1]
 //and
 //close < emaMid
+//and
+//low5 > emaVerySlow
 and
-low5 > emaMid
+close cross below EHLOCdownband
+//and
+//close cross below emaFast
+and
+close cross below low5
+
+//and
+//Histogram < 0
+//and
+//close cross below emaFast
+
+
 //and
 //close < open [1]
 //and
@@ -198,6 +244,7 @@ begin
 sellshort shortbuyingPower1 Shares next bar at market  ;
 end;
 
+{
 if marketposition = -1 //Scale In x3 - Conditions Add Entry short
 //and
 //close > emaMid
@@ -229,7 +276,7 @@ then
 begin
 sellshort shortbuyingPower2 Shares next bar at market  ;
 end;
-
+}
 
 
 {
@@ -294,8 +341,8 @@ longStop = -9999999;
 end;
 
 if marketposition = 1 //there is long position open
-//and
-//(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+(close/entryprice-1)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 then
@@ -310,8 +357,8 @@ end;
 
 //close long position with trail start moving aafter the first bar from entry
 if marketposition = 1 //there is long position open
-//and
-//(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+(close/entryprice-1)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 and
@@ -456,8 +503,8 @@ shortStop = 9999999;
 end;
 
 if marketposition = -1 //there is long position open
-//and
-//(1-Close/entryprice)*100 >= SmallbaseProfit 
+and
+(1-Close/entryprice)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 then
@@ -472,8 +519,8 @@ end;
 
 //close short position with trail start moving aafter the first bar from entry
 if marketposition = -1 //there is long position open
-//and
-//(1-Close/entryprice)*100 >= SmallbaseProfit 
+and
+(1-Close/entryprice)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 and
@@ -595,4 +642,3 @@ then
 begin
 SetStopLoss(shortSL);
 end;
-
