@@ -42,7 +42,7 @@ Maxgap1 (0.02), //0.2
 Maxgap2 (0.05), //0.2
 
 MinProfit (0.00625),
-smallbaseProfit (0.02), //0.035 //0.19
+smallbaseProfit (0.1), //0.035 //0.19 //0.02
 SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04375), //after 10 pips start trail of 8 pips //0.09375

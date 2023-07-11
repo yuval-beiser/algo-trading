@@ -1,4 +1,3 @@
-
 if marketposition = 0 //Conditions Entry Long
 //and
 //(
@@ -40,7 +39,10 @@ and
 emaMid <= emaverySlow * (1+Maxgap/100) //till 10 
 and
 close <= emaverySlow * (1+Maxgap1/100) //till 8 
-
+//and
+//close of data2 > ema2Fast
+and
+close of data2 < ema2verySlow 
 //and
 //low < low [1]
 
@@ -76,7 +78,9 @@ close > open
 and
 close cross above EHLOCupband
 and
-close cross above high5
+close cross above high9
+//and
+//close > emaVerySlow
 //and
 //close cross above emaFast
 //and
@@ -179,6 +183,11 @@ emaMid >= emaverySlow * (1-Maxgap/100) //till 10
 and
 close >= emaverySlow * (1-Maxgap1/100) //till 8
 //and
+//close of data2 < ema2Fast
+//and
+//close of data2 > ema2verySlow 
+
+//and
 //high > high [1]
 
 //and
@@ -217,7 +226,10 @@ close cross below EHLOCdownband
 //and
 //close cross below emaFast
 and
-close cross below low5
+close cross below low9
+and
+close < emaVerySlow
+
 
 //and
 //Histogram < 0

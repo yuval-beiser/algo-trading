@@ -169,6 +169,8 @@ STBreak (0),
 //Extreme points
 high5 (0),
 low5 (0),
+high9 (0),
+low9 (0),
 
 //stop
 startlongSL(50),
@@ -177,3 +179,5 @@ startshortSL(50),
 updatedshortSL(200),
 longSL (0),
 shortSL (0);
+
+
