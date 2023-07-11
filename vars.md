@@ -21,7 +21,7 @@ rsiFast(0),
 AvgVolumeLength(50), //50
 volumeUP (30), //10
 mom (0),
-vwap(0), 
+//vwap(0), 
 atr (0),
 adxcalc (0),
 longbuyingPower(0),
