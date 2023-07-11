@@ -35,9 +35,9 @@ MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 
 Mingap (1),
 MinFromCloseD1 (1),
 SmallMinProfit (0.1), //1.4 //1.5
-smallbaseProfit (0.05),
+smallbaseProfit (0.03),
 LargeMinProfit (2.5),
-SmallTrail (0.03), //0.04375 with stochastic //0.00625 //0.3
+SmallTrail (0.01875), //0.04375 with stochastic //0.00625 //0.3
 largeTrail (1.6),
 FastTrail (0.22),
 
@@ -61,11 +61,15 @@ LongMultiplierPower (1),
 TakeProfit (200),
 TakeProfitPct (6),
 StopPct (2.1), //30.4.23, Change from 2.5% 
-SL(200),
+SL(240),
 PForDay (2000), //1500
 LForDay (-50), //-1100
-longSL(160), //
-shortSL(160), //300
+longSL(200), //
+shortSL(200), //300
+os1 (0.0133), //0.03 - offset 
+os2 (0.01),
+os3 (0.0133), // 2$ - 0.133 precent 
+
 
 
 //BB

@@ -1,4 +1,5 @@
-if marketposition = 0
+
+       if marketposition = 0
 then
 [IntrabarOrderGeneration = false] //trade intra-bar
                         
@@ -20,7 +21,7 @@ rsiSlow = rsi(close,RsiSlowLength);
 rsiFast = rsi(close,RsiFastLength);
 mom = Momentum(close, MomentumLength);
 adxcalc = ADX(adxperiod);
-buyingPower = 5;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
+buyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
 TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
 StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
 valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
@@ -68,3 +69,10 @@ MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 
+//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
+if DATE <> DATE[1] 
+then 
+begin
+NetProf = NetProf + NetProfit - NetProf[1];
+end;
+PLTarget = Netprofit - NetProf;
