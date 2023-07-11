@@ -5,3 +5,8 @@ reversal-gold-5min-29-6-23-v2
 ￼![chart](unknown-1.png)
 ![short](unknown-2.png)
 
+
+
+remove time 
+remove scale in - twice - long and short 
+scale the first buy/sell from 1 to 3 
