@@ -1,3 +1,4 @@
+
 //[IntrabarOrderGeneration = True] //trade intra-bar
 
 //when no position reset CurShares - number of micro positions in same time 
@@ -20,6 +21,7 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2Fast = XAverage(close,FastLength) of data2;
 //ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 //ema2verySlow = XAverage(close,VerySlowLength)of data2;
+ema2mid = XAverage(close,MidLength) of data2;
 adxcalc = ADX(adxperiod);
 longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1
 longbuyingPower1 = 2; // scale in
@@ -153,7 +155,6 @@ STBreak = THign  + (TLow - THign)* STpct;
 high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
-
 high9 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
 open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9] );
 
@@ -186,3 +187,12 @@ MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
+
+//PL for a day
+if DATE <> DATE[1] 
+then 
+begin
+NetProf = NetProf + NetProfit - NetProf[1];
+end;
+PLTarget = Netprofit - NetProf;
+
