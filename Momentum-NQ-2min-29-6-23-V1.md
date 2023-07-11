@@ -1,12 +1,13 @@
+
 if marketposition = 0 //Conditions Entry Long
 //and
 //(
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
-and
-(
-(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
-)
+//and
+//(
+//(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
+//)
 and
 close > Open //3
 //and
@@ -29,7 +30,8 @@ Close [1] > emaverySlow and Close [2] > emaverySlow
 and
 close > emaMid //20
 and
-close > emaverySlow //20
+close > emaverySlow * (1 + os3 /100)  //200
+
 //and
 //emaMid > emaVerySlow
 
@@ -41,8 +43,8 @@ and
 close <= emaverySlow * (1+Maxgap1/100) //till 8 
 //and
 //close of data2 > ema2Fast
-and
-close of data2 < ema2verySlow 
+//and
+//close of data2 < ema2verySlow 
 //and
 //low < low [1]
 
@@ -67,6 +69,7 @@ buy longbuyingPower Shares next bar at market  ;
 end;
 
 
+{
 if marketposition = 1 //Scale In  - Conditions Add Entry long
 and
 close > open
@@ -114,6 +117,8 @@ then
 begin
 buy longbuyingPower1 Shares next bar at market  ;
 end;
+
+}
 
 {
 if marketposition = 1 //Scale In x3 - Conditions Add Entry long
@@ -173,7 +178,7 @@ high5 > emaVerySlow
 and
 close < emaMid //20
 and
-close < emaverySlow //200
+close < emaverySlow * (1 - os3 /100) // ema 200 - with offset of 2$ 
 //and
 //emaMid < emaVerySlow
 //and
@@ -208,7 +213,7 @@ begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
 
-
+{
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
 and
 close < Open
@@ -290,6 +295,7 @@ sellshort shortbuyingPower2 Shares next bar at market  ;
 end;
 }
 
+}
 
 {
 

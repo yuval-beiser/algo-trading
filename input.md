@@ -1,5 +1,6 @@
 //@version=31323-2
 Inputs:
+maximumloss(120),
 FastLength(9),
 MidLength(20),
 SlowLength(50),
@@ -82,8 +83,9 @@ LTpct (0.3),
 STpct (0.3),
 RatioLength (200),
 ppLength (5),
-os1 (0.0133), //0.03
+os1 (0.0133), //0.03 - offset 
 os2 (0.01),
+os3 (0.0133), // 2$ - 0.133 precent 
 
 PForDay (400), //1500 //1950 //100 //800
 LForDay (-100), //-1100 //-500 //-50
@@ -134,9 +136,6 @@ PctPerTrade(50),
 TakeProfit (200),
 TakeProfitPct (6.5),
 StopPct (0.025),
-
-//longSL(50),
-//shortSL(50), 
 
 //Zscore
 longminzscore (-2),

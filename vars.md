@@ -173,11 +173,9 @@ high9 (0),
 low9 (0),
 
 //stop
-startlongSL(50),
-updatedlongSL(200),
-startshortSL(50),
-updatedshortSL(200),
+startlongSL(maximumloss),
+updatedlongSL(maximumloss),
+startshortSL (maximumloss),
+updatedshortSL(maximumloss),
 longSL (0),
 shortSL (0);
-
-
