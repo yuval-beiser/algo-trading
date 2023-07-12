@@ -1,6 +1,6 @@
 //@version=31323-2
 Inputs:
-maximumloss(120),
+maximumloss(40), //120
 FastLength(9),
 MidLength(20),
 SlowLength(50),
@@ -38,8 +38,8 @@ MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
 Mingap (0.05), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
-Maxgap (0.05), //
-Maxgap1 (0.02), //0.2
+Maxgap (0.25), //0.O5
+Maxgap1 (0.667), //0.2 //0.02
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
 maxgap4 (0.26),
