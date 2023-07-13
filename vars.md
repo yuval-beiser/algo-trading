@@ -1,4 +1,3 @@
-
 vars:
 smaFast(0),
 smaMid(0),
@@ -93,7 +92,11 @@ DonchianMid (0),
 vRSI (0),
 
 
+shortStop (9999999),
 longStop (-9999999),
 
-shortStop (9999999);
-
+//Extreme points
+high5 (0),
+low5 (0),
+high9 (0),
+low9 (0);

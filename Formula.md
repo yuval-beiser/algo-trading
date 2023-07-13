@@ -14,8 +14,8 @@ emaFast = XAverage(close,FastLength);
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
 
-ema2Fast = XAverage(close,FastLength)of data2;
-ema2Slow = XAverage(close,SlowLength)of data2;
+//ema2Fast = XAverage(close,FastLength)of data2;
+//ema2Slow = XAverage(close,SlowLength)of data2;
 ema2verySlow = XAverage(close,VerySlowLength)of data2;
 rsiSlow = rsi(close,RsiSlowLength);
 rsiFast = rsi(close,RsiFastLength);
@@ -67,12 +67,16 @@ vRSI = RSI (close, RsiFastLength);
 Ratio = close / close of data2;
 MeanRatio = Average (Ratio , RatioLength);
 DevRatio = StdDev (MeanRatio , RatioLength);
-Zscore = (Ratio - MeanRatio) / DevRatio ;
+Zscore = (Ratio - MeanRatio) / DevRatio;
 
-//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
-if DATE <> DATE[1] 
-then 
+//high and low level
+high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
+low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
+
+
+//close short position with trail start moving after the first bar from entry
+if marketposition = 0
+then
 begin
-NetProf = NetProf + NetProfit - NetProf[1];
+shortStop = 9999999;
 end;
-PLTarget = Netprofit - NetProf;
