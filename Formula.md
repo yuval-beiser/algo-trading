@@ -1,3 +1,5 @@
+// formulas
+
 //[IntrabarOrderGeneration = True] //trade intra-bar
 
 //when no position reset CurShares - number of micro positions in same time 
