@@ -19,6 +19,8 @@ TIME | PROFIT-FACTOR | NET | PERCENTAGE | Number of trades
 15 
 
 
+-------
+max loss : 120 !
 -----------------------------------------------------
 time 14/7 12:00 
 desc - I dont remember 
@@ -28,3 +30,13 @@ TIME | PROFIT-FACTOR | NET | PERCENTAGE | Number of trades
 2 -1.33 | 1589$ | 58% | 295 
 5- 1.53 | 1545$ | 56.55% | 168
 15 - 7.28 | 754$ | 76% | 13
+
+
+----------------------------------
+time 14/7 12:00 
+desc - I dont remember 
+
+TIME | PROFIT-FACTOR | NET | PERCENTAGE | Number of trades
+
+2 -  1.71 | 2128 & | 54.5% | 55 
+5 -  1.49 | 817$ | 53.3% | 30

@@ -1,6 +1,7 @@
+// input 
 //@version=31323-2
 Inputs:
-maximumloss(40), //120
+maximumloss(120),
 FastLength(9),
 MidLength(20),
 SlowLength(50),
@@ -38,14 +39,12 @@ MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
 Mingap (0.05), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
-Maxgap (0.25), //0.O5
-Maxgap1 (0.667), //0.2 //0.02
+Maxgap (0.05), //
+Maxgap1 (0.02), //0.2
 Maxgap2 (0.05), //0.2
-maxgap3 (0.09),
-maxgap4 (0.26),
 
 MinProfit (0.00625),
-smallbaseProfit (0.03), //0.035 //0.19 //0.02 //0.1
+smallbaseProfit (0.1), //0.035 //0.19 //0.02
 SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04375), //after 10 pips start trail of 8 pips //0.09375
@@ -89,8 +88,8 @@ os1 (0.0133), //0.03 - offset
 os2 (0.01),
 os3 (0.0133), // 2$ - 0.133 precent 
 
-PForDay (1500), //1500 //1950 //100 //800
-LForDay (-200), //-1100 //-500 //-50
+PForDay (400), //1500 //1950 //100 //800
+LForDay (-100), //-1100 //-500 //-50
 
 //Donchian 
 DonchianLength (20), 
