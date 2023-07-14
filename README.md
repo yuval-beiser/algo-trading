@@ -10,3 +10,10 @@ reversal-gold-5min-29-6-23-v2
 remove time 
 remove scale in - twice - long and short 
 scale the first buy/sell from 1 to 3 
+
+
+
+TIME | PROFIT-FACTOR | NET | PERCENTAGE 
+2 
+5 1.5 1300 56%
+15 
