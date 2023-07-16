@@ -1,4 +1,3 @@
-// vars
 vars:
 shortStop (9999999),
 longStop (-9999999),
@@ -17,6 +16,7 @@ ema2preFast (0),
 ema2Fast (0),
 ema2Slow (0),
 ema2verySlow (0),
+ema2mid (0),
 rsiSlow(0),
 rsiFast(0),
 AvgVolumeLength(50), //50
@@ -173,6 +173,9 @@ low5 (0),
 high9 (0),
 low9 (0),
 
+//exit
+lastExitPrice (0),
+
 //stop
 startlongSL(maximumloss),
 updatedlongSL(maximumloss),
@@ -180,4 +183,3 @@ startshortSL (maximumloss),
 updatedshortSL(maximumloss),
 longSL (0),
 shortSL (0);
-
