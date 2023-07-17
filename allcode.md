@@ -519,7 +519,7 @@ Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
 
 //Exit
-lastExitPrice = ExitPrice (1); //Assign a value, indicating the exit price of the most recently closed position. 1 - the last position closed (one position back);
+//lastExitPrice = ExitPrice (1); //Assign a value, indicating the exit price of the most recently closed position. 1 - the last position closed (one position back);
 
 
 //PL for a day
@@ -1318,10 +1318,10 @@ if close cross below emaFast
  then selldbg = selldbg + "A" else selldbg = selldbg  + "X" ;
 }
 
-{
+
 if marketposition = 0  
-//and
-//ELDateToString(date) = "06/14/2023" //and symbol = "soxs" //and Time = 1300
+and
+ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
 //and (close cross over emaFast  or close cross below emaFast )
 then
 //Long Prints - but No position
@@ -1329,7 +1329,11 @@ print ( "MOMTEST  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no posit
  ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
  "     ","bar=", BarNumber,
 "entryprice=","xxxx.xx", 
-"close=", close, "shortStop =", shortStop  ,
+"close=", close, 
+"longStop =", longStop ,
+"lastExitPrice =", lastExitPrice ,
+"shortStop =", shortStop  ,
+
 "high5=", high5, "low5=", low5,
 "S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
 "EHLOCdownband =", EHLOCdownband ,
@@ -1355,20 +1359,19 @@ print ( "MOMTEST  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no posit
  "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-end;
-}
 
-{
+
 //long position prints
 if marketposition = 1 
-//and ELDateToString(date) = "06/14/2023" //and symbol = "soxs" //and Time = 1300
+and ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
 then 
 print ( "MOMTEST   > symbol=" , symbol," ",  "in long", "      "
 ,ELDateToString(date),"Time=", time,"buydbg=", buydbg, "     ","bar=", BarNumber,
 "entryprice=",entryprice, 
 "close=", close, 
-"shortStop =", shortStop  ,
 "longStop =", longStop ,
+"lastExitPrice =", lastExitPrice ,
+"shortStop =", shortStop  ,
 "high5=", high5, "low5=", low5,
 "S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
 "EHLOCdownband =", EHLOCdownband ,
@@ -1394,7 +1397,7 @@ print ( "MOMTEST   > symbol=" , symbol," ",  "in long", "      "
  "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-}
+
 
 {
 //short position prints       
@@ -1432,3 +1435,4 @@ print ("MOMTEST  > symbol=" , symbol," ", "in short","     ", ELDateToString(dat
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 }
+
