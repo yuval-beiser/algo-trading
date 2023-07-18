@@ -1,3 +1,5 @@
+Code in #C for Ninja trade
+
 // input 
 
 // vars
