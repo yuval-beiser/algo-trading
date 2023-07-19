@@ -13,6 +13,7 @@ then
 
 emaFast = XAverage(close,FastLength);
 emaMid = XAverage(close,MidLength);
+emaMid30 = XAverage(close,MidLength1);
 emaSlow = XAverage(close,SlowLength);
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
@@ -188,7 +189,7 @@ Zscore = (Ratio - MeanRatio) / DevRatio ;
 }
 
 //Exit
-lastExitPrice = ExitPrice (1); //Assign a value, indicating the exit price of the most recently closed position. 1 - the last position closed (one position back);
+//lastExitPrice = ExitPrice (1); //Assign a value, indicating the exit price of the most recently closed position. 1 - the last position closed (one position back);
 
 
 //PL for a day

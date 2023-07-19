@@ -3,6 +3,7 @@ Inputs:
 maximumloss(80), //120
 FastLength(9),
 MidLength(20),
+MidLength1(30),
 SlowLength(50),
 length (5),
 VerySlowLength (200),
@@ -38,17 +39,18 @@ MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
 Mingap (0.05), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
-Maxgap (0.25), //0.O5
-Maxgap1 (0.667), //0.2 //0.02
+Maxgap (0.12), //0.O5
+Maxgap1 (0.2), //0.2 //0.02
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
 maxgap4 (0.26),
 
 MinProfit (0.00625),
-smallbaseProfit (0.03), //0.035 //0.19 //0.02 //0.1
+smallbaseProfit (0.2), //0.035 //0.19 //0.02 //0.1 //0.5
+smallbaseProfit1 (0.2), //0.035 //0.19 //0.02 //0.1 //0.5
 SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 SmallMinProfit1 (0.05), 
-largeMinProfit (0.04375), //after 10 pips start trail of 8 pips //0.09375
+largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
 SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
 SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
 MinProfitforadd (0.01),
@@ -153,6 +155,7 @@ emaVerySlow (0),
 smaSlow(0),
 emaSlow (0),
 emaMid (0),
+emaMid30 (0),
 emaFast(0),
 emafast1 (0),
 demafast (0),
@@ -344,6 +347,7 @@ then
 
 emaFast = XAverage(close,FastLength);
 emaMid = XAverage(close,MidLength);
+emaMid30 = XAverage(close,MidLength1);
 emaSlow = XAverage(close,SlowLength);
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
@@ -533,19 +537,19 @@ PLTarget = Netprofit - NetProf;
 
 if marketposition = 0 //Conditions Entry Long
 and
-(
-(PLTarget < PForDay) and (PLTarget > LForDay) //1
-)  
-and
 //(
-//(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
-//)
+//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+//)  
 //and
+(
+(Time > 1500.00) or (Time < 1400.00)
+)
+and
 close > Open //3
 //and
 //(close-open) >(close[1]-open[1])* 1.3
 and
-close > high5
+close > high9
 //and
 //low5 < emaVerySlow *
 //and
@@ -559,20 +563,28 @@ and
 Close [1] > emaverySlow and Close [2] > emaverySlow 
 )
 }
-and
-close > emaMid //20
+//and
+//(
+//(close cross above emaFast) or (close cross above emaMid) or (close cross above emaVerySlow) //20
+//)
 and
 close > emaverySlow * (1 + os3 /100)  //200
 
 //and
-//emaMid > emaVerySlow
+//emaMid cross above emaVerySlow
 
 //and
 //emaMid >= emaverySlow * (1+Mingap/100) //from 10 
 //and
 //emaMid <= emaverySlow * (1+Maxgap/100) //*
-and
-close <= emaverySlow * (1+Maxgap1/100) //*
+//and ***
+//close <= emaverySlow * (1+Maxgap1/100) //*
+//and
+//emaMid > emaVerySlow
+//and **
+//emaMid <= emaverySlow * (1+Maxgap/100) //*
+//and **
+//atr < 15
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -893,7 +905,6 @@ end;
 
 
 
-
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
 then
@@ -933,18 +944,33 @@ end;
 //close 2st long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallbaseProfit 
+(close/entryprice-1)*100 >= SmallbaseProfit1 
 and
 barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
 and
-Close < longStop * (1-os1/100)
-and
-close > lastExitPrice 
+close cross below emaMid30 
+//and
+//close > lastExitPrice 
 Then
 begin
-Sell longbuyingPower1 Shares Next Bar at Market;
+Sell Next Bar at Market;
 end;
 
+
+{
+//close long position when cross above ema200
+if marketposition = 1 //there is long position open
+//and
+//(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+close cross below emaVerySlow
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 
 {
 //close 2 out long position after cross with stop
@@ -978,16 +1004,8 @@ Sell longbuyingPower1 Shares Next Bar at Market;
 end;
 }
 
-{
-//close long position when cross above ema200
-if marketposition = 1 //there is long position open
-and
-close cross below emaVerySlow * (1-os2/100)
-Then
-begin
-Sell Next Bar at Market;
-end;
-}
+
+
 
 {
 //close long position when cross below min of 5 open-close
@@ -1237,7 +1255,16 @@ then
 begin
 buytocover next bar at market;
 end;
+
+//close short position at the EOD
+if marketposition = 1
+and Time = 2300.00 
+then
+begin
+sell next bar at market;
+end;
 }
+
 
 //SetProfitTarget;
 if marketposition = 1

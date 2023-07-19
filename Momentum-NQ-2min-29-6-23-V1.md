@@ -1,18 +1,18 @@
 if marketposition = 0 //Conditions Entry Long
 and
-(
-(PLTarget < PForDay) and (PLTarget > LForDay) //1
-)  
-and
 //(
-//(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
-//)
+//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+//)  
 //and
+(
+(Time > 1500.00) or (Time < 1400.00)
+)
+and
 close > Open //3
 //and
 //(close-open) >(close[1]-open[1])* 1.3
 and
-close > high5
+close > high9
 //and
 //low5 < emaVerySlow *
 //and
@@ -26,20 +26,28 @@ and
 Close [1] > emaverySlow and Close [2] > emaverySlow 
 )
 }
-and
-close > emaMid //20
+//and
+//(
+//(close cross above emaFast) or (close cross above emaMid) or (close cross above emaVerySlow) //20
+//)
 and
 close > emaverySlow * (1 + os3 /100)  //200
 
 //and
-//emaMid > emaVerySlow
+//emaMid cross above emaVerySlow
 
 //and
 //emaMid >= emaverySlow * (1+Mingap/100) //from 10 
 //and
 //emaMid <= emaverySlow * (1+Maxgap/100) //*
-and
-close <= emaverySlow * (1+Maxgap1/100) //*
+//and ***
+//close <= emaverySlow * (1+Maxgap1/100) //*
+//and
+//emaMid > emaVerySlow
+//and **
+//emaMid <= emaverySlow * (1+Maxgap/100) //*
+//and **
+//atr < 15
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -360,7 +368,6 @@ end;
 
 
 
-
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
 then
@@ -400,18 +407,33 @@ end;
 //close 2st long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallbaseProfit 
+(close/entryprice-1)*100 >= SmallbaseProfit1 
 and
 barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
 and
-Close < longStop * (1-os1/100)
-and
-close > lastExitPrice 
+close cross below emaMid30 
+//and
+//close > lastExitPrice 
 Then
 begin
-Sell longbuyingPower1 Shares Next Bar at Market;
+Sell Next Bar at Market;
 end;
 
+
+{
+//close long position when cross above ema200
+if marketposition = 1 //there is long position open
+//and
+//(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+close cross below emaVerySlow
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 
 {
 //close 2 out long position after cross with stop
@@ -445,16 +467,8 @@ Sell longbuyingPower1 Shares Next Bar at Market;
 end;
 }
 
-{
-//close long position when cross above ema200
-if marketposition = 1 //there is long position open
-and
-close cross below emaVerySlow * (1-os2/100)
-Then
-begin
-Sell Next Bar at Market;
-end;
-}
+
+
 
 {
 //close long position when cross below min of 5 open-close
@@ -704,7 +718,16 @@ then
 begin
 buytocover next bar at market;
 end;
+
+//close short position at the EOD
+if marketposition = 1
+and Time = 2300.00 
+then
+begin
+sell next bar at market;
+end;
 }
+
 
 //SetProfitTarget;
 if marketposition = 1
@@ -719,3 +742,4 @@ then
 begin
 SetStopLoss(shortSL);
 end;
+
