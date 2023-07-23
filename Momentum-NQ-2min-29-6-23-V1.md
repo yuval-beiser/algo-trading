@@ -5,7 +5,7 @@ and
 //)  
 //and
 (
-(Time > 1500.00) or (Time < 1400.00)
+(Time > 600.00) and (Time < 2200.00) //long time
 )
 and
 close > Open //3
@@ -38,16 +38,18 @@ close > emaverySlow * (1 + os3 /100)  //200
 
 //and
 //emaMid >= emaverySlow * (1+Mingap/100) //from 10 
-//and
-//emaMid <= emaverySlow * (1+Maxgap/100) //*
-//and ***
-//close <= emaverySlow * (1+Maxgap1/100) //*
+and
+emaMid <= emaverySlow * (1+Maxgap/100) //*
+and 
+close <= emaverySlow * (1+Maxgap1/100) //*
 //and
 //emaMid > emaVerySlow
-//and **
-//emaMid <= emaverySlow * (1+Maxgap/100) //*
-//and **
-//atr < 15
+and 
+emaMid <= emaverySlow * (1+Maxgap/100) //*
+and 
+atr < AtrMin
+and
+close > lowD (0) * (1+Mingap/100)
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -73,8 +75,9 @@ close > emaverySlow * (1 + os3 /100)  //200
 //(
 //(close cross above emaFast) or (close [1] cross above emaFast[1]) or  (close [2] cross above emaFast[2])
 //)
-//and
-//Histogram > 0
+and
+Histogram > 0
+
 
 then 
 begin
@@ -167,31 +170,52 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-{
+
 if         
 marketposition = 0 //Conditions Entry short
-and
+//and
 //(
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
-//and
-//(
-//(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
-//)
-//and
+and
+(
+(Time < 600.00) and (Time > 2200.00) //short time
+)
+and
 close < Open //3
 //and
 //(close-open) >(close[1]-open[1])* 1.3
 and
-close < low5
+close < low9
 //and
 //high5 > emaVerySlow
 //and
 //close < minlist (close [1], open [1]) //low
 and
-close < emaMid //20
+close < emaverySlow * (1 - os3 /100)  //200
+
+//and
+//emaMid cross above emaVerySlow
+
+//and
+//emaMid >= emaverySlow * (1+Mingap/100) //from 10 
 and
-close < emaverySlow * (1 - os3 /100) // ema 200 - with offset of 2$ 
+emaMid >= emaverySlow * (1-Maxgap/100) //*
+and 
+close >= emaverySlow * (1-Maxgap1/100) //*
+//and
+//emaMid > emaVerySlow
+and 
+emaMid >= emaverySlow * (1-Maxgap/100) //*
+and 
+atr < AtrMin
+and
+
+close < highD (0) * (1-Mingap/100)
+
+//close < highD (0) * (1-Mingap/100)
+
+//and
 //and
 //emaMid < emaVerySlow
 //and
@@ -222,14 +246,15 @@ close < emaverySlow * (1 - os3 /100) // ema 200 - with offset of 2$
 //
 //(close cross below emaFast) or (close [1] cross below emaFast[1]) or  (close [2] cross below emaFast[2])
 //)
-//and
-//Histogram < 0
+and
+Histogram < 0
+
 
 then 
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
-}
+
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -278,6 +303,7 @@ then
 begin
 sellshort shortbuyingPower1 Shares next bar at market  ;
 end;
+}
 
 {
 if marketposition = -1 //Scale In x3 - Conditions Add Entry short
@@ -311,8 +337,6 @@ then
 begin
 sellshort shortbuyingPower2 Shares next bar at market  ;
 end;
-}
-
 }
 
 {
@@ -390,6 +414,7 @@ longStop = low[1];
 end;
 end;
 
+
 //close 1st long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
@@ -400,14 +425,15 @@ and
 Close < longStop * (1-os1/100)
 Then
 begin
+crossind = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
 end;
 
 
-//close 2st long position with trail start moving cross back
+//close long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallbaseProfit1 
+(close/entryprice-1)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 //and
@@ -421,6 +447,24 @@ begin
 Sell Next Bar at Market;
 end;
 
+{
+//close long position when cross 200 after more then 10 bars
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+barssinceentry > 20
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross below emaVerySlow 
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 
 {
 //close long position when cross above ema200
@@ -618,8 +662,44 @@ and
 Close > shortStop * (1+os1/100)
 Then
 begin
+buytocover shortbuyingPower1 shares Next Bar at Market;
+end;
+
+//close 2st long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above emaMid30 
+//and
+//close > lastExitPrice 
+Then
+begin
 buytocover Next Bar at Market;
 end;
+
+{
+//close 2st long position with trail start moving cross back
+if marketposition = -1 //there is long position open
+and
+(1-Close/entryprice)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above emaFast 
+//and
+//close > lastExitPrice 
+Then
+begin
+buytocover Next Bar at Market;
+end;
+}
 
 {
 //close short position when cross above ema200
@@ -677,6 +757,7 @@ begin
 buytocover Next Bar at Market;
 end;
 }
+
 {
 //close short position if reach down boll 21
 if marketposition = -1
@@ -733,13 +814,12 @@ end;
 if marketposition = 1
 then
 begin
-SetStopLoss(longSL);
+SetStopLoss(maximumloss);
 end;
 
 
 if marketposition = -1
 then
 begin
-SetStopLoss(shortSL);
+SetStopLoss(maximumloss);
 end;
-

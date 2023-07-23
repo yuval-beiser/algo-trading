@@ -177,6 +177,8 @@ low9 (0),
 //exit
 lastExitPrice (0),
 
+crossind (false),
+
 //stop
 startlongSL(maximumloss),
 updatedlongSL(maximumloss),

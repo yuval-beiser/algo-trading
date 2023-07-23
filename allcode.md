@@ -1,6 +1,6 @@
 //@version=31323-2
 Inputs:
-maximumloss(80), //120
+maximumloss(260), //120 //160
 FastLength(9),
 MidLength(20),
 MidLength1(30),
@@ -37,21 +37,23 @@ MinFromLHentry (0.15),
 MinKeltnerCross (0.08),
 MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
-Mingap (0.05), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
+Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
 Maxgap (0.12), //0.O5
-Maxgap1 (0.2), //0.2 //0.02
+Maxgap1 (0.2), //0.2 //0.02 //0.2
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
 maxgap4 (0.26),
+maxgap5 (0.15),
 
 MinProfit (0.00625),
-smallbaseProfit (0.2), //0.035 //0.19 //0.02 //0.1 //0.5
-smallbaseProfit1 (0.2), //0.035 //0.19 //0.02 //0.1 //0.5
+smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5
+smallbaseProfit1 (0.1), //0.035 //0.19 //0.02 //0.1 //0.5
 SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
 SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
+Smallbaseloss (0.03),
 SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
 MinProfitforadd (0.01),
 MaxProfitForAdd (0.1),
@@ -324,6 +326,8 @@ low9 (0),
 //exit
 lastExitPrice (0),
 
+crossind (false),
+
 //stop
 startlongSL(maximumloss),
 updatedlongSL(maximumloss),
@@ -357,11 +361,11 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2verySlow = XAverage(close,VerySlowLength)of data2;
 //ema2mid = XAverage(close,MidLength) of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 2 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-longbuyingPower1 = 1; // scale in-out
+longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+longbuyingPower1 = 2; // scale in-out
 longbuyingPower2 = 3;
-shortbuyingPower = 2 ; //3
-shortbuyingPower1 = 1 ; // scale in-out
+shortbuyingPower = 4; //3
+shortbuyingPower1 = 2 ; // scale in-out
 shortbuyingPower2 = 3 ;
 
 
@@ -489,12 +493,11 @@ STBreak = THign  + (TLow - THign)* STpct;
 high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
-high9 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
-open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9] );
+high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
 
 low9 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
-open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9] );
-
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
@@ -542,7 +545,7 @@ and
 //)  
 //and
 (
-(Time > 1500.00) or (Time < 1400.00)
+(Time > 600.00) and (Time < 2200.00) //long time
 )
 and
 close > Open //3
@@ -575,16 +578,18 @@ close > emaverySlow * (1 + os3 /100)  //200
 
 //and
 //emaMid >= emaverySlow * (1+Mingap/100) //from 10 
-//and
-//emaMid <= emaverySlow * (1+Maxgap/100) //*
-//and ***
-//close <= emaverySlow * (1+Maxgap1/100) //*
+and
+emaMid <= emaverySlow * (1+Maxgap/100) //*
+and 
+close <= emaverySlow * (1+Maxgap1/100) //*
 //and
 //emaMid > emaVerySlow
-//and **
-//emaMid <= emaverySlow * (1+Maxgap/100) //*
-//and **
-//atr < 15
+and 
+emaMid <= emaverySlow * (1+Maxgap/100) //*
+and 
+atr < AtrMin
+and
+close > lowD (0) * (1+Mingap/100)
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -610,8 +615,9 @@ close > emaverySlow * (1 + os3 /100)  //200
 //(
 //(close cross above emaFast) or (close [1] cross above emaFast[1]) or  (close [2] cross above emaFast[2])
 //)
-//and
-//Histogram > 0
+and
+Histogram > 0
+
 
 then 
 begin
@@ -704,31 +710,52 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-{
+
 if         
 marketposition = 0 //Conditions Entry short
-and
+//and
 //(
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
-//and
-//(
-//(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) //2
-//)
-//and
+and
+(
+(Time < 600.00) and (Time > 2200.00) //short time
+)
+and
 close < Open //3
 //and
 //(close-open) >(close[1]-open[1])* 1.3
 and
-close < low5
+close < low9
 //and
 //high5 > emaVerySlow
 //and
 //close < minlist (close [1], open [1]) //low
 and
-close < emaMid //20
+close < emaverySlow * (1 - os3 /100)  //200
+
+//and
+//emaMid cross above emaVerySlow
+
+//and
+//emaMid >= emaverySlow * (1+Mingap/100) //from 10 
 and
-close < emaverySlow * (1 - os3 /100) // ema 200 - with offset of 2$ 
+emaMid >= emaverySlow * (1-Maxgap/100) //*
+and 
+close >= emaverySlow * (1-Maxgap1/100) //*
+//and
+//emaMid > emaVerySlow
+and 
+emaMid >= emaverySlow * (1-Maxgap/100) //*
+and 
+atr < AtrMin
+and
+
+close < highD (0) * (1-Mingap/100)
+
+//close < highD (0) * (1-Mingap/100)
+
+//and
 //and
 //emaMid < emaVerySlow
 //and
@@ -759,14 +786,15 @@ close < emaverySlow * (1 - os3 /100) // ema 200 - with offset of 2$
 //
 //(close cross below emaFast) or (close [1] cross below emaFast[1]) or  (close [2] cross below emaFast[2])
 //)
-//and
-//Histogram < 0
+and
+Histogram < 0
+
 
 then 
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
-}
+
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -815,6 +843,7 @@ then
 begin
 sellshort shortbuyingPower1 Shares next bar at market  ;
 end;
+}
 
 {
 if marketposition = -1 //Scale In x3 - Conditions Add Entry short
@@ -848,8 +877,6 @@ then
 begin
 sellshort shortbuyingPower2 Shares next bar at market  ;
 end;
-}
-
 }
 
 {
@@ -927,6 +954,7 @@ longStop = low[1];
 end;
 end;
 
+
 //close 1st long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
@@ -937,14 +965,15 @@ and
 Close < longStop * (1-os1/100)
 Then
 begin
+crossind = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
 end;
 
 
-//close 2st long position with trail start moving cross back
+//close long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallbaseProfit1 
+(close/entryprice-1)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 //and
@@ -958,6 +987,24 @@ begin
 Sell Next Bar at Market;
 end;
 
+{
+//close long position when cross 200 after more then 10 bars
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+barssinceentry > 20
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross below emaVerySlow 
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 
 {
 //close long position when cross above ema200
@@ -1155,8 +1202,44 @@ and
 Close > shortStop * (1+os1/100)
 Then
 begin
+buytocover shortbuyingPower1 shares Next Bar at Market;
+end;
+
+//close 2st long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above emaMid30 
+//and
+//close > lastExitPrice 
+Then
+begin
 buytocover Next Bar at Market;
 end;
+
+{
+//close 2st long position with trail start moving cross back
+if marketposition = -1 //there is long position open
+and
+(1-Close/entryprice)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above emaFast 
+//and
+//close > lastExitPrice 
+Then
+begin
+buytocover Next Bar at Market;
+end;
+}
 
 {
 //close short position when cross above ema200
@@ -1214,6 +1297,7 @@ begin
 buytocover Next Bar at Market;
 end;
 }
+
 {
 //close short position if reach down boll 21
 if marketposition = -1
@@ -1270,15 +1354,16 @@ end;
 if marketposition = 1
 then
 begin
-SetStopLoss(longSL);
+SetStopLoss(maximumloss);
 end;
 
 
 if marketposition = -1
 then
 begin
-SetStopLoss(shortSL);
+SetStopLoss(maximumloss);
 end;
+
 
 {
 if marketposition = 0 then 
@@ -1345,7 +1430,7 @@ if close cross below emaFast
  then selldbg = selldbg + "A" else selldbg = selldbg  + "X" ;
 }
 
-
+{
 if marketposition = 0  
 and
 ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
@@ -1386,8 +1471,9 @@ print ( "MOMTEST  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no posit
  "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
+}
 
-
+{
 //long position prints
 if marketposition = 1 
 and ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
@@ -1424,7 +1510,7 @@ print ( "MOMTEST   > symbol=" , symbol," ",  "in long", "      "
  "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-
+}
 
 {
 //short position prints       
@@ -1462,4 +1548,5 @@ print ("MOMTEST  > symbol=" , symbol," ", "in short","     ", ELDateToString(dat
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 }
+
 
