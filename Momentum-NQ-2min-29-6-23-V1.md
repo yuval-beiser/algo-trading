@@ -205,8 +205,8 @@ and
 close >= emaverySlow * (1-Maxgap1/100) //*
 //and
 //emaMid > emaVerySlow
-and 
-emaMid >= emaverySlow * (1-Maxgap/100) //*
+//and 
+//emaMid >= emaverySlow * (1-Maxgap/100) //*
 and 
 atr < AtrMin
 and
@@ -823,3 +823,4 @@ then
 begin
 SetStopLoss(maximumloss);
 end;
+
