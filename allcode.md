@@ -44,7 +44,8 @@ Maxgap1 (0.2), //0.2 //0.02 //0.2
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
 maxgap4 (0.26),
-maxgap5 (0.15),
+maxgap5 (0.13),
+
 
 MinProfit (0.00625),
 smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5
@@ -590,6 +591,9 @@ and
 atr < AtrMin
 and
 close > lowD (0) * (1+Mingap/100)
+and
+DonchianDown > DonchianUp * (1-maxgap5/100)
+
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -710,7 +714,7 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-
+{
 if         
 marketposition = 0 //Conditions Entry short
 //and
@@ -794,7 +798,7 @@ then
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
-
+}
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short

@@ -50,6 +50,9 @@ and
 atr < AtrMin
 and
 close > lowD (0) * (1+Mingap/100)
+and
+DonchianDown > DonchianUp * (1-maxgap5/100)
+
 //and
 //close < low5 * (1+maxgap4/100) *
 //and
@@ -170,7 +173,7 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-
+{
 if         
 marketposition = 0 //Conditions Entry short
 //and
@@ -254,7 +257,7 @@ then
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
-
+}
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
