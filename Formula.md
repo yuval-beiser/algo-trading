@@ -1,4 +1,3 @@
-
        if marketposition = 0
 then
 [IntrabarOrderGeneration = false] //trade intra-bar
@@ -80,3 +79,15 @@ then
 begin
 shortStop = 9999999;
 end;
+
+//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
+if DATE <> DATE[1] 
+then 
+begin
+NetProf = NetProf + NetProfit - NetProf[1];
+end;
+PLTarget = Netprofit - NetProf;
+
+//calc a switch for identify long or short (for the connection with VXX)
+if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
+is_long_symbol = False;

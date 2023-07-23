@@ -34,8 +34,8 @@ MinEMAGap (0.16), // 11.2.23, Increased from 0.16 for filtering false cross // d
 MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 1.5 just for testing
 Mingap (1),
 MinFromCloseD1 (1),
-SmallMinProfit (0.03), //1.4 //1.5 //0.1
-smallbaseProfit (0.2),
+SmallMinProfit (0.1), //1.4 //1.5 //0.1 //0.03
+smallbaseProfit (0.05), //0.2
 LargeMinProfit (2.5),
 SmallTrail (0.01875), //0.04375 with stochastic //0.00625 //0.3
 largeTrail (1.6),
@@ -73,7 +73,7 @@ os3 (0.0133), // 2$ - 0.133 precent
 
 
 //BB
-BStedDev1(1),
+BStedDev1(1.5),
 BStedDev2(2),
 BStedDev3(3),
 BUpperBand(200),
@@ -287,6 +287,18 @@ begin
 shortStop = 9999999;
 end;
 
+//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
+if DATE <> DATE[1] 
+then 
+begin
+NetProf = NetProf + NetProfit - NetProf[1];
+end;
+PLTarget = Netprofit - NetProf;
+
+//calc a switch for identify long or short (for the connection with VXX)
+if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
+is_long_symbol = False;
+
 
 {
 if marketposition = 0 then 
@@ -392,20 +404,9 @@ print ( "REV  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position"
 
 //end;
 
-//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
-end;
-PLTarget = Netprofit - NetProf;
 
 
 // CONDITIONS FOR OPEN LONG POSITION 
-
-//calc a switch for identify long or short (for the connection with VXX)
-if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
-is_long_symbol = False;
 
 //Conditions Entry Long
 if marketposition = 0  
@@ -542,7 +543,24 @@ end;
 
 
 // END - EXIT LONG BASE ON CROSS PREVEVIOS LOW -------------------------------------------------------
-
+{
+//close 2st long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross below emaMid 
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 
 
 // START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
@@ -552,13 +570,13 @@ then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
 
-{
+
 //close short position with trail start moving after minimum profit
 if marketposition = -1 //there is short position open
 and
 (1-Close/entryprice)*100 >= SmallMinProfit 
-//and
-//barssinceentry <= 1
+and
+barssinceentry <= 1
 //and
 //AngleShort = False
 //and
@@ -570,7 +588,7 @@ trailProfit = Lowest(low , Barssinceentry);
 trailExit = trailProfit + valuePercentTrail; //          
 buytocover next bar at trailExit  stop;
 end;
-}
+
 
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
@@ -901,6 +919,7 @@ then
 begin
 SetStopLoss(shortSL);
 end;
+
 
 
 
