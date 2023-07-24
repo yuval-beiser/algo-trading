@@ -539,11 +539,11 @@ PLTarget = Netprofit - NetProf;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
+//and
 //(
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
-//and
+and
 (
 (Time > 600.00) and (Time < 2200.00) //long time
 )
@@ -584,8 +584,6 @@ and
 close <= emaverySlow * (1+Maxgap1/100) //*
 //and
 //emaMid > emaVerySlow
-and 
-emaMid <= emaverySlow * (1+Maxgap/100) //*
 and 
 atr < AtrMin
 and
@@ -1548,4 +1546,5 @@ print ("MOMTEST  > symbol=" , symbol," ", "in short","     ", ELDateToString(dat
   "MinGapSlowToMid=", MinGapSlowToMid,  
 "TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 }
+
 
