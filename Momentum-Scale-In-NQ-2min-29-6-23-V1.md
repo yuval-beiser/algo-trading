@@ -1,13 +1,12 @@
-
-	if marketposition = 0 //Conditions Entry Long
-	and
+if marketposition = 0 //Conditions Entry Long
+	//and
 	//(
 	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
 	//)  
 	//and
-	(
-	(Time > 600.00) and (Time < 2200.00) //long time
-	)
+	//(
+	//(Time > 600.00) and (Time < 2200.00) //long time
+	//)
 	and
 	close > Open //3
 	//and
@@ -46,7 +45,7 @@
 	//and
 	//emaMid > emaVerySlow
 		and 
-	atr < AtrMin
+	atr < Atrmax
 	and
 	close > lowD (0) * (1+Mingap/100)
 	and
@@ -394,12 +393,19 @@
 
 
 
-	//close short position with trail start moving after the first bar from entry
+	//close short position with trail (based on low prev) start moving after the first bar from entry
 	if marketposition = 0
 	then
 	begin
 	longStop = -9999999;
 	end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind = False;
+end;
 
 	if marketposition = 1 //there is long position open
 	and
@@ -435,7 +441,7 @@
 	//close long position with trail start moving cross back
 	if marketposition = 1 //there is long position open
 	and
-	(close/entryprice-1)*100 >= SmallbaseProfit 
+	(close/entryprice-1)*100 >= SmallbaseProfit1 
 	and
 	barssinceentry > 1
 	//and
@@ -444,10 +450,31 @@
 	close cross below emaMid30 
 	//and
 	//close > lastExitPrice 
+	and
+	crossind = true
 	Then
 	begin
 	Sell Next Bar at Market;
 	end;
+	
+	
+	//close long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+close cross below entryprice * 1.0067
+and
+barssinceentry > 5
+//and
+//Close < longStop * (1-os1/100)
+and
+crossind = true
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+
 
 	{
 	//close long position when cross 200 after more then 10 bars
@@ -825,5 +852,4 @@
 	begin
 	SetStopLoss(maximumloss);
 	end;
-
 

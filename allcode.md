@@ -1,6 +1,6 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(260), //120 //160
+	maximumloss(130), //120 //160
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
@@ -49,7 +49,7 @@
 
 	MinProfit (0.00625),
 	smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5
-	smallbaseProfit1 (0.1), //0.035 //0.19 //0.02 //0.1 //0.5
+	smallbaseProfit1 (0.02), //0.035 //0.19 //0.02 //0.1 //0.5
 	SmallMinProfit (0.1), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
 	SmallMinProfit1 (0.05), 
 	largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
@@ -77,7 +77,7 @@
 	SQQQTQQQGap(0.15),
 	AtrLength (14),
 	AtrMin(15), //0.6
-	Atrmax (1.8),
+	Atrmax (15),
 	ANGLE_MA1( 8), //25
 	ANGLE_MA2( 60 ),
 	ANGLE_MA3( 70 ), 
@@ -362,8 +362,8 @@
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
 	adxcalc = ADX(adxperiod);
-	longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 2; // scale in-out
+	longbuyingPower = 2 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 3;
 	shortbuyingPower = 4; //3
 	shortbuyingPower1 = 2 ; // scale in-out
@@ -540,14 +540,14 @@
 
 
 	if marketposition = 0 //Conditions Entry Long
-	and
+	//and
 	//(
 	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
 	//)  
 	//and
-	(
-	(Time > 600.00) and (Time < 2200.00) //long time
-	)
+	//(
+	//(Time > 600.00) and (Time < 2200.00) //long time
+	//)
 	and
 	close > Open //3
 	//and
@@ -586,7 +586,7 @@
 	//and
 	//emaMid > emaVerySlow
 		and 
-	atr < AtrMin
+	atr < Atrmax
 	and
 	close > lowD (0) * (1+Mingap/100)
 	and
@@ -934,12 +934,19 @@
 
 
 
-	//close short position with trail start moving after the first bar from entry
+	//close short position with trail (based on low prev) start moving after the first bar from entry
 	if marketposition = 0
 	then
 	begin
 	longStop = -9999999;
 	end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind = False;
+end;
 
 	if marketposition = 1 //there is long position open
 	and
@@ -975,7 +982,7 @@
 	//close long position with trail start moving cross back
 	if marketposition = 1 //there is long position open
 	and
-	(close/entryprice-1)*100 >= SmallbaseProfit 
+	(close/entryprice-1)*100 >= SmallbaseProfit1 
 	and
 	barssinceentry > 1
 	//and
@@ -984,10 +991,31 @@
 	close cross below emaMid30 
 	//and
 	//close > lastExitPrice 
+	and
+	crossind = true
 	Then
 	begin
 	Sell Next Bar at Market;
 	end;
+	
+	
+	//close long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+close cross below entryprice * 1.0067
+and
+barssinceentry > 5
+//and
+//Close < longStop * (1-os1/100)
+and
+crossind = true
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+
 
 	{
 	//close long position when cross 200 after more then 10 bars
@@ -1550,5 +1578,6 @@
 	  "MinGapSlowToMid=", MinGapSlowToMid,  
 	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 	}
+
 
 
