@@ -40,3 +40,11 @@ TIME | PROFIT-FACTOR | NET | PERCENTAGE | Number of trades
 
 2 -  1.71 | 2128 & | 54.5% | 55 
 5 -  1.49 | 817$ | 53.3% | 30
+
+// 25/7/23
+look how to filter the area with no momentum !
+![Alt text](image-1.png)
+![Alt text](image-3.png)
+
+![Alt text](image-7.png)
+![Alt text](image-8.png)

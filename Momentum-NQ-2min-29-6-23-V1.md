@@ -45,7 +45,7 @@ close <= emaverySlow * (1+Maxgap1/100) //*
 //and
 //emaMid > emaVerySlow
 and 
-atr < AtrMin
+atr < AtrMax
 and
 close > lowD (0) * (1+Mingap/100)
 //and
@@ -168,7 +168,7 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-
+{
 if         
 marketposition = 0 //Conditions Entry short
 //and
@@ -206,7 +206,7 @@ close >= emaverySlow * (1-Maxgap1/100) //*
 //and 
 //emaMid >= emaverySlow * (1-Maxgap/100) //*
 and 
-atr < AtrMin
+atr < AtrMax
 and
 
 close < highD (0) * (1-Mingap/100)
@@ -252,7 +252,7 @@ then
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
 end;
-
+}
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -390,12 +390,22 @@ end;
 
 
 
-//close short position with trail start moving after the first bar from entry
+//close long position with trail (based on low prev) start moving after the first bar from entry
+
+//reset longStop 
 if marketposition = 0
 then
 begin
 longStop = -9999999;
 end;
+
+//reset longStop 
+if marketposition = 0
+then
+begin
+crossind = False;
+end;
+
 
 if marketposition = 1 //there is long position open
 and
@@ -424,7 +434,7 @@ Close < longStop * (1-os1/100)
 Then
 begin
 crossind = true;
-Sell longbuyingPower1 Shares Next Bar at Market;
+Sell longbuyingPower1 Shares Next Bar at Market; 
 end;
 
 
@@ -438,6 +448,23 @@ barssinceentry > 1
 //Close < longStop * (1-os1/100)
 and
 close cross below emaMid30 
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+
+//close long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+close cross below entryprice * 1.0067
+and
+barssinceentry > 5
+//and
+//Close < longStop * (1-os1/100)
+and
+crossind = true
 //and
 //close > lastExitPrice 
 Then
@@ -821,3 +848,4 @@ then
 begin
 SetStopLoss(maximumloss);
 end;
+

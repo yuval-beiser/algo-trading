@@ -1,6 +1,6 @@
 //@version=31323-2
 Inputs:
-maximumloss(260), //120 //160
+maximumloss(130), //120 //160
 FastLength(9),
 MidLength(20),
 MidLength1(30),
@@ -75,8 +75,7 @@ adxmin(25),
 vwapLength (20),
 SQQQTQQQGap(0.15),
 AtrLength (14),
-AtrMin(15), //0.6
-Atrmax (1.8),
+Atrmax (15),
 ANGLE_MA1( 8), //25
 ANGLE_MA2( 60 ),
 ANGLE_MA3( 70 ), 
