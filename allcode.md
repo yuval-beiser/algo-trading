@@ -7,7 +7,6 @@ VerySlowLength (200), //number of previous bars for 200 ema calc
 Mingap (0.2),  //minimum gap between close and the low the day in pct
 Maxgap (0.12), //maximum gap between ema 20 and ema 200 in pct 
 Maxgap1 (0.2), //maximum gap between close and ema 200 in pct 
-Mingap (0.2),  //minimum gap between close and the low the day in pct
 SmallMinProfit (0.1), //minimum porfit fot start moving the trail stop in pct
 SmallTrail (0.01875),  //trail stop gap in pct
 AtrLength (14), //number of previous bars for ATR calculation
@@ -25,11 +24,10 @@ vars: //*** Calc Variable ***
 emaVerySlow (0),
 emaMid (0),
 emaMid30 (0),
-atr (0),
-longbuyingPower(0),
-buydbg(""),
-selldbg(""),
-valsdbg(""),
+atr (0), // average true range - average of the 14 prev bars 
+longbuyingPower(0), // size / shares position to buy 
+buydbg(""), // will be use for annotations
+selldbg(""), // will be use for annotation
 
 //macd
 vMacd(0), 
@@ -40,16 +38,15 @@ vDiff(0) ,
 barCount(0), // count from the first bar
 high1stBar(0), // Extreme high from a list 
 low1stBar(0), // Extreme low from a list 
-trailProfit(0),
-SmallTrailStop(SmallTrail ), 
-FastTrailStop(0.34),
-intrabarpersist trailExit(0), // F1 Update on every tick
-valuePercentTrail(0),
-is_long_symbol(true),
+trailProfit(0), // how much Im willing to loss
+SmallTrailStop(SmallTrail ), // range to move the traill stop  
+intrabarpersist trailExit(0), // Check the open,close,high,low on every tick
+valuePercentTrail(0), // calculate the range in index points and not percentage 
+
 
 //PL for a day
-NetProf(0),
-PLTarget(0),
+NetProf(0), // profit/loss for the strategy
+PLTarget(0), // Profit/loss for today
         
 //Macd
 MACDLine (0),
@@ -61,7 +58,7 @@ high9 (0);
 
 // *** Formula ***
 
-[IntrabarOrderGeneration = true] //trade intra-bar
+[IntrabarOrderGeneration = true] //trade intra-bar - check every tick/min. false is for close bar 
 
 emaMid30 = XAverage(close,MidLength); 
 emaverySlow = XAverage(close,VerySlowLength);
@@ -76,52 +73,43 @@ vDiff = vMacd - vMacdAvg ; // Histogram
 atr =  AvgTrueRange (AtrLength);
 
 //high and low level
-high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
-open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
 SignalLine = XAverage(MACDLine, 9); // Signal line is a 9-period EMA of the MACD line
 Histogram = MACDLine - SignalLine;
 
-//PL for a day
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
+//PL for a day - 
+if DATE <> DATE[1] then begin // if today
+NetProf = NetProf + NetProfit - NetProf[1]; // accumulated profit/ loss . NetProfit is saved function
 end;
-PLTarget = Netprofit - NetProf;
+PLTarget = Netprofit - NetProf; // Profit/loss goal fot a day 
 
 //*** Conditions Entry Long ***
 
-if marketposition = 0 
+if marketposition = 0 // no open position
+and( (PLTarget < PForDay) and (PLTarget > LForDay)) //p&l in range for a day limits
 and
-(
-(PLTarget < PForDay) and (PLTarget > LForDay) //p&l for a day limits
-)  
+((Time > 600.00) and (Time < 2200.00)) //long momentum time
 and
-(
-(Time > 600.00) and (Time < 2200.00) //long momentum time
-)
-and
-close > Open //3
+close > Open 
 and
 close > high9
 and
-close > emaverySlow * (1 + os1 /100)  //200
+close > emaverySlow * (1 + os1 /100)  // close cross ema200 + offset
 and
-emaMid <= emaverySlow * (1+Maxgap/100) //*
+emaMid <= emaverySlow * (1+Maxgap/100) //* ema20 <= ema200 till max gap
 and 
-close <= emaverySlow * (1+Maxgap1/100) //*
+close <= emaverySlow * (1+Maxgap1/100) // close <= ema200 till max gap 
 and 
-atr < AtrMax
+atr < AtrMax // we dont want to buy if the market is too flactuated 
 and
-close > lowD (0) * (1+Mingap/100)
+close > lowD (0) * (1+Mingap/100) // close > lowest for today + gap 
 and
-Histogram > 0
-then 
-begin
-buy longbuyingPower Shares next bar at market  ;
+Histogram > 0  // macd is positive -> fast > slow 
+then begin
+buy longbuyingPower Shares next bar at market  ; // buy 2 shares
 end;
 
 //***Exit Conditions***
@@ -129,22 +117,18 @@ end;
 //close long position with trail start moving after small profit 
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
-then 
-begin
-valuePercentTrail = ((entryprice * SmallTrailStop) /100);
-trailProfit = Highest(high , Barssinceentry); 
-trailExit = trailProfit - valuePercentTrail;        
-sell  next bar at trailExit  stop;
+(close/entryprice-1)*100 >= SmallMinProfit  // we want minimun gap for profit - 0.1% 
+then begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100); // calculate the range in index points and not percentage 
+trailProfit = Highest(high , Barssinceentry); // Barssinceentry is how many bars from enrty . Highest calculated the highest from enrty
+trailExit = trailProfit - valuePercentTrail; // when to close position    
+sell next bar at trailExit stop;
 end;
 
 //Set initial stop
-if marketposition = 1
-then
-begin
-SetStopLoss(maximumloss);
+if marketposition = 1 // we have open position
+then begin
+SetStopLoss(maximumloss); // initial stop 
 end;
 
 //*** Prints ***
@@ -152,29 +136,22 @@ if marketposition = 0 then
 
 //Long Prints - No position - build dbug tag
 buydbg= ""; 
-if 
-(
-(PLTarget < PForDay) and (PLTarget > LForDay) 
-)  
- then
- buydbg = buydbg + "1" else buydbg = buydbg + "X" ;
-if 
-(
-(Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) 
-)
- then
- buydbg = buydbg + "2" else buydbg = buydbg + "X" ;
+if ((PLTarget < PForDay) and (PLTarget > LForDay) )  
+ then buydbg = buydbg + "1" 
+ else buydbg = buydbg + "X" ;
+
+if ((Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) )
+ then buydbg = buydbg + "2" 
+ else buydbg = buydbg + "X" ;
+
 if close > Open  then
- buydbg = buydbg + "3" else buydbg = buydbg + "X" ;
+ buydbg = buydbg + "3" 
+ else buydbg = buydbg + "X" ;
 
 
 //no position prints
-if marketposition = 0  
-and
-ELDateToString(date) = "07/13/2023" 
-then
-print ( "MOM  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position","  ",
- ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
+if marketposition = 0  and ELDateToString(date) = "07/13/2023"  then
+print ( "MOM  > symbol=" , symbol," ", "islong=", ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
  "     ","bar=", BarNumber,
 "entryprice=","xxxx.xx", 
 "close=", close, 
@@ -186,9 +163,7 @@ print ( "MOM  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position"
 
 
 //long position prints
-if marketposition = 1 
-and ELDateToString(date) = "07/13/2023" 
-then 
+if marketposition = 1 and ELDateToString(date) = "07/13/2023" then 
 print ( "MOM   > symbol=" , symbol," ",  "in long", "      "
 ,ELDateToString(date),"Time=", time,"buydbg=", buydbg, "     ","bar=", BarNumber,
 "entryprice=",entryprice, 
@@ -198,6 +173,3 @@ print ( "MOM   > symbol=" , symbol," ",  "in long", "      "
 "low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
 "high=", high, "high[1]=", high[1], "high[2]=", High[2],
 "openD0=", OpenD(0), "closeD1=", CloseD(1));
-
-
-
