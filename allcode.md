@@ -2,6 +2,7 @@
 
 Inputs: // *** Parameters ***
 maximumloss(130), //initial stop loss 
+FastLength(9),
 MidLength(30), //number of bars for 30 ema calc
 VerySlowLength (200), //number of previous bars for 200 ema calc
 Mingap (0.2),  //minimum gap between close and the low the day in pct
@@ -18,9 +19,22 @@ LForDay (-200), //maximum loss in usd
 //macd
 macdFastLength( 12 ), 
 macdSlowLength( 26 ), 
-MACDlineLength( 9 ) ;
+MACDlineLength( 9 ) ,
+
+//BB HLOC
+BStedDevHLOC (2), 
+BUpperBandHLOC(21), //39
+BLowerBandHLOC(21), //39
+
+//BB
+BStedDev1(1),
+BStedDev2(2), 
+BStedDev3(3),
+BUpperBand(200),
+BLowerBand(200);
 
 vars: //*** Calc Variable ***
+emaFast(0),
 emaVerySlow (0),
 emaMid (0),
 emaMid30 (0),
@@ -34,6 +48,28 @@ vMacd(0),
 vMacdAvg(0), 
 vDiff(0) ,
 
+//BB HLOC
+vBubHLOC (0),
+vBlbHLOC (0),
+HLOC  (0),
+vBmbHLOC (0),
+emaHLOC (0),
+stdHLOC (0),
+EHLOCupband  (0),
+EHLOCdownband  (0),
+EHLOCmidband (0),
+EHLOCqtr1band (0),
+EHLOCqtr3band (0),
+
+//BB
+vStd(0),
+vBub1(0),
+vBlb1(0),
+vBub2(0),
+vBlb2(0),
+vBub3(0),
+vBlb3(0),
+
 // Trailing
 barCount(0), // count from the first bar
 high1stBar(0), // Extreme high from a list 
@@ -42,7 +78,6 @@ trailProfit(0), // how much Im willing to loss
 SmallTrailStop(SmallTrail ), // range to move the traill stop  
 intrabarpersist trailExit(0), // Check the open,close,high,low on every tick
 valuePercentTrail(0), // calculate the range in index points and not percentage 
-
 
 //PL for a day
 NetProf(0), // profit/loss for the strategy
@@ -53,14 +88,19 @@ MACDLine (0),
 SignalLine (0),
 Histogram (0),
 
+
 //Extreme points
-high9 (0);
+high5 (0),
+low5 (0),
+high9 (0),
+low9 (0);
 
 // *** Formula ***
 
 [IntrabarOrderGeneration = true] //trade intra-bar - check every tick/min. false is for close bar 
 
 emaMid30 = XAverage(close,MidLength); 
+emaFast = XAverage(close,FastLength);
 emaverySlow = XAverage(close,VerySlowLength);
 longbuyingPower = 2 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares to buy 
 
@@ -69,43 +109,67 @@ vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
 vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
 vDiff = vMacd - vMacdAvg ; // Histogram
 
+//BB HLOC 21 //Bollinger for short time 21 bars with 2 deviation
+vBubHLOC = BollingerBand(HLOC ,BUpperBandHLOC,BStedDevHLOC);
+vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
+vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
+HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
+
+emaHLOC = XAverage (HLOC , BUpperBandHLOC);
+stdHLOC = StdDev(HLOC , BUpperBandHLOC);
+
+EHLOCupband = emaHLOC + stdHLOC ;
+EHLOCdownband = emaHLOC  - stdHLOC ;
+EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
+EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
+EHLOCqtr3band = EHLOCupband-((EHLOCupband-EHLOCdownband)/4);
+
 //ATR
 atr =  AvgTrueRange (AtrLength);
 
 //high and low level
-high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+high5 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
+open [4], close [5] );
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
 SignalLine = XAverage(MACDLine, 9); // Signal line is a 9-period EMA of the MACD line
 Histogram = MACDLine - SignalLine;
 
+//BB 200 Regular
+vBub1= BollingerBand(close,BUpperBand,BStedDev1);
+vBlb1= BollingerBand(close,BLowerBand, - BStedDev1);
+
 //PL for a day - 
 if DATE <> DATE[1] then begin // if today
-NetProf = NetProf + NetProfit - NetProf[1]; // accumulated profit/ loss . NetProfit is saved function
+NetProf = NetProf + NetProfit - NetProf[1]; //accumulated profit/ loss . NetProfit is saved function
 end;
-PLTarget = Netprofit - NetProf; // Profit/loss goal fot a day 
+PLTarget = Netprofit - NetProf; //Profit/loss goal fot a day 
 
 //*** Conditions Entry Long ***
 
 if marketposition = 0 // no open position
 and( (PLTarget < PForDay) and (PLTarget > LForDay)) //p&l in range for a day limits
 and
-((Time > 600.00) and (Time < 2200.00)) //long momentum time
+((Time > 600.00) and (Time < 2200.00)) //time to trade
 and
-close > Open 
+close > Open //close above open in the current bar
 and
-close > high9
+close > close[1] //close above the close in the last previous bar
 and
-close > emaverySlow * (1 + os1 /100)  // close cross ema200 + offset
+close[1] <= open [1] //close in the previous bar below or equal to previous open
 and
-emaMid <= emaverySlow * (1+Maxgap/100) //* ema20 <= ema200 till max gap
+close > high5 //close above the highest from open and close in the last 5 previous bars
+and
+close < emaVerySlow //close below ema200
+and
+close > vBlb1 //close above bollinger 200, deviation -1
+and
+close < EHLOCmidband //close below the middle of bollinger 20, deviation -2
+and
+low9 < EHLOCdownband //the lowest from open and close in the last 9 previous bars below bollinger 20, deviation -2
 and 
-close <= emaverySlow * (1+Maxgap1/100) // close <= ema200 till max gap 
-and 
-atr < AtrMax // we dont want to buy if the market is too flactuated 
-and
-close > lowD (0) * (1+Mingap/100) // close > lowest for today + gap 
+close cross above emafast //close cross above ema fast (9 bars)
 and
 Histogram > 0  // macd is positive -> fast > slow 
 then begin
@@ -173,3 +237,4 @@ print ( "MOM   > symbol=" , symbol," ",  "in long", "      "
 "low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
 "high=", high, "high[1]=", high[1], "high[2]=", High[2],
 "openD0=", OpenD(0), "closeD1=", CloseD(1));
+
