@@ -1,143 +1,47 @@
-//@version=Reversal Strategy ETF 5423-1
-Inputs:
+//@version=31323-2
+
+Inputs: // *** Parameters ***
+maximumloss(130), //initial stop loss 
 FastLength(9),
-MidLength(20),
-SlowLength(50), //50
-VerySlowLength(200),
-RatioLength (200),
-RsiSlowLength(14),
-RsiFastLength(14),
-MinGapSlowToMid(1.4),//1.1 before change //0.5 //2.4
-RsiMinForLong(40),
-RsiMaxForShort(60),
-MomentumLength(14),
-Longminmom (-0.3),
-Shortmaxmom (0.3),
-ExitBarNum1(12),
-ExitBarNum2(24),
-ExitBarNum3(36),
-ExitBarNum (5),
-AtrLength (14),
-MinProfitAfter1Hour(100),
-MinProfitAfter2Hours(150),
-MinProfitAfter3Hours(180),
-CloseAfter1Hour(20),
-CloseAfter2Hour(20),
-CloseAfter3Hour(40),
-MinFrom200 (0.2), //0.4 befoere change
-MinProfitForTheDay(200),
-MaxFromLH(2.3), //change to 4.5 just for testing. 3.6 seems too much. change to 2.2 (31.3.23). //2.2
-MinFromLH (0.6),
-MaxFromLHEntry (1.2),
-MinFromLHEntry (0.15),
-MinEMAGap (0.16), // 11.2.23, Increased from 0.16 for filtering false cross // decrease from 0.24 to 0.16 (31.3.23)           
-MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 1.5 just for testing
-Mingap (1),
-MinFromCloseD1 (1),
-SmallMinProfit (0.1), //1.4 //1.5 //0.1 //0.03
-smallbaseProfit (0.05), //0.2
-LargeMinProfit (2.5),
-SmallTrail (0.01875), //0.04375 with stochastic //0.00625 //0.3
-largeTrail (1.6),
-FastTrail (0.22),
+MidLength(30), //number of bars for 30 ema calc
+VerySlowLength (200), //number of previous bars for 200 ema calc
+Mingap (0.2),  //minimum gap between close and the low the day in pct
+Maxgap (0.12), //maximum gap between ema 20 and ema 200 in pct 
+Maxgap1 (0.2), //maximum gap between close and ema 200 in pct 
+SmallMinProfit (0.1), //minimum porfit fot start moving the trail stop in pct
+SmallTrail (0.01875),  //trail stop gap in pct
+AtrLength (14), //number of previous bars for ATR calculation
+Atrmax (15),//max atr for enter 
+os1 (0.0133),//off set for crossing ema200 in pct
+PForDay (1500), //maximum profit in usd  
+LForDay (-200), //maximum loss in usd  
 
-MinBaseProfit (1.5), //
-MinBaseProfit1 (2), 
-CrossEMAos (0.27),
-FastMinProfit (1.8), //1
-Minbarsfortake (2), //1
-MinOpenGapPct (2),
-ExitCrossOS (0.16),
-StopLossOS (0.16),
-adxperiod (14),
-vwapLength (20), //20
-adxmin(20),
-MinBarsForMove(46), //50 //10
-AvgVolumeLength(30), //20 previus
-volumeUP (10), //10 previus
-double AccountBalance(40000), // Account balance 10,000 //80000
-PctPerTrade(50),
-LongMultiplierPower (1),
-TakeProfit (200),
-TakeProfitPct (6),
-StopPct (2.1), //30.4.23, Change from 2.5% 
-SL(240),
-PForDay (2000), //1500
-LForDay (-180), //-1100
-longSL(220), //
-shortSL(220), //300
-os1 (0.0133), //0.03 - offset 
-os2 (0.01),
-os3 (0.0133), // 2$ - 0.133 precent 
-
-
+//macd
+macdFastLength( 12 ), 
+macdSlowLength( 26 ), 
+MACDlineLength( 9 ) ,
 
 //BB
-BStedDev1(1.5),
-BStedDev2(2),
+BStedDev1(1),
+BStedDev2(2), 
 BStedDev3(3),
 BUpperBand(200),
-BLowerBand(200),
-MinFromBB (0.24),
-MaxFromBB (0.8),
+BLowerBand(200);
 
-
-//Stoch
-StochPiriod1( 5 ), //14
-//StochPiriod2( 14 ),
-StochLength1( 3 ), 
-StochLength2( 3 ),
-StochOverBot(74), //78
-StochOverSold(26), //22
-stochmid (50),
-
-
-//RSI
-RSIOverbot (60),
-RSIoversold (40),
-
-//Zscore
-longminzscore (-2),
-shortminzscore (2);
-
-
-vars:
-smaFast(0),
-smaMid(0),
-ema3VerySlow (0),
-emaVerySlow (0),
-smaSlow(0),
-emaSlow (0),
+vars: //*** Calc Variable ***
 emaFast(0),
-emafast1 (0),
-demafast (0),
-ema1preFast (0), 
-ema2preFast (0), 
-ema2Fast (0),
-ema2Slow (0),
-ema2verySlow (0),
-rsiSlow(0),
-rsiFast(0),
-mom (0),
-vwap(0), 
-adxcalc (0),
-buyingPower(0),
-curProfit(0),
-TakeProfitAmt (0),
-StopAmt (0),
-SwitchLargeSmall (0),
-buydbg(""),
-selldbg(""),
-valsdbg(""),
+emaVerySlow (0),
+emaMid (0),
+emaMid30 (0),
+atr (0), // average true range - average of the 14 prev bars 
+longbuyingPower(0), // size / shares position to buy 
+buydbg(""), // will be use for annotations
+selldbg(""), // will be use for annotation
 
-//Donchian 
-DonchianLength (21), 
-
-//VOLUME
-vVOL(0),
-vAvgVol(0),
-vTicks(0),
-vAvgTicks(0),
+//macd
+vMacd(0), 
+vMacdAvg(0), 
+vDiff(0) ,
 
 //BB
 vStd(0),
@@ -148,787 +52,144 @@ vBlb2(0),
 vBub3(0),
 vBlb3(0),
 
-//Satistical Arbitrage
-Ratio (0),
-MeanRatio (0),
-devRatio (0),
-Zscore (0),
-
 // Trailing
 barCount(0), // count from the first bar
 high1stBar(0), // Extreme high from a list 
 low1stBar(0), // Extreme low from a list 
-trailProfit(0),
-SmallTrailStop(SmallTrail ), //0.8
-LargeTrailStop(largeTrail ),
-FastTrailStop(FastTrail ), //0.38
-intrabarpersist trailExit(0), // F1 Update on every tick
-valuePercentTrail(0),
+trailProfit(0), // how much Im willing to loss
+SmallTrailStop(SmallTrail ), // range to move the traill stop  
+intrabarpersist trailExit(0), // Check the open,close,high,low on every tick
+valuePercentTrail(0), // calculate the range in index points and not percentage 
 
-is_long_symbol(true),
-
+//PL for a day
+NetProf(0), // profit/loss for the strategy
+PLTarget(0), // Profit/loss for today
+        
 //Macd
 MACDLine (0),
 SignalLine (0),
 Histogram (0),
 
-//PL for a day
-NetProf(0),
-PLTarget(0),
-
-atr (0),
-
-//Stoch
-oData1FastK( 0 ),
-oData1FastD( 0 ), 
-oData1SlowK( 0 ),
-oData1SlowD( 0 ), 
-stochData1(0),
-stochData2(0),
-
-//Donchian
-DonchianUp (0),
-DonchianDown (0),
-DonchianMid (0),
-
-//RSI
-vRSI (0),
-
-
-shortStop (9999999),
-longStop (-9999999),
-
 //Extreme points
-high5 (0),
-low5 (0),
-high9 (0),
-low9 (0);
+high5 (0);
 
+// *** Formula ***
 
-       if marketposition = 0
-then
-[IntrabarOrderGeneration = false] //trade intra-bar
-                        
-smaFast = Average(close,FastLength);
-smaMid = Average(close,MidLength);
-//ema3VerySlow = XAverage(close,VerySlowLength) of data3;
-smaSlow = Average(close,SlowLength);
-emaSlow = XAverage(close,SlowLength);
-emaverySlow = XAverage(close,VerySlowLength);
+[IntrabarOrderGeneration = true] //trade intra-bar - check every tick/min. false is for close bar 
+
+emaMid30 = XAverage(close,MidLength); 
 emaFast = XAverage(close,FastLength);
+emaverySlow = XAverage(close,VerySlowLength);
+longbuyingPower = 2 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares to buy 
 
-emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
-demafast = emaFast * 2 - emafast1  ;    
+//macd
+vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
+vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
+vDiff = vMacd - vMacdAvg ; // Histogram
 
-//ema2Fast = XAverage(close,FastLength)of data2;
-//ema2Slow = XAverage(close,SlowLength)of data2;
-ema2verySlow = XAverage(close,VerySlowLength)of data2;
-rsiSlow = rsi(close,RsiSlowLength);
-rsiFast = rsi(close,RsiFastLength);
-mom = Momentum(close, MomentumLength);
-adxcalc = ADX(adxperiod);
-buyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
-TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
-StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
-valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
+//ATR
+atr =  AvgTrueRange (AtrLength);
 
-//BB
-vBub1= BollingerBand(close,BUpperBand,BStedDev1);
-vBlb1= BollingerBand(close,BLowerBand, - BStedDev1);
-  
-vBub2= BollingerBand(close,BUpperBand,BStedDev2);
-vBlb2= BollingerBand(close,BLowerBand, - BStedDev2);
-
-vBub3= BollingerBand(close,BUpperBand,BStedDev3);
-vBlb3= BollingerBand(close,BLowerBand, - BStedDev3);
-
-//VWAP crossing
-vwap = Average(close * Volume, vwapLength ) / Average(Volume, vwapLength );
+//high and low level
+high5 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5]);
 
 //Macd
 MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
 SignalLine = XAverage(MACDLine, 9); // Signal line is a 9-period EMA of the MACD line
 Histogram = MACDLine - SignalLine;
 
-//ATR
-atr =  AvgTrueRange (AtrLength);
+//BB 200 Regular
+vBub1= BollingerBand(close,BUpperBand,BStedDev1);
+vBlb1= BollingerBand(close,BLowerBand, - BStedDev1);
 
-//volume calc
-//vTicks = Ticks ;
-vAvgTicks= AverageFC( Ticks, AvgVolumeLength) ;
-
-//Stoch
-stochData1  = Stochastic( H, L, C, StochPiriod1, StochLength1, StochLength2, 1, 
-oData1FastK, oData1FastD, oData1SlowK, oData1SlowD ) ; 
-
-//Donchian
-DonchianUp = HighestFC (h, DonchianLength );
-DonchianDown = LowestFC (l, DonchianLength );
-DonchianMid = (DonchianUp + DonchianDown)/2;
-
-//RSI
-vRSI = RSI (close, RsiFastLength);
-
-//Zcore - Ratio between 2 stocks
-Ratio = close / close of data2;
-MeanRatio = Average (Ratio , RatioLength);
-DevRatio = StdDev (MeanRatio , RatioLength);
-Zscore = (Ratio - MeanRatio) / DevRatio;
-
-//high and low level
-high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-
-
-//close short position with trail start moving after the first bar from entry
-if marketposition = 0
-then
-begin
-shortStop = 9999999;
+//PL for a day - 
+if DATE <> DATE[1] then begin // if today
+NetProf = NetProf + NetProfit - NetProf[1]; //accumulated profit/ loss . NetProfit is saved function
 end;
+PLTarget = Netprofit - NetProf; //Profit/loss goal fot a day 
 
-//PL for a day - CHECK IF PROFIT OR LOSS FOR THE DAY 
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
-end;
-PLTarget = Netprofit - NetProf;
+//*** Conditions Entry Long ***
 
-//calc a switch for identify long or short (for the connection with VXX)
-if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
-is_long_symbol = False;
-
-
-{
-if marketposition = 0 then 
-begin
-//Long Prints - No position - dbug tag
-buydbg= ""; 
-if (
-(PLTarget < PForDay) and (PLTarget > LForDay) 
-)  
- then
- buydbg = buydbg + "1" else buydbg = buydbg + "X" ;
-if (Time > 1500.00 and Time < 2300.00) then
- buydbg = buydbg + "2" else buydbg = buydbg + "X" ;
-if close > Open  then
- buydbg = buydbg + "3" else buydbg = buydbg + "X" ;
-if (
-(close > open [1]) or (close > open [2]) 
-)
-  then
- buydbg = buydbg + "4" else buydbg = buydbg + "X" ;
-  if(
-(close[1] <= open [1]) or (close[2] <= open [2])
-) then
- buydbg = buydbg + "5" else buydbg = buydbg + "X" ; 
- if close cross above EHLOCdownband 
-  then
- buydbg = buydbg + "6" else buydbg = buydbg + "X" ; 
-if close of data2  cross above EHLOCupband2   then
- buydbg = buydbg + "7" else buydbg = buydbg + "X" ;
-if EHLOCupband > EHLOCdownband * (1+Mingap/100) then
- buydbg = buydbg + "8" else buydbg = buydbg + "X" ;
-}
-
-{
-//Short Prints - No position - dbug tag
-selldbg = "";
-if (
-(PLTarget < PForDay) and (PLTarget > LForDay)
-)  then
-selldbg = selldbg + "1" else selldbg = selldbg + "X" ;
-if (Time > 1500.00 and Time < 2200.00) then
-selldbg = selldbg + "2" else selldbg = selldbg + "X" ;
-if close < Open  then
-selldbg = selldbg + "3" else selldbg = selldbg + "X" ;
-if (
-(close < open [1]) or (close < open [2]) 
-) then
-selldbg = selldbg + "4" else selldbg = selldbg  + "X" ;
-if (
-(close[1] >= open [1]) or (close[2] >= open [2])
-) then
-selldbg = selldbg + "5" else selldbg = selldbg  + "X" ;
-if close cross below EHLOCupband   then
-selldbg = selldbg + "6" else selldbg = selldbg  + "X" ;
-if close of data2 cross below EHLOCdownband2  
- then
-selldbg = selldbg + "7" else selldbg = selldbg  + "X" ;
-if  EHLOCupband > EHLOCdownband * (1+Mingap/100)
-then selldbg = selldbg + "8" else selldbg = selldbg  + "X" ;
-}
-
-
-if marketposition = 0  
+if marketposition = 0 // no open position
+and( (PLTarget < PForDay) and (PLTarget > LForDay)) //p&l in range for a day limits
 and
- ELDateToString(date) = "07/12/2023" //and symbol = "soxs" //and Time = 1300
-//and (close cross over emaFast  or close cross below emaFast )
-then
-//Long Prints - but No position
-print ( "REV  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position","  ",
- ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
+((Time > 600.00) and (Time < 2200.00)) //time to trade
+and
+close > Open //close above open in the current bar
+and
+close > close[1] //close under the close in the last previous bar
+and
+close > high5 //the highest from open and close in the last 5 previous bars
+and
+close < vBlb1 //close below bollinger 200, deviation 1
+and 
+close > emafast //close above ema fast (9 bars)
+and
+Histogram > 0  // macd is positive -> fast > slow 
+then begin
+buy longbuyingPower Shares next bar at market  ; // buy 2 shares
+end;
+
+
+//***Exit Conditions***
+
+//close long position with trail start moving after small profit 
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallMinProfit  // we want minimun gap for profit - 0.1% 
+then begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100); // calculate the range in index points and not percentage 
+trailProfit = Highest(high , Barssinceentry); // Barssinceentry is how many bars from enrty . Highest calculated the highest from enrty
+trailExit = trailProfit - valuePercentTrail; // when to close position    
+sell next bar at trailExit stop;
+end;
+
+//Set initial stop
+if marketposition = 1 // we have open position
+then begin
+SetStopLoss(maximumloss); // initial stop 
+end;
+
+//*** Prints ***
+if marketposition = 0 then 
+
+//Long Prints - No position - build dbug tag
+buydbg= ""; 
+if ((PLTarget < PForDay) and (PLTarget > LForDay) )  
+ then buydbg = buydbg + "1" 
+ else buydbg = buydbg + "X" ;
+
+if ((Time > 1400.00) or (Time < 1200.00 and Time > 430.00) or (Time < 1200.00 and Time < 300.00) )
+ then buydbg = buydbg + "2" 
+ else buydbg = buydbg + "X" ;
+
+if close > Open  then
+ buydbg = buydbg + "3" 
+ else buydbg = buydbg + "X" ;
+
+
+//no position prints
+if marketposition = 0  and ELDateToString(date) = "07/13/2023"  then
+print ( "MOM  > symbol=" , symbol," ", "islong=", ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
  "     ","bar=", BarNumber,
 "entryprice=","xxxx.xx", 
-"shortStop =", shortStop ,
-"High[1]=", High[1],
-
-"close=", close, "high5=", 
-//high5, "low5=", low5,
-//"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-//"EHLOCdownband =", EHLOCdownband ,
-//"EHLOCupband =", EHLOCupband ,
-"PLTarget=", PLTarget,
-"emaFast=" , emaFast, 
-"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-"dema=", demafast,
-"vwap=", vwap,
-//"vKeltUp  =", vKeltUp, "vKeltdown  =", //vKeltDown, 
-"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
- "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
+"close=", close, 
 "Close[1]=", Close[1], "Close[2]=", Close[2],
 "open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
 "low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
 "high=", high, "high[1]=", high[1], "high[2]=", High[2],
-"openD0=", OpenD(0), "closeD1=", CloseD(1),
-"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
- ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
- "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-  "MinGapSlowToMid=", MinGapSlowToMid,  
-"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-//end;
-
-//end;
-
-
-
-// CONDITIONS FOR OPEN LONG POSITION 
-
-//Conditions Entry Long
-if marketposition = 0  
-and
-(
-(PLTarget < PForDay) and (PLTarget > LForDay)
-) 
-//and
-//(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open ("no trade zone") //2 
-and
-zscore < longminzscore 
-and
-close > open
-and
-close > close[1] //or (close [1] > close[2])) //B
-and
-close < vBlb1
-and
-close <= DonchianMid
-and
-close > emafast
-and
-Histogram > 0
-and
-close > high5
-
-then 
-Begin
-buy Floor(buyingPower) Shares next bar at market  ;
-End;
-
-
-//Short
-//Conditions Entry Short 
-// CONDITIONS FOR OPEN SHORT POSITION 
-
-if marketposition = 0  
-and 
-( 
-(PLTarget < PForDay) and (PLTarget > LForDay)
-)  
-//and
-//(Time > 940.00 and Time < 1525.00) //Increase from 9:35 to filter noise at the open("no trade zone") //2     
-and
-zscore > shortminzscore 
-and
-close < open
-and
-close < close[1] 
-and 
-((open[1] <= Close [1]) or (open [2] <= Close [2]) )
-and
-close > vBub1
-and
-close >= DonchianMid
-and
-close < emafast
-and
-Histogram < 0
-and
-close < low5
-
-then 
-Begin
-sellshort Floor(buyingPower) Shares next bar at market;
-End;
-
-//End;
-
-
-// START--  EXIT LONG BASE OF PRECENT -------------------------------------------------------
-
-
-if 
-marketposition = 1
-then
-[IntrabarOrderGeneration = True] //trade intra-bar - check every second and not 1 min
-// false means check only for the close position 
-//close long position with trail start moving after minimum profit 
-
-if marketposition = 1 //there is long position open
-and
-(Close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1 //  number of bars from begining . 
-then 
-begin
-valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
-trailProfit = Highest(high , Barssinceentry); 
-trailExit = trailProfit + valuePercentTrail; //          
-sell next bar at trailExit  stop;
-end;
-
-// END - EXIT LONG BASE OF PRECENT -------------------------------------------------------
-
-
-
-
-// START - EXIT LONG BASE ON CROSS PREVEVIOS LOW -------------------------------------------------------
-//close short position with trail start moving after the first bar from entry
-if marketposition = 0
-then
-begin
-longStop = -9999999;
-end;
-
-if marketposition = 1 //there is long position open
-and
-(close/entryprice-1)*100 >= SmallbaseProfit 
-and
-barssinceentry > 1
-then
-begin
-// Calculate the trailing stop price
-if low [1] > longStop 
-then
-begin
-longStop = low[1];
-end;
-end;
-
-//close long position with trail start moving aafter the first bar from entry
-if marketposition = 1 //there is long position open
-and
-(close/entryprice-1)*100 >= SmallbaseProfit 
-and
-barssinceentry > 1
-and
-Close < longStop * (1-os1/100)
-Then
-begin
-Sell Next Bar at Market;
-end;
-
-
-// END - EXIT LONG BASE ON CROSS PREVEVIOS LOW -------------------------------------------------------
-{
-//close 2st long position with trail start moving cross back
-if marketposition = 1 //there is long position open
-and
-(close/entryprice-1)*100 >= SmallbaseProfit1 
-and
-barssinceentry > 1
-//and
-//Close < longStop * (1-os1/100)
-and
-close cross below emaMid 
-//and
-//close > lastExitPrice 
-Then
-begin
-Sell Next Bar at Market;
-end;
-}
-
-
-// START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
-
-if marketposition = -1
-then
-[IntrabarOrderGeneration = True] //trade intra-bar
-
-
-
-//close short position with trail start moving after minimum profit
-if marketposition = -1 //there is short position open
-and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
-//and
-//AngleShort = False
-//and
-//entryprice <= vBub2
-then 
-begin
-valuePercentTrail = ((entryprice * SmallTrailStop) /100);
-trailProfit = Lowest(low , Barssinceentry); 
-trailExit = trailProfit + valuePercentTrail; //          
-buytocover next bar at trailExit  stop;
-end;
-
-
-// END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
-
-// START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
-
-
-//close short position with trail start moving after the first bar from entry
-if marketposition = 0
-then
-begin
-shortStop = 9999999;
-end;
-
-if marketposition = -1 //there is long position open
-and
-(1-Close/entryprice)*100 >= SmallbaseProfit 
-and
-barssinceentry > 1
-then
-begin
-// Calculate the trailing stop price
-if High[1] < shortStop 
-then
-begin
-shortStop = High[1];
-end;
-end;
-
-//close short position with trail start moving aafter the first bar from entry
-if marketposition = -1 //there is long position open
-and
-(1-Close/entryprice)*100 >= SmallbaseProfit 
-and
-barssinceentry > 1
-and
-Close cross above shortStop * (1+os1/100)
-Then
-begin
-buytocover Next Bar at Market;
-end;
-
-
-
-
-// END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
-
-
-// START - Exit on first stop loss -------------------------------------------------------
-{
-if marketposition = -1
-then
-begin
-SetStopLoss(shortSL);
-end;
-}
-
-// END - Exit on first stop loss -------------------------------------------------------
+"openD0=", OpenD(0), "closeD1=", CloseD(1));
 
 
 //long position prints
-if marketposition = 1 
-and ELDateToString(date) = "07/12/2023" //and symbol = "soxs" //and Time = 1300
-then 
-print ( "REV   > symbol=" , symbol," ",  "in long", "      "
+if marketposition = 1 and ELDateToString(date) = "07/13/2023" then 
+print ( "MOM   > symbol=" , symbol," ",  "in long", "      "
 ,ELDateToString(date),"Time=", time,"buydbg=", buydbg, "     ","bar=", BarNumber,
 "entryprice=",entryprice, 
-"shortStop =", shortStop ,
-"High[1]=", High[1],
-
 "close=", close, 
-//"high5=", high5, "low5=", low5,
-//"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-//"EHLOCdownband =", EHLOCdownband ,
-//"EHLOCupband =", EHLOCupband ,
-"PLTarget=", PLTarget,
-"emaFast=" , emaFast, 
-"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-"dema=", demafast,
-"vwap=", vwap,
-//"vKeltUp  =", vKeltUp, "vKeltdown  =", //vKeltDown, 
-"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
- "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
 "Close[1]=", Close[1], "Close[2]=", Close[2],
 "open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
 "low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
 "high=", high, "high[1]=", high[1], "high[2]=", High[2],
-"openD0=", OpenD(0), "closeD1=", CloseD(1),
-"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
- ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
- "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-  "MinGapSlowToMid=", MinGapSlowToMid,  
-"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-
-
-//short position prints       
-if marketposition = -1 
-and ELDateToString(date) = "07/12/2023" //and symbol = "soxs" //and Time = 1300
-then 
-print ("REV  > symbol=" , symbol," ", "in short","     ", ELDateToString(date),"Time=", time,"selldbg=", selldbg , "     ","bar=", BarNumber,
-"entryprice=",entryprice, 
-"close=", close, 
-"shortStop =", shortStop ,
-"High[1]=", High[1],
-//"high5=", high5, "low5=", low5,
-//"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-//"EHLOCdownband =", EHLOCdownband ,
-//"EHLOCupband =", EHLOCupband ,
-"PLTarget=", PLTarget,
-"emaFast=" , emaFast, 
-"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-"dema=", demafast,
-"vwap=", vwap,
-//"vKeltUp  =", vKeltUp, "vKeltdown  =", //vKeltDown, 
-"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
- "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-"Close[1]=", Close[1], "Close[2]=", Close[2],
-"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-"openD0=", OpenD(0), "closeD1=", CloseD(1),
-"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
- ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
- "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-  "MinGapSlowToMid=", MinGapSlowToMid,  
-"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-
-
-{
-//close long position at the EOD
-if marketposition = 1
-and Time = 2300.00 
-then 
-begin
-sell next bar at market;
-end;
-}
-{
-vars:
-longStop (-9999999);
-
-//close short position with trail start moving after the first bar from entry
-if marketposition = 0
-then
-begin
-longStop = -9999999;
-end;
-
-if marketposition = 1 //there is long position open
-//and
-//(close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry >= 2
-then
-begin
-// Calculate the trailing stop price
-if low [1] > longStop 
-then
-begin
-longStop = low[1];
-end;
-end;
-}
-
-{
-//close long position with trail start moving aafter the first bar from entry
-if marketposition = 1 //there is long position open
-and
-(close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry >= 2
-and
-Close < longStop 
-Then
-begin
-Sell Next Bar at Market;
-end;
-}
-
-{
-//close long position if cross 200 EMA
-if marketposition = 1
-and
-close < (emaVerySlow * (1- os1/100))
-then 
-begin
-sell next bar at market;
-end;
-}
-
-{
-//close long position if reach 10 points
-if marketposition = 1
-and
-(close/entryprice-1)*100 >= smallbaseProfit 
-then 
-begin
-sell next bar at market;
-end;
-}
-
-{
-//close long position if reach up boll 21
-if marketposition = 1
-and
-close >= EHLOCupband
-then 
-begin
-sell next bar at market;
-end;
-}
-
-{
-//take profit for a short position with trail start moving in the first bar from entry
-if marketposition = -1 //there is short position open
-and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-//and
-//AngleShort = False
-//and
-//entryprice <= vBub2
-then 
-begin
-valuePercentTrail = ((entryprice * SmallTrailStop) /100);
-trailProfit = Lowest(low , Barssinceentry); 
-trailExit = trailProfit + valuePercentTrail; //          
-buytocover next bar at trailExit  stop;
-end;
-}
-{
-vars:
-shortStop (9999999);
-
-//close short position with trail start moving after the first bar from entry
-if marketposition = 0
-then
-begin
-shortStop = 9999999;
-end;
-
-if marketposition = -1 //there is long position open
-//and
-//(1-Close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry >= 2
-then
-begin
-// Calculate the trailing stop price
-if High[1] < shortStop 
-then
-begin
-shortStop = High[1];
-end;
-end;
-}
-
-{
-//close short position with trail start moving aafter the first bar from entry
-if marketposition = -1 //there is long position open
-and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry >= 2
-and
-Close > shortStop 
-Then
-begin
-buytocover Next Bar at Market;
-end;
-
-//close short position if reach down boll 21
-if marketposition = -1
-and
-close <= EHLOCdownband
-then 
-begin
-buytocover next bar at market;
-end;
-}
-
-{
-//close short position if cross 200 EMA
-if marketposition = -1
-and
-close > (emaVerySlow * (1+ os1/100))
-then 
-begin
-buytocover next bar at market;
-end;
-}
-
-{
-//close short position if reach 10 points
-if marketposition = -1
-and
-(1-entryprice/Close)*100 >= smallbaseProfit 
-then 
-begin
-buytocover next bar at market;
-end;
-}
-
-{
-//close short position at the EOD
-if marketposition = -1
-and Time = 2300.00 
-then
-begin
-buytocover next bar at market;
-end;
-}
-
-//SetProfitTarget;
-if marketposition = 1
-then
-begin
-SetStopLoss(longSL);
-end;
-
-
-if marketposition = -1
-then
-begin
-SetStopLoss(shortSL);
-end;
-
-
-
-
-
-
-
-
-
-
-
-
+"openD0=", OpenD(0), "closeD1=", CloseD(1));
 
