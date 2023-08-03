@@ -124,6 +124,7 @@
 	KUpperBand(43),
 	KLowerBand(43),
 
+
 	//Stoch
 	StochPiriod1( 5 ), //14
 	//StochPiriod2( 14 ),
