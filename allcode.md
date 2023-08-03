@@ -770,8 +770,8 @@
 	//emaMid > emaVerySlow
 	and 
 	atr < Atrmax
-	and
-	close < HIGHD (0) * (1-Mingap/100)
+	//and
+	//close < HIGHD (0) * (1-Mingap/100)
 	and
 	DonchianDown > DonchianUp * (1-maxgap5/100)
 
