@@ -1,4 +1,3 @@
-
 	if marketposition = 0 //Conditions Entry Long
 	and
 	(
@@ -504,7 +503,13 @@ barssinceentry > 3
 //and
 //Close < longStop * (1-os1/100)
 and
+((
 crossind1 = true
+)
+or
+( 
+crossind2 = true
+))
 //and
 //close > lastExitPrice 
 Then
