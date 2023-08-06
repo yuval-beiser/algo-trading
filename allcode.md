@@ -1,6 +1,6 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(130), //120 //160
+	maximumloss(130), //120 //160 //1300
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
@@ -94,8 +94,8 @@
 	os2 (0.01),
 	os3 (0.0133), // 2$ - 0.133 precent 
 
-	PForDay (1500), //1500 //1950 //100 //800
-	LForDay (-200), //-1100 //-500 //-50
+	PForDay (600), //1500 //1950 //100 //800 //15000
+	LForDay (-80), //-1100 //-500 //-50 //-2000
 
 	//Donchian 
 	DonchianLength (20), 
@@ -332,6 +332,7 @@
 
 	crossind1 (false),
 	crossind2 (false),
+	crossind3 (false),
 
 
 	//stop
@@ -595,8 +596,8 @@
 	//emaMid > emaVerySlow
 		and 
 	atr < Atrmax
-	//and
-	//close > lowD (0) * (1+Mingap/100)
+	and
+	close > lowD (0) * (1+Mingap/100)
 	and
 	DonchianDown > DonchianUp * (1-maxgap5/100)
 
@@ -965,6 +966,14 @@ begin
 crossind2 = False;
 end;
 
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind3 = False;
+end;
+
+
 
 if marketposition = 1 //there is long position open
 and
@@ -992,8 +1001,8 @@ and
 Close < longStop * (1-os1/100)
 Then
 begin
-crossind1 = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
+crossind1 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
 
@@ -1015,8 +1024,8 @@ crossind1 = true
 
 Then
 begin
-crossind2 = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
+crossind2 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
 	
@@ -1042,6 +1051,7 @@ crossind2 = true
 Then
 begin
 Sell longbuyingPower Shares Next Bar at Market;
+crossind3 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
 
@@ -1055,13 +1065,13 @@ barssinceentry > 3
 //and
 //Close < longStop * (1-os1/100)
 and
-((
-crossind1 = true
-)
+(
+(crossind1 = true)
 or
-( 
-crossind2 = true
-))
+(crossind2 = true)
+or
+(crossind3 = true)
+)
 //and
 //close > lastExitPrice 
 Then
@@ -1632,5 +1642,6 @@ end;
 	  "MinGapSlowToMid=", MinGapSlowToMid,  
 	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 	}
+
 
 
