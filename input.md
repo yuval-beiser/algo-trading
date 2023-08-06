@@ -1,6 +1,6 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(130), //120 //160
+	maximumloss(1300), //120 //160
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
@@ -94,8 +94,8 @@
 	os2 (0.01),
 	os3 (0.0133), // 2$ - 0.133 precent 
 
-	PForDay (1500), //1500 //1950 //100 //800
-	LForDay (-200), //-1100 //-500 //-50
+	PForDay (15000), //1500 //1950 //100 //800
+	LForDay (-2000), //-1100 //-500 //-50
 
 	//Donchian 
 	DonchianLength (20), 
