@@ -1,3 +1,4 @@
+
 {
 	if marketposition = 0 //Conditions Entry Long
 	and
@@ -583,6 +584,12 @@ begin
 crossind2 = False;
 end;
 
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind3 = False;
+end;
 
 if marketposition = -1 //there is short position open
 and
@@ -610,8 +617,8 @@ and
 Close > shortStop * (1+os1/100)
 Then
 begin
-crossind1 = true;
 buytocover shortbuyingPower1 Shares Next Bar at Market;
+crossind1 = true;
 end;
 
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
@@ -633,8 +640,8 @@ crossind1 = true
 
 Then
 begin
-crossind2 = true;
 buytocover shortbuyingPower1 Shares Next Bar at Market;
+crossind2 = true;
 end;
 	
 
@@ -659,6 +666,7 @@ crossind2 = true
 Then
 begin
 buytocover Next Bar at Market;
+crossind3 = true;
 end;
 
 	
@@ -672,7 +680,7 @@ barssinceentry > 3
 //Close < longStop * (1-os1/100)
 and
 (
-(crossind1 = true) or (crossind2= true)
+(crossind1 = true) or (crossind2= true) or (crossind3=true)
 )
 //and
 //close > lastExitPrice 
@@ -715,5 +723,4 @@ end;
 	begin
 	SetStopLoss(maximumloss);
 	end;
-
 

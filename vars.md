@@ -182,7 +182,7 @@
 
 	crossind1 (false),
 	crossind2 (false),
-
+ 	crossind3 (false),
 
 	//stop
 	startlongSL(maximumloss),
@@ -223,4 +223,5 @@
 	shortbuyingPower = 3; //3
 	shortbuyingPower1 = 1 ; // scale in-out
 	shortbuyingPower2 =  1;
+
 
