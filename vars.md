@@ -1,4 +1,3 @@
-
 	vars:
 	shortStop (9999999),
 	longStop (-9999999),
@@ -183,6 +182,7 @@
 
 	crossind1 (false),
 	crossind2 (false),
+	crossind3 (false),
 
 
 	//stop
