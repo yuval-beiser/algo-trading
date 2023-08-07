@@ -151,7 +151,7 @@ TLow = Lowest(low, TLength);
 LTBreak = THign  + (TLow - THign)* LTpct;
 STBreak = THign  + (TLow - THign)* STpct;
 
-
+//high and low level
 high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
@@ -179,8 +179,6 @@ R1 = (2 * PP) - LowestFC(low, ppLength);
 R2 = PP + (HighestFC(high, ppLength) - LowestFC(low, ppLength));
 R3 = HighestFC(high, ppLength) + 2 * (PP - LowestFC (low, ppLength));
 
-		
-
 {
 //Zcore - Ratio between 2 stocks
 Ratio = close / close of data2;
@@ -200,3 +198,4 @@ begin
 NetProf = NetProf + NetProfit - NetProf[1];
 end;
 PLTarget = Netprofit - NetProf;
+
