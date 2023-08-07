@@ -1,3 +1,4 @@
+
 if marketposition = 0 //Conditions Entry Long
 and
 //(
@@ -5,7 +6,7 @@ and
 //)  
 //and
 //(
-Time = 2300.00
+Time = 1344.00
 //)
 //and
 //close > Open 
@@ -77,8 +78,8 @@ Close [1] > emaverySlow and Close [2] > emaverySlow
 then 
 begin
 buy longbuyingPower Shares next bar at market  ;
-Alert("MNQ Momentum Horse Entry Long Model");
 end;
+}
 
 
 {
@@ -166,7 +167,7 @@ buy longbuyingPower2 Shares next bar at market  ;
 end;
 }
 
-{
+
 if         
 marketposition = 0 //Conditions Entry short
 //and
@@ -174,7 +175,7 @@ marketposition = 0 //Conditions Entry short
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
 and
-Time = 1328.00
+Time = 2300.00
 //and
 //close < Open //3
 //and
@@ -240,8 +241,8 @@ Time = 1328.00
 then 
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
+Alert("MNQ Momentum Horse Entry Short Model");
 end;
-}
 
 {
 if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -355,6 +356,7 @@ sellshort buyingPower Shares next bar at market  ;
 end;
 }
 
+{
 //close long position with trail
 if marketposition = 1
 then
@@ -375,29 +377,23 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-Alert("MNQ Momentum Horse Model - Exit Long");
 end;
 
 
-//close short position with trail (based on low prev) start moving after the first bar from entry
+//close long position with trail (based on low prev) start moving after the first bar from entry
+
+//reset longStop 
 if marketposition = 0
 then
 begin
 longStop = -9999999;
 end;
 
-//reset crossind 
+//reset longStop 
 if marketposition = 0
 then
 begin
-crossind1 = False;
-end;
-
-//reset crossind 
-if marketposition = 0
-then
-begin
-crossind2 = False;
+crossind = False;
 end;
 
 
@@ -427,16 +423,15 @@ and
 Close < longStop * (1-os1/100)
 Then
 begin
-crossind1 = true;
-Sell longbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum Horse Model - Exit Long");
+crossind = true;
+Sell longbuyingPower1 Shares Next Bar at Market; 
 end;
 
 
-//close long position with trail start moving cross back
+//close long position after cross30
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= SmallbaseProfit1 
+(close/entryprice-1)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 //and
@@ -444,19 +439,15 @@ barssinceentry > 1
 and
 close cross below emaMid30 
 and
-crossind1 = true
+crossind = true
 //and
 //close > lastExitPrice 
-
 Then
 begin
-crossind2 = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum Horse Model - Exit Long");
 end;
-	
 
-	
+
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
 and
@@ -468,44 +459,32 @@ barssinceentry > 1
 and
 close cross below vBub1 
 and
-crossind1 = true
-and
-crossind2 = true
-
-//and
-//close > lastExitPrice 
-Then
-begin
-Sell longbuyingPower Shares Next Bar at Market;
-Alert("MNQ Momentum Horse Model - Exit Long");
-end;
-
-	
-//close long position after cross 1 and go break even
-if marketposition = 1 //there is long position open
-and
-close < (entryprice * 1.000067)
-and
-barssinceentry > 3
-//and
-//Close < longStop * (1-os1/100)
-and
-((
-crossind1 = true
-)
-or
-( 
-crossind2 = true
-))
+crossind = true
 //and
 //close > lastExitPrice 
 Then
 begin
 Sell Next Bar at Market;
-Alert("MNQ Momentum Horse Model - Exit Long");
 end;
 
 
+//close long position when go back to entry
+if marketposition = 1 //there is long position open
+and
+close cross below entryprice * 1.0067
+and
+barssinceentry > 5
+//and
+//Close < longStop * (1-os1/100)
+and
+crossind = true
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
+}
 {
 //close long position when cross 200 after more then 10 bars
 if marketposition = 1 //there is long position open
@@ -664,85 +643,112 @@ sell next bar at market;
 end;
 }
 
-//close long position with trail
+// START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
+
 if marketposition = -1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
-
-//take profit for a short position with trail start moving in the first bar from entry
-if marketposition = -1 //there is short position open
+//close short position with trail start moving after small profit in the first bar from entry
+if marketposition = -1 //there is long position open
 and
-(1-Close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
+(1-close/entryprice)*100 >= SmallMinProfit 
 //and
-//AngleShort = False
+//barssinceentry <= 1
 //and
-//entryprice <= vBub2
+//AngleLong = False
+//entryprice >= vBlb2
 then 
 begin
 valuePercentTrail = ((entryprice * SmallTrailStop) /100);
-trailProfit = Lowest(low , Barssinceentry); 
-trailExit = trailProfit + valuePercentTrail; //          
-buytocover next bar at trailExit  stop;
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
+Alert("MNQ Momentum Horse Model - Exit Short");
 end;
+// END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
-
-//close short position with trail start moving after the first bar from entry
+// START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
+//close short position with trail (based on low prev) start moving after the first bar from entry
 if marketposition = 0
 then
 begin
 shortStop = 9999999;
 end;
 
-if marketposition = -1 //there is long position open
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind1 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind2 = False;
+end;
+
+
+if marketposition = -1 //there is short position open
 and
-(1-Close/entryprice)*100 >= SmallbaseProfit 
+(1-close/entryprice)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 then
 begin
 // Calculate the trailing stop price
-if High[1] < shortStop 
+if high [1] < shortStop 
 then
 begin
-shortStop = High[1];
+shortStop = high[1];
 end;
 end;
 
-//close short position with trail start moving aafter the first bar from entry
+
+//close 1st short position with trail start moving cross back
 if marketposition = -1 //there is long position open
 and
-(1-Close/entryprice)*100 >= SmallbaseProfit 
+(1-close/entryprice)*100 >= SmallbaseProfit 
 and
 barssinceentry > 1
 and
 Close > shortStop * (1+os1/100)
 Then
 begin
-crossind = true;
-buytocover shortbuyingPower1 shares Next Bar at Market;
+crossind1 = true;
+buytocover shortbuyingPower1 Shares Next Bar at Market;
+Alert("MNQ Momentum Horse Model - Exit Short");
 end;
 
-//close 2st short position with trail start moving cross back
+// END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
+
+//close long position with trail start moving cross back
 if marketposition = -1 //there is long position open
 and
-(1-close/entryprice)*100 >= SmallbaseProfit 
+(1-close/entryprice)*100 >= SmallbaseProfit1 
 and
 barssinceentry > 1
 //and
 //Close < longStop * (1-os1/100)
 and
 close cross above emaMid30 
+and
+crossind1 = true
 //and
 //close > lastExitPrice 
+
 Then
 begin
-buytocover shortbuyingPower1 shares Next Bar at Market;
+crossind2 = true;
+buytocover shortbuyingPower1 Shares Next Bar at Market;
+Alert("MNQ Momentum Horse Model - Exit Short");
 end;
+	
 
-//close short position after cross ema 200-1
+	
+//close long position after cross ema 200-1
 if marketposition = -1 //there is long position open
 and
 (1-close/entryprice)*100 >= SmallbaseProfit 
@@ -753,31 +759,38 @@ barssinceentry > 1
 and
 close cross above vBlb1 
 and
-crossind = true
+crossind1 = true
+and
+crossind2 = true
+
 //and
 //close > lastExitPrice 
 Then
 begin
 buytocover Next Bar at Market;
+Alert("MNQ Momentum Horse Model - Exit Short");
 end;
 
-//close short position when go back to entry
-if marketposition = -1 //there is long position open
+	
+//close long position after cross 1 and go break even
+if marketposition = -1//there is long position open
 and
-close cross above entryprice * 0.9933
+close > entryprice * 0.999933
 and
-barssinceentry > 5
+barssinceentry > 3
 //and
 //Close < longStop * (1-os1/100)
 and
-crossind = true
+(
+(crossind1 = true) or (crossind2= true)
+)
 //and
 //close > lastExitPrice 
 Then
 begin
 buytocover Next Bar at Market;
+Alert("MNQ Momentum Horse Model - Exit Short");
 end;
-
 
 
 {
@@ -921,3 +934,4 @@ then
 begin
 SetStopLoss(maximumloss);
 end;
+
