@@ -1,3 +1,4 @@
+
         vars:
         smaFast(0),
         longStop (-9999999),
@@ -139,6 +140,10 @@
         oData1SlowD( 0 ), 
         stochData1(0),
         stochData2(0),
+        
+	crossind1 (false),
+	crossind2 (false),
+	crossind3 (false),
 
         //Triangle
         THign  (0),

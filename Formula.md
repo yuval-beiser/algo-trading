@@ -1,4 +1,5 @@
-     //PL for a day
+                        
+        //PL for a day
         if DATE <> DATE[1] 
         then 
         begin
@@ -132,3 +133,4 @@
         MeanRatio = Average (Ratio , RatioLength);
         DevRatio = StdDev (MeanRatio , RatioLength);
         Zscore = (Ratio - MeanRatio) / DevRatio ;
+

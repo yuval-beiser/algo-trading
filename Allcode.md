@@ -277,6 +277,10 @@
         oData1SlowD( 0 ), 
         stochData1(0),
         stochData2(0),
+        
+	crossind1 (false),
+	crossind2 (false),
+	crossind3 (false),
 
         //Triangle
         THign  (0),
@@ -967,6 +971,26 @@
 	end;
 
 
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind1 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind2 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind3 = False;
+end;
 
 	//close short position with trail start moving after the first bar from entry
 	if marketposition = 0
@@ -1001,7 +1025,7 @@
 	Close < longStop * (1-os1/100)
 	Then
 	begin
-	//crossind = true;
+	crossind1 = true;
 	Sell longbuyingPower Shares Next Bar at Market;
 	end;
 
@@ -1016,13 +1040,63 @@
 	//Close < longStop * (1-os1/100)
 	and
 	close cross below emaMid30 
+	and
+	crossind1 = true
 	//and
 	//close > lastExitPrice 
 	Then
 	begin
-	Sell Next Bar at Market;
+	crossind2 = true;
+	Sell longbuyingPower Shares  Next Bar at Market;
 	end;
 
+
+//close long position after cross ema 200-1
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallbaseProfit 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross below vBub1 
+and
+crossind1 = true
+and
+crossind2 = true
+
+//and
+//close > lastExitPrice 
+Then
+begin
+crossind3 = true;
+Sell  Next Bar at Market;
+end;
+
+	
+//close long position after cross 1 and go break even
+if marketposition = 1 //there is long position open
+and
+close < (entryprice * 1.000067)
+and
+barssinceentry > 3
+//and
+//Close < longStop * (1-os1/100)
+and
+(
+(crossind1 = true)
+or
+(crossind2 = true)
+or
+(crossind3 = true)
+)
+//and
+//close > lastExitPrice 
+Then
+begin
+Sell Next Bar at Market;
+end;
 
         {
         //there is long position open and pass too much time without profit
@@ -1254,6 +1328,7 @@
         SetStopLoss(shortSL);
         end;
         }
+
 
 
 
