@@ -1450,8 +1450,8 @@ then
 if marketposition = -1 //there is short position open
 and
 (1-Close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
+//and
+//barssinceentry <= 2
 //and
 //AngleShort = False
 //and
@@ -1471,6 +1471,22 @@ then
 begin
 shortStop = 9999999;
 end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind1 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind2 = False;
+end;
+
+
 
 if marketposition = -1 //there is long position open
 and
@@ -1497,8 +1513,8 @@ and
 Close > shortStop * (1+os1/100)
 Then
 begin
-crossind = true;
 buytocover shortbuyingPower1 shares Next Bar at Market;
+crossind1 = true;
 end;
 
 //close 2st short position with trail start moving cross back
@@ -1511,12 +1527,16 @@ barssinceentry > 1
 //Close < longStop * (1-os1/100)
 and
 close cross above emaMid30 
+and
+crossind1 = true
 //and
 //close > lastExitPrice 
 Then
 begin
 buytocover shortbuyingPower1 shares Next Bar at Market;
+crossind2 = true;
 end;
+
 
 //close short position after cross ema 200-1
 if marketposition = -1 //there is long position open
@@ -1529,7 +1549,12 @@ barssinceentry > 1
 and
 close cross above vBlb1 
 and
-crossind = true
+(
+(crossind1 = true)
+or
+(crossind2 = true)
+)
+
 //and
 //close > lastExitPrice 
 Then
@@ -1546,7 +1571,12 @@ barssinceentry > 3
 //and
 //Close < longStop * (1-os1/100)
 and
-crossind = true
+(
+(crossind1 = true)
+or
+(crossind2 = true)
+)
+
 //and
 //close > lastExitPrice 
 Then
