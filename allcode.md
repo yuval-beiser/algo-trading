@@ -1,6 +1,6 @@
 //@version=31323-2
 Inputs:
-maximumloss(40), //120 //160
+maximumloss(130), //120 //160
 FastLength(9),
 MidLength(20),
 MidLength1(30),
@@ -39,7 +39,7 @@ MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
 Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
-Maxgap (0.05), //0.O5
+Maxgap (0.1), //0.O5
 Maxgap1 (0.2), //0.2 //0.02 //0.2
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
@@ -47,9 +47,9 @@ maxgap4 (0.26),
 maxgap5 (0.15),
 
 MinProfit (0.00625),
-smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5
+smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5 //0.05
 smallbaseProfit1 (0.1), //0.035 //0.19 //0.02 //0.1 //0.5
-SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
+SmallMinProfit (0.12), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05 //0.02 //0.1
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
 SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
@@ -60,7 +60,7 @@ MaxProfitForAdd (0.1),
 FastMinProfit (0.0625), //0.1125
 MinBaseProfit (0.03),
 MinLossForAdd (0.1), //0.1
-SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025
+SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.003
 largeTrail (0.025),
 MinSQQQTQQQGap (0.09),
 Minbarsfortake (5), //2
@@ -338,7 +338,7 @@ updatedshortSL(maximumloss),
 longSL (0),
 shortSL (0);
 
-//[IntrabarOrderGeneration = True] //trade intra-bar
+[IntrabarOrderGeneration = True] //trade intra-bar
 
 //when no position reset CurShares - number of micro positions in same time 
 if marketposition = 0
@@ -363,10 +363,10 @@ emaverySlow = XAverage(close,VerySlowLength);
 //ema2verySlow = XAverage(close,VerySlowLength)of data2;
 //ema2mid = XAverage(close,MidLength) of data2;
 adxcalc = ADX(adxperiod);
-longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 longbuyingPower1 = 1; // scale in-out
 longbuyingPower2 = 1;
-shortbuyingPower = 1; //3
+shortbuyingPower = 3; //3
 shortbuyingPower1 = 1 ; // scale in-out
 shortbuyingPower2 = 1 ;
 
@@ -549,11 +549,15 @@ and
 //)  
 //and
 //(
-Time = 104.00
-and
-close > maxlist (close [1] , open [1])
+Time = 102.00
+//and
+//close > maxlist (close [1] , open [1])
+//and
+//close cross above high5
 and
 close < (maxlist (close [1] , open [1])) * (1+Maxgap/100)
+and 
+close > high5
 //)
 //and
 //close > Open 
@@ -625,7 +629,6 @@ Close [1] > emaverySlow and Close [2] > emaverySlow
 then 
 begin
 buy longbuyingPower Shares next bar at market  ;
-Alert("MNQ Momentum 1:00 Entry Long Model");
 end;
 
 
@@ -636,11 +639,13 @@ marketposition = 0 //Conditions Entry short
 //(PLTarget < PForDay) and (PLTarget > LForDay) //1
 //)  
 and
-Time = 104.00
-and 
-close < minlist (close [1] , open [1])
+Time = 102.00
+//and 
+//close < minlist (close [1] , open [1])
 and
 close > (minlist (close [1] , open [1])) * (1-Maxgap/100)
+and
+close < low5
 
 //and
 //close < Open //3
@@ -707,7 +712,6 @@ close > (minlist (close [1] , open [1])) * (1-Maxgap/100)
 then 
 begin
 sellshort shortbuyingPower Shares next bar at market  ;
-Alert("MNQ Momentum 1:00 Entry Short Model");
 end;
 
 
@@ -995,7 +999,7 @@ if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 //and
-//barssinceentry <= 1
+//barssinceentry <= 2
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -1005,7 +1009,6 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-Alert("MNQ Momentum 1:00 Model - Exit Long");
 end;
 
 
@@ -1059,7 +1062,6 @@ Then
 begin
 crossind1 = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Long");
 end;
 
 
@@ -1082,7 +1084,6 @@ Then
 begin
 crossind2 = true;
 Sell longbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Long");
 end;
 	
 
@@ -1098,16 +1099,16 @@ barssinceentry > 1
 and
 close cross below vBub1 
 and
-crossind1 = true
-and
-crossind2 = true
-
+(
+(crossind1 = true)
+or
+(crossind2 = true)
+)
 //and
 //close > lastExitPrice 
 Then
 begin
 Sell longbuyingPower Shares Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Long");
 end;
 
 	
@@ -1132,7 +1133,6 @@ crossind2 = true
 Then
 begin
 Sell Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Long");
 end;
 
 
@@ -1147,7 +1147,7 @@ if marketposition = -1 //there is long position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit 
 //and
-//barssinceentry <= 1
+//barssinceentry <= 2
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -1157,7 +1157,6 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
-Alert("MNQ Momentum 1:00 Model - Exit Short");
 end;
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
@@ -1212,7 +1211,6 @@ Then
 begin
 crossind1 = true;
 buytocover shortbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Short");
 end;
 
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
@@ -1236,7 +1234,6 @@ Then
 begin
 crossind2 = true;
 buytocover shortbuyingPower1 Shares Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Short");
 end;
 	
 
@@ -1252,16 +1249,17 @@ barssinceentry > 1
 and
 close cross above vBlb1 
 and
-crossind1 = true
-and
-crossind2 = true
+(
+(crossind1 = true)
+or
+(crossind2 = true)
+)
 
 //and
 //close > lastExitPrice 
 Then
 begin
 buytocover Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Short");
 end;
 
 	
@@ -1282,7 +1280,6 @@ and
 Then
 begin
 buytocover Next Bar at Market;
-Alert("MNQ Momentum 1:00 Model - Exit Short");
 end;
 
 {
@@ -1543,9 +1540,9 @@ end;
 //close short position when go back to entry
 if marketposition = -1 //there is long position open
 and
-close cross above entryprice * 0.9933
+close cross above entryprice * 0.999933
 and
-barssinceentry > 5
+barssinceentry > 3
 //and
 //Close < longStop * (1-os1/100)
 and

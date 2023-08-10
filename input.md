@@ -1,6 +1,6 @@
 //@version=31323-2
 Inputs:
-maximumloss(40), //120 //160
+maximumloss(130), //120 //160
 FastLength(9),
 MidLength(20),
 MidLength1(30),
@@ -39,7 +39,7 @@ MinemaGap (0.0005), // 0.01875
 MaxemaGap (0.025), //0.22  
 Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 Mingap1 (0.01),
-Maxgap (0.05), //0.O5
+Maxgap (0.1), //0.O5
 Maxgap1 (0.2), //0.2 //0.02 //0.2
 Maxgap2 (0.05), //0.2
 maxgap3 (0.09),
@@ -47,9 +47,9 @@ maxgap4 (0.26),
 maxgap5 (0.15),
 
 MinProfit (0.00625),
-smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5
+smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5 //0.05
 smallbaseProfit1 (0.1), //0.035 //0.19 //0.02 //0.1 //0.5
-SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05
+SmallMinProfit (0.12), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05 //0.02 //0.1
 SmallMinProfit1 (0.05), 
 largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
 SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
@@ -60,7 +60,7 @@ MaxProfitForAdd (0.1),
 FastMinProfit (0.0625), //0.1125
 MinBaseProfit (0.03),
 MinLossForAdd (0.1), //0.1
-SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025
+SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.003
 largeTrail (0.025),
 MinSQQQTQQQGap (0.09),
 Minbarsfortake (5), //2

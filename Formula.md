@@ -1,202 +1,147 @@
-//[IntrabarOrderGeneration = True] //trade intra-bar
+//@version=31323-2
+Inputs:
+maximumloss(130), //120 //160
+FastLength(9),
+MidLength(20),
+MidLength1(30),
+SlowLength(50),
+length (5),
+VerySlowLength (200),
+stdDevMultiplier2 (2),
+RsiSlowLength(10),
+RsiFastLength(8),
+TLength (21),
+SLength (21),
+MinGapSlowToMid(0.1),
+RsiMinForLong(40),
+RsiMaxForShort(60),
+MomentumLength(14),
+Longminmom (-0.3),
+Shortmaxmom (0.3),
+ExitBarNum1(12),
+ExitBarNum2(24),
+ExitBarNum3(36),
+ExitBarNum (5),
+MinProfitAfter1Hour(100),
+MinProfitAfter2Hours(150),
+MinProfitAfter3Hours(180),
+CloseAfter1Hour(20),
+CloseAfter2Hour(20), 
+CloseAfter3Hour(40),
+MinProfitForTheDay(200),
+MaxFromLH(0.2), //0.16875
+MinFromLH (0.12),
+MaxFromSR (0.2),
+MaxFromLHEntry (0.75),
+MinFromLHentry (0.15),
+MinKeltnerCross (0.08),
+MinemaGap (0.0005), // 0.01875
+MaxemaGap (0.025), //0.22  
+Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
+Mingap1 (0.01),
+Maxgap (0.1), //0.O5
+Maxgap1 (0.2), //0.2 //0.02 //0.2
+Maxgap2 (0.05), //0.2
+maxgap3 (0.09),
+maxgap4 (0.26),
+maxgap5 (0.15),
 
-//when no position reset CurShares - number of micro positions in same time 
-if marketposition = 0
-then
-CurShares = 0;
+MinProfit (0.00625),
+smallbaseProfit (0.05), //0.035 //0.19 //0.02 //0.1 //0.5 //0.05
+smallbaseProfit1 (0.1), //0.035 //0.19 //0.02 //0.1 //0.5
+SmallMinProfit (0.12), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.0925 //0.25 //0.2 //0.05 //0.02 //0.1
+SmallMinProfit1 (0.05), 
+largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
+SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
+Smallbaseloss (0.03),
+SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
+MinProfitforadd (0.01),
+MaxProfitForAdd (0.1),
+FastMinProfit (0.0625), //0.1125
+MinBaseProfit (0.03),
+MinLossForAdd (0.1), //0.1
+SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.003
+largeTrail (0.025),
+MinSQQQTQQQGap (0.09),
+Minbarsfortake (5), //2
+MinBarsForMove (30), //12
+MaxBarsforadd (1),
+maxpositions (6),
+MinbarsHL (5),
+ExitCrossOS (0.14),
+StopLossOS (0.01875),
+adxperiod (14),
+adxmin(25),
+vwapLength (20),
+SQQQTQQQGap(0.15),
+AtrLength (14),
+Atrmax (15),
+ANGLE_MA1( 8), //25
+ANGLE_MA2( 60 ),
+ANGLE_MA3( 70 ), 
+TailHammerRatio (7),
+MinChanel (3),
+MaxChanel (10),
+Hlocpartlong (2),
+Hlocpartshort (2),
+LTpct (0.3),
+STpct (0.3),
+RatioLength (200),
+ppLength (5),
+os1 (0.0133), //0.03 - offset 
+os2 (0.01),
+os3 (0.0133), // 2$ - 0.133 precent 
 
-//when no position use close bar
-if marketposition = 0
-then
-[IntrabarOrderGeneration = true] //trade intra-bar
+PForDay (1500), //1500 //1950 //100 //800
+LForDay (-200), //-1100 //-500 //-50
 
+//Donchian 
+DonchianLength (20), 
 
-emaFast = XAverage(close,FastLength);
-emaMid = XAverage(close,MidLength);
-emaMid30 = XAverage(close,MidLength1);
-emaSlow = XAverage(close,SlowLength);
-emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
-demafast = emaFast * 2 - emafast1  ;    
-emaverySlow = XAverage(close,VerySlowLength);
-//ema2Fast = XAverage(close,FastLength) of data2;
-//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
-//ema2verySlow = XAverage(close,VerySlowLength)of data2;
-//ema2mid = XAverage(close,MidLength) of data2;
-adxcalc = ADX(adxperiod);
-longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-longbuyingPower1 = 1; // scale in-out
-longbuyingPower2 = 1;
-shortbuyingPower = 1; //3
-shortbuyingPower1 = 1 ; // scale in-out
-shortbuyingPower2 = 1 ;
-
-
-CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
-
-// long stoploss
-if 
-CurShares = 1 
-then 
-longSL = startlongSL
-else 
-longSL = updatedlongSL;
-
-// short stoploss
-if 
-CurShares = 1
-then 
-shortSL = startshortSL
-else 
-shortSL = updatedshortSL;
-
-
-//TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
-//StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
-valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
-//print(Date, Time, "bar=", BarNumber, marketposition, valsdbg ); 
-
-
-//BB HLOC 21
-vBubHLOC = BollingerBand(HLOC ,BUpperBandHLOC,BStedDevHLOC);
-vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
-vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
-HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
-
-emaHLOC = XAverage (HLOC , BUpperBandHLOC);
-stdHLOC = StdDev(HLOC , BUpperBandHLOC);
-
-EHLOCupband = emaHLOC + stdHLOC ;
-EHLOCdownband = emaHLOC  - stdHLOC ;
-EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
-EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
-EHLOCqtr3band = EHLOCupband-((EHLOCupband-EHLOCdownband)/4);
-
-//BB 200 Regular
-vBub1= BollingerBand(close,BUpperBand,BStedDev1);
-vBlb1= BollingerBand(close,BLowerBand, - BStedDev1);
-  
-vBub2= BollingerBand(close,BUpperBand,BStedDev2);
-vBlb2= BollingerBand(close,BLowerBand, - BStedDev2);
-
-vBub3= BollingerBand(close,BUpperBand,BStedDev3);
-vBlb3= BollingerBand(close,BLowerBand, - BStedDev3);
-
-
-//BB 200 Exponencial
-stdclose = StdDev (close, VerySlowLength);
-evBub2 = emaverySlow + (stdDevMultiplier2 * stdclose) ;
-evBlb2 = emaverySlow - (stdDevMultiplier2 * stdclose) ;
-
-{
-//VWAP crossing
-vwap = Average(HLOC * Volume, vwapLength ) / Average(Volume, vwapLength );
-}
 //macd
-vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
-vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
-vDiff = vMacd - vMacdAvg ; // Histogram
+macdFastLength( 12 ), 
+macdSlowLength( 26 ), 
+MACDlineLength( 9 ) ,
+
+//BB
+BStedDev1(1),
+BStedDev2(2), //1.5
+BStedDev3(3),
+BUpperBand(200),
+BLowerBand(200),
+MinFromBB (0.24),
+MaxFromBB (0.8),
+
+//BB HLOC
+BStedDevHLOC (2), 
+BUpperBandHLOC(21), //39
+BLowerBandHLOC(21), //39
 
 //Keltner
-vKeltUp = KeltnerChannel(HLOC ,KUpperBand,KStdAtr);
-vKeltDown = KeltnerChannel(HLOC ,KLowerBand,-KStdAtr);
+KStdAtr(1.5),
+KUpperBand(43),
+KLowerBand(43),
 
-//ATR
-atr =  AvgTrueRange (AtrLength);
-
-// Calculate a switch for identify long or short (for the connection with VXX)
-if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
-is_long_symbol = False;
-
-//volume calc
-//vTicks = Ticks ;
-vAvgTicks= AverageFC( Ticks, AvgVolumeLength) ;
-
-//Zaviot
-MAValue1 = XAverage( Close, FastLength ) ; 
-MASlope1 = ( MAValue1 - MAValue1[1] );// * (Minmove/Pricescale);  // SLOPE = Shipooaa 
-MAAngle1 = ArcTangent( MASlope1 ) ; // ZAVIT = Press F1 to see explain
-         
-MAValue2 = XAverage( Close,MidLength  ) ; 
-MASlope2 = ( MAValue2 - MAValue2[1]);// * (Minmove/Pricescale)  ; 
-MAAngle2 = ArcTangent( MASlope2 ) ; 
-         
-MAValue3 = XAverage( Close, SlowLength ) ; 
-MASlope3 = ( MAValue3 - MAValue3[1] );// * (Minmove/Pricescale)  ; 
-MAAngle3 = ArcTangent( MASlope3 ) ; 
-
-BullAngle = ((MAValue1 > MAValue2) And (MAValue2 > MAValue3)) ;//And (Close Crosses Over  MAValue1);
-BearAngle = ((MAValue1 < MAValue2) And (MAValue2 < MAValue3)) ; //And (Close Crosses Under  MAValue1);
-AngleLong  = (( MAAngle1 > ANGLE_MA1) And (MAAngle1 < ANGLE_MA2 ));
-AngleShort = (( MAAngle1 < ANGLE_MA1 * (-1)) And (MAAngle1 > ANGLE_MA2 * (-1)) );
-
-//Donchian
-DonchianUp = HighestFC (h, DonchianLength );
-DonchianDown = LowestFC (l, DonchianLength );
 
 //Stoch
-stochData1  = Stochastic( H, L, C, StochPiriod1, StochLength1, StochLength2, 1, 
-oData1FastK, oData1FastD, oData1SlowK, oData1SlowD ) ; 
+StochPiriod1( 5 ), //14
+//StochPiriod2( 14 ),
+StochLength1( 5 ), 
+StochLength2( 4 ),
+StochOverBot(74), //76
+StochOverSold(26), //14
+stochmid (50),
 
 //RSI
-vRSI = RSI (close, RsiFastLength);
+RSIOverbot (70),
+RSIoversold (46),
 
-//Triangle
-//The upper boundary or resistance level of the ascending triangle pattern
-THign = Highest(High, TLength);
+double AccountBalance(10000), // Account balance 10,000 $
+PctPerTrade(50),
+TakeProfit (200),
+TakeProfitPct (6.5),
+StopPct (0.025),
 
-//The lower boundary or support level of the ascending triangle pattern
-TLow = Lowest(low, TLength);
-
-//breakout level
-LTBreak = THign  + (TLow - THign)* LTpct;
-STBreak = THign  + (TLow - THign)* STpct;
-
-
-high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
-
-high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
-open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
-
-low9 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
-open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
-
-//Macd
-MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
-SignalLine = XAverage(MACDLine, 9); // Signal line is a 9-period EMA of the MACD line
-Histogram = MACDLine - SignalLine;
-
-//PP
-// Calculate Support and Resistance Levels
-PP = 
-(
-HighestFC(high,ppLength) + LowestFC(low,ppLength) + Close[1] 
-) /3;
-S1 = (2 * PP) - HighestFC(high, ppLength);
-S2 = PP - (HighestFC (high, ppLength) - LowestFC(low, ppLength));
-S3 = LowestFC(low, ppLength) - 2 * (HighestFC (high, ppLength) - PP);
-R1 = (2 * PP) - LowestFC(low, ppLength);
-R2 = PP + (HighestFC(high, ppLength) - LowestFC(low, ppLength));
-R3 = HighestFC(high, ppLength) + 2 * (PP - LowestFC (low, ppLength));
-
-		
-
-{
-//Zcore - Ratio between 2 stocks
-Ratio = close / close of data2;
-MeanRatio = Average (Ratio , RatioLength);
-DevRatio = StdDev (MeanRatio , RatioLength);
-Zscore = (Ratio - MeanRatio) / DevRatio ;
-}
-
-//Exit
-//lastExitPrice = ExitPrice (1); //Assign a value, indicating the exit price of the most recently closed position. 1 - the last position closed (one position back);
-
-
-//PL for a day
-if DATE <> DATE[1] 
-then 
-begin
-NetProf = NetProf + NetProfit - NetProf[1];
-end;
-PLTarget = Netprofit - NetProf;
+//Zscore
+longminzscore (-2),
+shortminzscore (2);
