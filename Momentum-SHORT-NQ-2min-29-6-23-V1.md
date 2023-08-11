@@ -255,6 +255,11 @@
 	//)
 	and
 	Histogram < 0
+	//and
+	//close of data2 < ema2Fast
+	//and
+	//close of data3 < ema3fast
+
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
@@ -549,7 +554,7 @@ if marketposition = -1 //there is long position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit 
 and
-barssinceentry <= 1
+barssinceentry <= 2
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -595,7 +600,7 @@ if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallbaseProfit 
 and
-barssinceentry > 1
+barssinceentry >= 1
 then
 begin
 // Calculate the trailing stop price
@@ -723,4 +728,5 @@ end;
 	begin
 	SetStopLoss(maximumloss);
 	end;
+
 
