@@ -10,7 +10,6 @@
 	then
 	[IntrabarOrderGeneration = true] //trade intra-bar
 
-
 	emaFast = XAverage(close,FastLength);
 	emaMid = XAverage(close,MidLength);
 	emaMid30 = XAverage(close,MidLength1);
@@ -18,6 +17,9 @@
 	emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 	demafast = emaFast * 2 - emafast1  ;    
 	emaverySlow = XAverage(close,VerySlowLength);
+	//ema2Fast = XAverage(close,midLength) of data2;
+	//ema3Fast = XAverage(close,midLength) of data3;
+
 	//ema2Fast = XAverage(close,FastLength) of data2;
 	//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
@@ -27,7 +29,7 @@
 	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 1;
 	shortbuyingPower = 3; //3
-	shortbuyingPower1 = 1 ; // scale in-out
+	shortbuyingPower1 = 1 ; // scale in-out //1
 	shortbuyingPower2 =  1;
 
 

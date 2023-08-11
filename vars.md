@@ -1,4 +1,3 @@
-
 	vars:
 	shortStop (9999999),
 	longStop (-9999999),
@@ -17,6 +16,9 @@
 	ema2preFast (0), 
 	ema2Fast (0),
 	ema2Slow (0),
+
+	ema3Fast (0),
+
 	ema2verySlow (0),
 	ema2mid (0),
 	rsiSlow(0),
