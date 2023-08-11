@@ -1,3 +1,4 @@
+
 	if marketposition = 0 //Conditions Entry Long
 	and
 	(
@@ -80,6 +81,10 @@
 	Histogram > 0
 	//and 
 	//MACDGradient > 0 
+	//and
+	//close of data2 > ema2Fast
+	//and
+	//close of data3 > ema3fast
 
 	then 
 	begin
@@ -376,12 +381,13 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 and
-barssinceentry <= 1
+barssinceentry <= 2
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -429,7 +435,7 @@ if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallbaseProfit 
 and
-barssinceentry > 1
+barssinceentry >= 1
 then
 begin
 // Calculate the trailing stop price
@@ -907,3 +913,4 @@ end;
 	begin
 	SetStopLoss(maximumloss);
 	end;
+

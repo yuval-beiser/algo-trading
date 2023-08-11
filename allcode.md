@@ -44,13 +44,11 @@
 	Maxgap2 (0.05), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.13),
-
-
+	maxgap5 (0.13),//0.13
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P
+	SmallMinProfit (0.12), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
 	SmallMinProfit1 (0.05), 
 	largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
 	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
@@ -61,7 +59,7 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0033), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P
+	SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
 	largeTrail (0.025),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
@@ -165,6 +163,7 @@
 	ema1preFast (0), 
 	ema2preFast (0), 
 	ema2Fast (0),
+	ema3Fast (0),
 	ema2Slow (0),
 	ema2verySlow (0),
 	ema2mid (0),
@@ -367,13 +366,16 @@
 	//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
+	//ema2Fast = XAverage(close,midLength) of data2;
+	//ema3Fast = XAverage(close,midLength) of data3;
+
 	adxcalc = ADX(adxperiod);
 	longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 1; // scale in-out
-	longbuyingPower2 = 3;
-	shortbuyingPower = 4; //3
-	shortbuyingPower1 = 2 ; // scale in-out
-	shortbuyingPower2 = 3 ;
+	longbuyingPower1 = 1; // scale in-out //1
+	longbuyingPower2 = 1;
+	shortbuyingPower = 3; //3
+	shortbuyingPower1 = 1 ; // scale in-out
+	shortbuyingPower2 = 1 ;
 
 
 	CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -630,6 +632,10 @@
 	Histogram > 0
 	//and 
 	//MACDGradient > 0 
+	//and
+	//close of data2 > ema2Fast
+	//and
+	//close of data3 > ema3fast
 
 	then 
 	begin
@@ -926,12 +932,13 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 and
-barssinceentry <= 1
+barssinceentry <= 2
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -979,7 +986,7 @@ if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallbaseProfit 
 and
-barssinceentry > 1
+barssinceentry >= 1
 then
 begin
 // Calculate the trailing stop price
@@ -1642,6 +1649,5 @@ end;
 	  "MinGapSlowToMid=", MinGapSlowToMid,  
 	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 	}
-
 
 
