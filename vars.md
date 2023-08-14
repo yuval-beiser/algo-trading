@@ -15,7 +15,6 @@
 	ema1preFast (0), 
 	ema2preFast (0), 
 	ema2Fast (0),
-	ema3Fast (0),
 	ema2Slow (0),
 	ema2verySlow (0),
 	ema2mid (0),
@@ -193,4 +192,3 @@
 	updatedshortSL(maximumloss),
 	longSL (0),
 	shortSL (0);
-

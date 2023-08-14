@@ -1,4 +1,3 @@
-
 	//[IntrabarOrderGeneration = True] //trade intra-bar
 
 	//when no position reset CurShares - number of micro positions in same time 
@@ -23,16 +22,13 @@
 	//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
-	//ema2Fast = XAverage(close,midLength) of data2;
-	//ema3Fast = XAverage(close,midLength) of data3;
-
 	adxcalc = ADX(adxperiod);
 	longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 1; // scale in-out //1
-	longbuyingPower2 = 1;
-	shortbuyingPower = 3; //3
-	shortbuyingPower1 = 1 ; // scale in-out
-	shortbuyingPower2 = 1 ;
+	longbuyingPower1 = 1; // scale in-out
+	longbuyingPower2 = 3;
+	shortbuyingPower = 4; //3
+	shortbuyingPower1 = 2 ; // scale in-out
+	shortbuyingPower2 = 3 ;
 
 
 	CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -205,4 +201,3 @@
 	NetProf = NetProf + NetProfit - NetProf[1];
 	end;
 	PLTarget = Netprofit - NetProf;
-
