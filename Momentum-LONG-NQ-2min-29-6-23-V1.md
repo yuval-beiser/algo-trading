@@ -1,9 +1,9 @@
 
 	if marketposition = 0 //Conditions Entry Long
-	and
-	(
-	(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	)  
+	//and
+	//(
+	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	//)  
 	//and
 	//(
 	//(Time > 600.00) and (Time < 2200.00) //long time
@@ -47,10 +47,12 @@
 	//emaMid > emaVerySlow
 		and 
 	atr < Atrmax
-	and
-	close > lowD (0) * (1+Mingap/100)
+	//and
+	//close > lowD (0) * (1+Mingap/100)
 	and
 	DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-Mingap2/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -79,12 +81,10 @@
 	//)
 	and
 	Histogram > 0
+	//and
+	//MACDLine >= 0
 	//and 
 	//MACDGradient > 0 
-	//and
-	//close of data2 > ema2Fast
-	//and
-	//close of data3 > ema3fast
 
 	then 
 	begin
@@ -381,13 +381,12 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
-
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 and
-barssinceentry <= 2
+barssinceentry <= 1
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -435,7 +434,7 @@ if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallbaseProfit 
 and
-barssinceentry >= 1
+barssinceentry > 1
 then
 begin
 // Calculate the trailing stop price
@@ -485,7 +484,6 @@ crossind2 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
 	
-
 	
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
@@ -496,7 +494,7 @@ barssinceentry > 1
 //and
 //Close < longStop * (1-os1/100)
 and
-close cross below vBub1 
+close cross below vBub1
 and
 crossind1 = true
 and
@@ -509,6 +507,27 @@ begin
 Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
+end;
+
+
+
+//close long position with trail start moving after large profit in the first bar from entry
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 1
+//and
+//crossind1 = true
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = Highest(high , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+sell  next bar at trailExit  stop;
 end;
 
 	
@@ -899,17 +918,18 @@ end;
 	end;
 	}
 
-
 	//SetProfitTarget;
 	if marketposition = 1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 	end;
 
-
+{
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 	end;
+}
+
