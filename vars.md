@@ -1,13 +1,12 @@
-
 vars:
 smaFast(0),
 smaMid(0),
+emaMid30 (0),
 ema3VerySlow (0),
 emaVerySlow (0),
 smaSlow(0),
 emaSlow (0),
 emaFast(0),
-emaMid30 (0),
 emafast1 (0),
 demafast (0),
 ema1preFast (0), 
@@ -21,7 +20,11 @@ mom (0),
 vwap(0), 
 adxcalc (0),
 buyingPower(0),
-buyingPower1 (0),
+longbuyingPower (0),
+longbuyingPower1 (0),
+shortbuyingPower (0),
+shortbuyingPower1 (0),
+
 curProfit(0),
 TakeProfitAmt (0),
 StopAmt (0),
@@ -67,10 +70,6 @@ valuePercentTrail(0),
 
 is_long_symbol(true),
 
-crossind1 (false),
-crossind2 (false),
-crossind3 (false),
-
 //Macd
 MACDLine (0),
 SignalLine (0),
@@ -98,4 +97,9 @@ DonchianMid (0),
 //RSI
 vRSI (0),
 
+crossind1 (false),
+crossind2 (false),
+crossind3 (false),
+
+//vars:
 longStop (-9999999);

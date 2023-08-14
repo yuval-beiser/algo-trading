@@ -4,7 +4,7 @@ FastLength(9),
 MidLength(20),
 SlowLength(50), //50
 VerySlowLength(200),
-MidLength1(30),
+MidLength1 (30),
 RatioLength (200),
 RsiSlowLength(14),
 RsiFastLength(14),
@@ -36,13 +36,12 @@ MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 
 Mingap (1),
 MinFromCloseD1 (1),
 SmallMinProfit (0.12), //1.4 //1.5
-smallbaseProfit (0.05),
-smallbaseProfit1 (0.05), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
+smallbaseProfit (0.033),
+smallbaseProfit1 (0.059),
 LargeMinProfit (2.5),
-SmallTrail (0.05), //0.04375 with stochastic //0.00625 //0.3
+SmallTrail (0.03), //0.04375 with stochastic //0.00625 //0.3
 largeTrail (1.6),
 FastTrail (0.22),
-os1 (0.0133),
 MinBaseProfit (1.5), //
 MinBaseProfit1 (2), 
 CrossEMAos (0.27),
@@ -63,11 +62,12 @@ LongMultiplierPower (1),
 TakeProfit (200),
 TakeProfitPct (6),
 StopPct (2.1), //30.4.23, Change from 2.5% 
+os1 (0.0133),
 SL(200),
 PForDay (2000), //1500
 LForDay (-50), //-1100
-longSL(150), //240
-shortSL(150), //240
+longSL(200), //
+shortSL(200), //300
 
 
 //BB
@@ -98,17 +98,15 @@ RSIoversold (40),
 longminzscore (-2),
 shortminzscore (2);
 
-
-
 vars:
 smaFast(0),
 smaMid(0),
+emaMid30 (0),
 ema3VerySlow (0),
 emaVerySlow (0),
 smaSlow(0),
 emaSlow (0),
 emaFast(0),
-emaMid30 (0),
 emafast1 (0),
 demafast (0),
 ema1preFast (0), 
@@ -122,7 +120,11 @@ mom (0),
 vwap(0), 
 adxcalc (0),
 buyingPower(0),
-buyingPower1 (0),
+longbuyingPower (0),
+longbuyingPower1 (0),
+shortbuyingPower (0),
+shortbuyingPower1 (0),
+
 curProfit(0),
 TakeProfitAmt (0),
 StopAmt (0),
@@ -168,10 +170,6 @@ valuePercentTrail(0),
 
 is_long_symbol(true),
 
-crossind1 (false),
-crossind2 (false),
-crossind3 (false),
-
 //Macd
 MACDLine (0),
 SignalLine (0),
@@ -199,13 +197,17 @@ DonchianMid (0),
 //RSI
 vRSI (0),
 
+crossind1 (false),
+crossind2 (false),
+crossind3 (false),
+
 //vars:
 longStop (-9999999);
 
 
 if marketposition = 0
 then
-[IntrabarOrderGeneration = true] //trade intra-bar
+[IntrabarOrderGeneration = false] //trade intra-bar
                         
 smaFast = Average(close,FastLength);
 smaMid = Average(close,MidLength);
@@ -215,7 +217,6 @@ emaSlow = XAverage(close,SlowLength);
 emaverySlow = XAverage(close,VerySlowLength);
 emaFast = XAverage(close,FastLength);
 emaMid30 = XAverage(close,MidLength1);
-
 
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
@@ -227,8 +228,17 @@ rsiSlow = rsi(close,RsiSlowLength);
 rsiFast = rsi(close,RsiFastLength);
 mom = Momentum(close, MomentumLength);
 adxcalc = ADX(adxperiod);
-buyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
-buyingPower1 = 1;
+//buyingPower = 1;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
+
+longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+longbuyingPower1 = 1; // scale in-out
+//longbuyingPower2 = 1;
+shortbuyingPower = 3; //3
+shortbuyingPower1 = 1 ; // scale in-out
+//shortbuyingPower2 = 1 ;
+
+
+
 TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
 StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
 valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
@@ -529,7 +539,7 @@ and
 
 then 
 Begin
-buy Floor(buyingPower) Shares next bar at market  ;
+buy Floor(longbuyingPower) Shares next bar at market  ;
 End;
 
 
@@ -644,10 +654,9 @@ and Histogram < 0
 //((close cross below emaFast of data3) or (close[1] cross below emaFast of data3 [1]))  //I
 then 
 Begin
-sellshort Floor(buyingPower) Shares next bar at market;
+sellshort Floor(shortbuyingPower ) Shares next bar at market;
+Alert("MGC Reversal Long Model");
 End;
-
-
 End;
 
 if marketposition = 1
@@ -659,16 +668,15 @@ if marketposition = 1 //there is long position open
 and
 (Close/entryprice-1)*100 >= SmallMinProfit 
 and
-barssinceentry <= 2
+barssinceentry <= 1
 then 
 begin
 valuePercentTrail = ((entryprice * SmallTrailStop ) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit + valuePercentTrail; //          
 sell next bar at trailExit  stop;
+Alert("MGC Reversal Model - Exit Long");
 end;
-
-
 
 //close short position with trail start moving after the first bar from entry
 if marketposition = 0
@@ -676,7 +684,6 @@ then
 begin
 longStop = -9999999;
 end;
-
 
 //reset crossind 
 if marketposition = 0
@@ -702,11 +709,9 @@ end;
 
 if marketposition = 1 //there is long position open
 and
-(close/entryprice-1)*100 >= smallbaseProfit 
-and 
+(close/entryprice-1)*100 >= SmallbaseProfit 
+and
 barssinceentry > 1
-//and
-//barssinceentry >= 5
 then
 begin
 // Calculate the trailing stop price
@@ -727,7 +732,7 @@ and
 Close < longStop * (1-os1/100)
 Then
 begin
-Sell buyingPower1 Shares Next Bar at Market;
+Sell longbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
 end;
 
@@ -746,14 +751,13 @@ and
 crossind1 = true
 //and
 //close > lastExitPrice 
-
 Then
 begin
-Sell buyingPower1 Shares Next Bar at Market;
+Sell longbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
+
 end;
 	
-
 	
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
@@ -764,20 +768,39 @@ barssinceentry > 1
 //and
 //Close < longStop * (1-os1/100)
 and
-close cross below vBub1 
+close cross below vBub1
 and
-(
-(crossind1 = true)
-or
-(crossind2 = true)
-)
+crossind1 = true
+and
+crossind2 = true
 
 //and
 //close > lastExitPrice 
 Then
 begin
-Sell buyingPower Shares Next Bar at Market;
+Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
+
+end;
+
+
+//close long position with trail start moving after large profit in the first bar from entry
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 1
+//and
+//crossind1 = true
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = Highest(high , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+sell  next bar at trailExit  stop;
 end;
 
 	
@@ -802,7 +825,9 @@ or
 Then
 begin
 Sell Next Bar at Market;
+
 end;
+
 
 {
 //close long position with trail start moving after large profit 
@@ -925,7 +950,7 @@ if marketposition = -1 //there is long position open
 and
 (1-Close/entryprice)*100 >= SmallMinProfit 
 and 
-barssinceentry <= 2
+barssinceentry <= 1
 //and
 //close of data2 < ema2Fast
 //and
@@ -959,21 +984,41 @@ begin
 shortStop = 9999999;
 end;
 
-if marketposition = -1 //there is long position open
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind1 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind2 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind3 = False;
+end;
+
+if marketposition = -1 //there is short position open
 and
-(1-Close/entryprice)*100 >= smallbaseProfit 
+(1-close/entryprice)*100 >= SmallbaseProfit 
 and
-barssinceentry > 1 
+barssinceentry > 1
 then
 begin
 // Calculate the trailing stop price
-if High[1] < shortStop 
+if high [1] < shortStop 
 then
 begin
-shortStop = High[1];
+shortStop = high[1];
 end;
 end;
-
 
 //close 1st short position with trail start moving cross back
 if marketposition = -1 //there is long position open
@@ -985,9 +1030,11 @@ and
 Close > shortStop * (1+os1/100)
 Then
 begin
-buytocover buyingPower1 Shares Next Bar at Market;
+buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
 end;
+
+// END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 
 //close long position with trail start moving cross back
 if marketposition = -1 //there is long position open
@@ -1006,11 +1053,10 @@ crossind1 = true
 
 Then
 begin
-buytocover buyingPower1 Shares Next Bar at Market;
+buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
 end;
 	
-
 	
 //close long position after cross ema 200-1
 if marketposition = -1 //there is long position open
@@ -1023,11 +1069,9 @@ barssinceentry > 1
 and
 close cross above vBlb1 
 and
-(
-(crossind1 = true)
-or
-(crossind2 = true)
-)
+crossind1 = true
+and
+crossind2 = true
 
 //and
 //close > lastExitPrice 
@@ -1035,6 +1079,23 @@ Then
 begin
 buytocover Next Bar at Market;
 crossind3 = true;
+end;
+
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 2
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
 end;
 
 	

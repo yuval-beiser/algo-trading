@@ -1,7 +1,6 @@
-
 if marketposition = 0
 then
-[IntrabarOrderGeneration = true] //trade intra-bar
+[IntrabarOrderGeneration = false] //trade intra-bar
                         
 smaFast = Average(close,FastLength);
 smaMid = Average(close,MidLength);
@@ -11,7 +10,6 @@ emaSlow = XAverage(close,SlowLength);
 emaverySlow = XAverage(close,VerySlowLength);
 emaFast = XAverage(close,FastLength);
 emaMid30 = XAverage(close,MidLength1);
-
 
 emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 demafast = emaFast * 2 - emafast1  ;    
@@ -23,8 +21,17 @@ rsiSlow = rsi(close,RsiSlowLength);
 rsiFast = rsi(close,RsiFastLength);
 mom = Momentum(close, MomentumLength);
 adxcalc = ADX(adxperiod);
-buyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
-buyingPower1 = 1;
+//buyingPower = 1;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy
+
+longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+longbuyingPower1 = 1; // scale in-out
+//longbuyingPower2 = 1;
+shortbuyingPower = 3; //3
+shortbuyingPower1 = 1 ; // scale in-out
+//shortbuyingPower2 = 1 ;
+
+
+
 TakeProfitAmt = AccountBalance*PctPerTrade/100*TakeProfitPct/100;
 StopAmt = AccountBalance*PctPerTrade/100*StopPct/100;
 valsdbg = "close=" + NumToStr(close ,2) + " dailyhigh=" + NumToStr(dailyhigh ,2) + " dailylow =" + NumToStr(dailylow ,2); // + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2) + " close =" + NumToStr(close ,2);
@@ -80,3 +87,8 @@ begin
 NetProf = NetProf + NetProfit - NetProf[1];
 end;
 PLTarget = Netprofit - NetProf;
+
+
+//calc a switch for identify long or short (for the connection with VXX)
+if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
+is_long_symbol = False;

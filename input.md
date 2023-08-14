@@ -4,7 +4,7 @@ FastLength(9),
 MidLength(20),
 SlowLength(50), //50
 VerySlowLength(200),
-MidLength1(30),
+MidLength1 (30),
 RatioLength (200),
 RsiSlowLength(14),
 RsiFastLength(14),
@@ -36,13 +36,12 @@ MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 
 Mingap (1),
 MinFromCloseD1 (1),
 SmallMinProfit (0.12), //1.4 //1.5
-smallbaseProfit (0.05),
-smallbaseProfit1 (0.05), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
+smallbaseProfit (0.033),
+smallbaseProfit1 (0.059),
 LargeMinProfit (2.5),
-SmallTrail (0.05), //0.04375 with stochastic //0.00625 //0.3
+SmallTrail (0.03), //0.04375 with stochastic //0.00625 //0.3
 largeTrail (1.6),
 FastTrail (0.22),
-os1 (0.0133),
 MinBaseProfit (1.5), //
 MinBaseProfit1 (2), 
 CrossEMAos (0.27),
@@ -63,11 +62,12 @@ LongMultiplierPower (1),
 TakeProfit (200),
 TakeProfitPct (6),
 StopPct (2.1), //30.4.23, Change from 2.5% 
+os1 (0.0133),
 SL(200),
 PForDay (2000), //1500
 LForDay (-50), //-1100
-longSL(150), //240
-shortSL(150), //240
+longSL(200), //
+shortSL(200), //300
 
 
 //BB
