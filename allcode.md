@@ -1,10 +1,11 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(1300), //120 //160
+	maximumloss(0.143), //120 //160
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
+	AssetMultiplier (20), //2=micro , 20=mini
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -50,9 +51,9 @@
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.12), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
+	SmallMinProfit (0.133), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
 	SmallMinProfit1 (0.05), 
-	largeMinProfit (0.04), //after 10 pips start trail of 8 pips //0.09375
+	largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
 	Smallbaseloss (0.03),
 	SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
@@ -61,8 +62,8 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
-	largeTrail (0.025),
+	SmallTrail (0.02), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
+	largeTrail (0.09),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
 	MinBarsForMove (30), //12
@@ -166,9 +167,6 @@
 	ema2preFast (0), 
 	ema2Fast (0),
 	ema2Slow (0),
-
-	ema3Fast (0),
-
 	ema2verySlow (0),
 	ema2mid (0),
 	rsiSlow(0),
@@ -357,6 +355,7 @@
 	then
 	[IntrabarOrderGeneration = true] //trade intra-bar
 
+
 	emaFast = XAverage(close,FastLength);
 	emaMid = XAverage(close,MidLength);
 	emaMid30 = XAverage(close,MidLength1);
@@ -364,9 +363,6 @@
 	emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 	demafast = emaFast * 2 - emafast1  ;    
 	emaverySlow = XAverage(close,VerySlowLength);
-	//ema2Fast = XAverage(close,midLength) of data2;
-	//ema3Fast = XAverage(close,midLength) of data3;
-
 	//ema2Fast = XAverage(close,FastLength) of data2;
 	//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
@@ -376,7 +372,7 @@
 	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 1;
 	shortbuyingPower = 3; //3
-	shortbuyingPower1 = 1 ; // scale in-out //1
+	shortbuyingPower1 = 1 ; // scale in-out
 	shortbuyingPower2 =  1;
 
 
@@ -728,10 +724,10 @@
 	
 	if         
 	marketposition = 0 //Conditions Entry short
-	and
-	(
-	(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	)  
+	//and
+	//(
+	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	//)  
 	//and
 	//(
 	//(Time > 600.00) and (Time < 2200.00) //long time
@@ -807,11 +803,6 @@
 	//)
 	and
 	Histogram < 0
-	//and
-	//close of data2 < ema2Fast
-	//and
-	//close of data3 < ema3fast
-
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
@@ -1106,7 +1097,7 @@ if marketposition = -1 //there is long position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit 
 and
-barssinceentry <= 2
+barssinceentry <= 1
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -1152,7 +1143,7 @@ if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallbaseProfit 
 and
-barssinceentry >= 1
+barssinceentry > 1
 then
 begin
 // Calculate the trailing stop price
@@ -1226,6 +1217,23 @@ buytocover Next Bar at Market;
 crossind3 = true;
 end;
 
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 2
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
+end;
+
 	
 //close long position after cross 1 and go break even
 if marketposition = -1//there is long position open
@@ -1266,19 +1274,19 @@ end;
 	end;
 	}
 
-
+{
 	//SetProfitTarget;
 	if marketposition = 1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
-
+}
 
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
 
 
