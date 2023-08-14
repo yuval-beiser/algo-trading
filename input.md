@@ -3,6 +3,9 @@ Inputs:
 FastLength(9),
 MidLength(20),
 SlowLength(50), //50
+MidLength1 (30),
+AssetMultiplier (20),
+maximumloss(0.143),
 VerySlowLength(200),
 RatioLength (200),
 RsiSlowLength(14),
@@ -34,11 +37,14 @@ MinEMAGap (0.16), // 11.2.23, Increased from 0.16 for filtering false cross // d
 MaxEMAGap (0.8), // check if need to deacrease for Intrabar !!!  0.8, change to 1.5 just for testing
 Mingap (1),
 MinFromCloseD1 (1),
-SmallMinProfit (0.1), //1.4 //1.5 //0.1 //0.03
-smallbaseProfit (0.05), //0.2
-LargeMinProfit (2.5),
-SmallTrail (0.01875), //0.04375 with stochastic //0.00625 //0.3
-largeTrail (1.6),
+
+smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
+smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
+SmallMinProfit (0.133), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
+SmallTrail (0.02), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
+
+LargeMinProfit (0.44),
+largeTrail (0.09),
 FastTrail (0.22),
 
 MinBaseProfit (1.5), //
@@ -64,8 +70,8 @@ StopPct (2.1), //30.4.23, Change from 2.5%
 SL(240),
 PForDay (2000), //1500
 LForDay (-180), //-1100
-longSL(220), //
-shortSL(220), //300
+//longSL(140), //
+//shortSL(140), //300
 os1 (0.0133), //0.03 - offset 
 os2 (0.01),
 os3 (0.0133), // 2$ - 0.133 precent 

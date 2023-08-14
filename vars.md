@@ -2,6 +2,7 @@ vars:
 smaFast(0),
 smaMid(0),
 ema3VerySlow (0),
+emaMid30 (0),
 emaVerySlow (0),
 smaSlow(0),
 emaSlow (0),
@@ -35,6 +36,10 @@ vVOL(0),
 vAvgVol(0),
 vTicks(0),
 vAvgTicks(0),
+
+crossind1 (false),
+crossind2 (false),
+crossind3 (false),
 
 //BB
 vStd(0),
@@ -75,6 +80,14 @@ PLTarget(0),
 
 atr (0),
 
+
+longbuyingPower (0),
+longbuyingPower1 (0),// scale in-out
+shortbuyingPower (0), //
+shortbuyingPower1 (0), // scale in-out
+longbuyingPower2 (0),
+shortbuyingPower2 (0),
+
 //Stoch
 oData1FastK( 0 ),
 oData1FastD( 0 ), 
@@ -100,3 +113,4 @@ high5 (0),
 low5 (0),
 high9 (0),
 low9 (0);
+
