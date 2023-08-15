@@ -1,3 +1,4 @@
+
 	vars:
 	shortStop (9999999),
 	longStop (-9999999),
@@ -192,3 +193,4 @@
 	updatedshortSL(maximumloss),
 	longSL (0),
 	shortSL (0);
+
