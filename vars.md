@@ -1,3 +1,4 @@
+
 	vars:
 	shortStop (9999999),
 	longStop (-9999999),
@@ -191,3 +192,10 @@
 	updatedshortSL(maximumloss),
 	longSL (0),
 	shortSL (0);
+
+	//[IntrabarOrderGeneration = True] //trade intra-bar
+
+	//when no position reset CurShares - number of micro positions in same time 
+	if marketposition = 0
+	then
+	CurShares = 0;

@@ -1,11 +1,3 @@
-
-	//[IntrabarOrderGeneration = True] //trade intra-bar
-
-	//when no position reset CurShares - number of micro positions in same time 
-	if marketposition = 0
-	then
-	CurShares = 0;
-
 	//when no position use close bar
 	if marketposition = 0
 	then
@@ -203,4 +195,3 @@
 	end;
 	PLTarget = Netprofit - NetProf;
 
-{
