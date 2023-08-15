@@ -4,7 +4,7 @@ FastLength(9),
 MidLength(20),
 SlowLength(50), //50
 MidLength1 (30),
-AssetMultiplier (20),
+AssetMultiplier (2), //2 = MICRO
 maximumloss(0.143),
 VerySlowLength(200),
 RatioLength (200),
