@@ -387,8 +387,8 @@ then
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
+//and
+//barssinceentry <= 1
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -400,6 +400,7 @@ trailExit = trailProfit - valuePercentTrail;
 sell  next bar at trailExit  stop;
 Alert("MNQ Momentum Model - Exit Long");
 end;
+
 
 //close short position with trail (based on low prev) start moving after the first bar from entry
 if marketposition = 0
@@ -933,3 +934,4 @@ end;
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 	end;
 }
+
