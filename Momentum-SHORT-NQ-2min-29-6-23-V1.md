@@ -176,10 +176,10 @@
 	
 	if         
 	marketposition = 0 //Conditions Entry short
-	//and
-	//(
-	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	//)  
+	and
+	(
+	(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	)  
 	//and
 	//(
 	//(Time > 600.00) and (Time < 2200.00) //long time
@@ -225,10 +225,8 @@
 	atr < Atrmax
 	//and
 	//close < HIGHD (0) * (1-Mingap/100)
-//and
-	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	and
-	low9 > high9 * (1-maxgap5/100)
+	DonchianDown > DonchianUp * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -728,19 +726,18 @@ end;
 	end;
 	}
 
-{
+
 	//SetProfitTarget;
 	if marketposition = 1
 	then
 	begin
-	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
+	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
 	end;
-}
+
 
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
+	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
 	end;
-
 
