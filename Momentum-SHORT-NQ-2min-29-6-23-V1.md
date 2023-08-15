@@ -176,10 +176,10 @@
 	
 	if         
 	marketposition = 0 //Conditions Entry short
-	and
-	(
-	(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	)  
+	//and
+	//(
+	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	//)  
 	//and
 	//(
 	//(Time > 600.00) and (Time < 2200.00) //long time
@@ -225,8 +225,10 @@
 	atr < Atrmax
 	//and
 	//close < HIGHD (0) * (1-Mingap/100)
+//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	low9 > high9 * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -255,11 +257,6 @@
 	//)
 	and
 	Histogram < 0
-	//and
-	//close of data2 < ema2Fast
-	//and
-	//close of data3 < ema3fast
-
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
@@ -554,7 +551,7 @@ if marketposition = -1 //there is long position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit 
 and
-barssinceentry <= 2
+barssinceentry <= 1
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -600,7 +597,7 @@ if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallbaseProfit 
 and
-barssinceentry >= 1
+barssinceentry > 1
 then
 begin
 // Calculate the trailing stop price
@@ -674,6 +671,23 @@ buytocover Next Bar at Market;
 crossind3 = true;
 end;
 
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 2
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
+end;
+
 	
 //close long position after cross 1 and go break even
 if marketposition = -1//there is long position open
@@ -714,19 +728,19 @@ end;
 	end;
 	}
 
-
+{
 	//SetProfitTarget;
 	if marketposition = 1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
-
+}
 
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(maximumloss);
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
 
 

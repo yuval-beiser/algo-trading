@@ -17,9 +17,6 @@
 	ema2preFast (0), 
 	ema2Fast (0),
 	ema2Slow (0),
-
-	ema3Fast (0),
-
 	ema2verySlow (0),
 	ema2mid (0),
 	rsiSlow(0),
@@ -195,3 +192,35 @@
 	updatedshortSL(maximumloss),
 	longSL (0),
 	shortSL (0);
+
+	//[IntrabarOrderGeneration = True] //trade intra-bar
+
+	//when no position reset CurShares - number of micro positions in same time 
+	if marketposition = 0
+	then
+	CurShares = 0;
+
+	//when no position use close bar
+	if marketposition = 0
+	then
+	[IntrabarOrderGeneration = true] //trade intra-bar
+
+
+	emaFast = XAverage(close,FastLength);
+	emaMid = XAverage(close,MidLength);
+	emaMid30 = XAverage(close,MidLength1);
+	emaSlow = XAverage(close,SlowLength);
+	emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
+	demafast = emaFast * 2 - emafast1  ;    
+	emaverySlow = XAverage(close,VerySlowLength);
+	//ema2Fast = XAverage(close,FastLength) of data2;
+	//ema2Slow = 0;//XAverage(close ,slowLength) of data2;
+	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
+	//ema2mid = XAverage(close,MidLength) of data2;
+	adxcalc = ADX(adxperiod);
+	longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+	longbuyingPower1 = 1; // scale in-out
+	longbuyingPower2 = 1;
+	shortbuyingPower = 3; //3
+	shortbuyingPower1 = 1 ; // scale in-out
+	shortbuyingPower2 =  1;
