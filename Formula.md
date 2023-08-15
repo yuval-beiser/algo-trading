@@ -202,4 +202,3 @@
 	NetProf = NetProf + NetProfit - NetProf[1];
 	end;
 	PLTarget = Netprofit - NetProf;
-

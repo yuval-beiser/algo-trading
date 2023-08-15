@@ -47,14 +47,10 @@
 	//emaMid > emaVerySlow
 		and 
 	atr < Atrmax
-	//and
-	//close > lowD (0) * (1+Mingap/100)
-	//and
-	//DonchianDown > DonchianUp * (1-maxgap5/100)
-	//and
-	//DonchianDown > DonchianUp * (1-Mingap2/100)
 	and
-	low9 > high9 * (1-maxgap5/100)
+	close > lowD (0) * (1+Mingap/100)
+	and
+	DonchianDown > DonchianUp * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -83,8 +79,6 @@
 	//)
 	and
 	Histogram > 0
-	//and
-	//MACDLine >= 0
 	//and 
 	//MACDGradient > 0 
 
@@ -401,6 +395,7 @@ sell  next bar at trailExit  stop;
 Alert("MNQ Momentum Model - Exit Long");
 end;
 
+
 //close short position with trail (based on low prev) start moving after the first bar from entry
 if marketposition = 0
 then
@@ -485,6 +480,7 @@ crossind2 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
 	
+
 	
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
@@ -495,7 +491,7 @@ barssinceentry > 1
 //and
 //Close < longStop * (1-os1/100)
 and
-close cross below vBub1
+close cross below vBub1 
 and
 crossind1 = true
 and
@@ -509,8 +505,6 @@ Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
 Alert("MNQ Momentum Model - Exit Long 1");
 end;
-
-
 
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
@@ -923,13 +917,13 @@ end;
 	if marketposition = 1
 	then
 	begin
-	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
+	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
 	end;
 
-{
+
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
+	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
 	end;
-}
+
