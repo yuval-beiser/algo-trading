@@ -48,10 +48,12 @@
 	atr < Atrmax
 	//and
 	//close > lowD (0) * (1+Mingap/100)
-	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	//and
 	//DonchianDown > DonchianUp * (1-Mingap2/100)
+	and
+	low9 > high9 * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *

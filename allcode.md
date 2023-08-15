@@ -5,7 +5,7 @@
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
-	AssetMultiplier (20),
+	AssetMultiplier (20), //2=MICRO ; 20=MINI
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -47,7 +47,7 @@
 	Maxgap2 (0.05), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.13), //0.13
+	maxgap5 (0.1), //0.13
 
 
 	MinProfit (0.00625),
@@ -601,10 +601,12 @@
 	atr < Atrmax
 	//and
 	//close > lowD (0) * (1+Mingap/100)
-	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	//and
 	//DonchianDown > DonchianUp * (1-Mingap2/100)
+	and
+	low9 > high9 * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -1668,6 +1670,8 @@ end;
 	  "MinGapSlowToMid=", MinGapSlowToMid,  
 	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 	}
+
+
 
 
 
