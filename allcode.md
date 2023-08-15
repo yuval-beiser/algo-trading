@@ -45,7 +45,7 @@
 	Maxgap2 (0.05), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.13),
+	maxgap5 (0.1),
 
 
 	MinProfit (0.00625),
@@ -773,8 +773,13 @@
 	atr < Atrmax
 	//and
 	//close < HIGHD (0) * (1-Mingap/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	low9 > high9 * (1-maxgap5/100)
+
+
+	
 
 	//and
 	//close < low5 * (1+maxgap4/100) *

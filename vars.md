@@ -1,4 +1,3 @@
-
 	vars:
 	shortStop (9999999),
 	longStop (-9999999),

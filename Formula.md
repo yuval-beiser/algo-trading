@@ -1,3 +1,4 @@
+
 	//[IntrabarOrderGeneration = True] //trade intra-bar
 
 	//when no position reset CurShares - number of micro positions in same time 
@@ -201,3 +202,5 @@
 	NetProf = NetProf + NetProfit - NetProf[1];
 	end;
 	PLTarget = Netprofit - NetProf;
+
+{
