@@ -47,7 +47,7 @@
 	Maxgap2 (0.05), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.13), //0.13
+	maxgap5 (0.1), //0.13
 
 
 	MinProfit (0.00625),

@@ -49,10 +49,12 @@
 	atr < Atrmax
 	//and
 	//close > lowD (0) * (1+Mingap/100)
-	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
 	//and
 	//DonchianDown > DonchianUp * (1-Mingap2/100)
+	and
+	low9 > high9 * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -398,7 +400,6 @@ trailExit = trailProfit - valuePercentTrail;
 sell  next bar at trailExit  stop;
 Alert("MNQ Momentum Model - Exit Long");
 end;
-
 
 //close short position with trail (based on low prev) start moving after the first bar from entry
 if marketposition = 0
@@ -932,4 +933,3 @@ end;
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 	end;
 }
-
