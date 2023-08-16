@@ -1,4 +1,3 @@
-
 vars:
 smaFast(0),
 smaMid(0),

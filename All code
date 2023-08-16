@@ -326,7 +326,6 @@ PLTarget = Netprofit - NetProf;
 if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
 is_long_symbol = False;
 
-
 {
 if marketposition = 0 then 
 begin
@@ -435,6 +434,7 @@ print ( "REV  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position"
 
 // CONDITIONS FOR OPEN LONG POSITION 
 
+{
 //Conditions Entry Long
 if marketposition = 0  
 and
@@ -465,8 +465,8 @@ Begin
 buy longbuyingPower Shares next bar at market  ;
 Alert("MNQ Reversal Model - Entry Long 3");
 End;
+}
 
-{
 //Short
 //Conditions Entry Short 
 // CONDITIONS FOR OPEN SHORT POSITION 
@@ -502,13 +502,13 @@ Begin
 sellshort shortbuyingPower Shares next bar at market;
 Alert("MNQ Reversal Model - Entry Short 3");
 End;
-}
+
 //End;
 
 
 // START--  EXIT LONG BASE OF PRECENT -------------------------------------------------------
 
-
+{
 //close long position with trail
 if marketposition = 1
 then
@@ -680,7 +680,7 @@ begin
 Sell Next Bar at Market;
 Alert("MNQ Reversal Model - Exit Long");
 end;
-
+}
 
 
 
@@ -705,7 +705,7 @@ Sell Next Bar at Market;
 end;
 }
 
-{
+
 // START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
 if marketposition = -1
@@ -882,7 +882,7 @@ buytocover Next Bar at Market;
 Alert("MNQ Reversal Model - Exit Short");
 
 end;
-}
+
 
 // START - Exit on first stop loss -------------------------------------------------------
 {
@@ -1154,20 +1154,22 @@ buytocover next bar at market;
 end;
 }
 
+{
 //SetProfitTarget;
 if marketposition = 1
 then
 begin
 SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 end;
+}
 
-{
+
 if marketposition = -1
 then
 begin
 SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 end;
-}
+
 
 
 
