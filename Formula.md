@@ -1,3 +1,4 @@
+
 if marketposition = 0
 then
 [IntrabarOrderGeneration = false] //trade intra-bar
@@ -99,3 +100,4 @@ PLTarget = Netprofit - NetProf;
 //calc a switch for identify long or short (for the connection with VXX)
 if symbol = "SOXS" or symbol = "LABD" or symbol = "SQQQ" then
 is_long_symbol = False;
+

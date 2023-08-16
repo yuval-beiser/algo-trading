@@ -466,7 +466,7 @@ buy longbuyingPower Shares next bar at market  ;
 Alert("MNQ Reversal Model - Entry Long 3");
 End;
 
-
+{
 //Short
 //Conditions Entry Short 
 // CONDITIONS FOR OPEN SHORT POSITION 
@@ -502,7 +502,7 @@ Begin
 sellshort shortbuyingPower Shares next bar at market;
 Alert("MNQ Reversal Model - Entry Short 3");
 End;
-
+}
 //End;
 
 
@@ -705,7 +705,7 @@ Sell Next Bar at Market;
 end;
 }
 
-
+{
 // START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
 if marketposition = -1
@@ -729,6 +729,8 @@ trailExit = trailProfit - valuePercentTrail;
 buytocover  next bar at trailExit  stop;
 Alert("MNQ Reversal Model - Exit Short");
 end;
+
+
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
 // START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
@@ -880,7 +882,7 @@ buytocover Next Bar at Market;
 Alert("MNQ Reversal Model - Exit Short");
 
 end;
-
+}
 
 // START - Exit on first stop loss -------------------------------------------------------
 {
@@ -1159,13 +1161,13 @@ begin
 SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 end;
 
-
+{
 if marketposition = -1
 then
 begin
 SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 end;
-
+}
 
 
 

@@ -1,3 +1,4 @@
+
 vars:
 smaFast(0),
 smaMid(0),
@@ -113,4 +114,3 @@ high5 (0),
 low5 (0),
 high9 (0),
 low9 (0);
-
