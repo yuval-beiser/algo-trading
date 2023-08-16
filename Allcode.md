@@ -542,7 +542,7 @@ Begin
 buy Floor(longbuyingPower) Shares next bar at market  ;
 End;
 
-
+{
 //Short
 //Conditions Entry Short 
 if marketposition = 0  
@@ -657,7 +657,10 @@ Begin
 sellshort Floor(shortbuyingPower ) Shares next bar at market;
 Alert("MGC Reversal Long Model");
 End;
+}
+
 End;
+
 
 if marketposition = 1
 then
