@@ -1,3 +1,4 @@
+{
 //Conditions Entry Long
 if marketposition = 0  
 and
@@ -130,6 +131,7 @@ then
 Begin
 buy Floor(longbuyingPower) Shares next bar at market  ;
 End;
+}
 
 
 //Short
@@ -246,7 +248,10 @@ Begin
 sellshort Floor(shortbuyingPower ) Shares next bar at market;
 Alert("MGC Reversal Long Model");
 End;
+
+
 End;
+
 
 if marketposition = 1
 then
@@ -501,33 +506,7 @@ if marketposition = 1
 and Time = 1600.00 
 then sell next bar at market;
 }
-{
-//long position prints
-if marketposition = 1 
-//and ELDateToString(date) = "05/02/2023" //and symbol = "soxs" //and Time = 1300
-then 
-print ( "ARB> symbol=" , symbol," ",  "in long", "      ",ELDateToString(date),"Time=", time,"buydbg=", buydbg, "     ","bar=", BarNumber,
-"entryprice=",entryprice, 
-"close=", close, 
-"zscore=", Zscore ,
-"emaFast=" , emaFast,
-"PLTarget=", PLTarget,
-"vwap=", vwap,
-"demaFast =", demafast , "emaslow=", emaSlow,
-"emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
-"close2=", close of data2, "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-"Close[1]=", Close[1], "Close[2]=", Close[2],
-"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-"openD0=", OpenD(0), "closeD1=", CloseD(1),
-"LowD(0)=", LowD(0), "HighD(0)=", HighD(0),  
-"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
- ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
- "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-  "MinGapSlowToMid=", MinGapSlowToMid,  
-"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-}
+
 
 if marketposition = -1
 then
@@ -795,60 +774,6 @@ begin
 buytocover next bar at emaVerySlow limit;
 end;
 }
-       
-//close short position at the EOD
-//if marketposition = -1
-//and Time = 1600.00 
-//then buytocover next bar at market;
-  
-{
-//short position prints       
-if marketposition = -1 
-//and ELDateToString(date) = "05/02/2023" //and symbol = "soxs"//and Time = 1300
-then 
-print ( "ARB> symbol=" , symbol," ", "in short","     ", ELDateToString(date),"Time=", time,"selldbg=", selldbg , "     ","bar=", BarNumber,
-"entryprice=",entryprice, 
-"close=", close, 
-"zscore=", Zscore ,
-"emaFast=" , emaFast,
-"PLTarget=", PLTarget,
-"vwap=", vwap,
-"demaFast =", demafast , "emaslow=", emaSlow,
-"emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
-"close2=", close of data2, "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-"Close[1]=", Close[1], "Close[2]=", Close[2],
-"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-"openD0=", OpenD(0), "closeD1=", CloseD(1),
-"LowD(0)=", LowD(0), "HighD(0)=", HighD(0),  
-"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
- ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
- "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-  "MinGapSlowToMid=", MinGapSlowToMid,  
-"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-}
-{
-//Take profit for Long
-if marketposition = 1
-then
-SetProfitTarget(TakeProfitAmt);
-}
-//Take profit for Short
-//if marketposition = -1
-//then
-//SetProfitTarget(TakeProfitAmt);
-
-{
-//Initial Stop Loss for Long
-if marketposition = 1
-then
-SetStopLoss(StopAmt);
-}
-//Initial Stop Loss for Short
-//if marketposition = -1
-//then
-//SetStopLoss(StopAmt);
 
 //SetProfitTarget;
 if marketposition = 1
@@ -857,10 +782,8 @@ begin
 SetStopLoss(longSL);
 end;
 
-
 if marketposition = -1
 then
 begin
 SetStopLoss(shortSL);
 end;
-
