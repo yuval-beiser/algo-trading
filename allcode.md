@@ -1,11 +1,11 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(0.143), //120 //160 //1300
+	maximumloss(0.143), //120 //160 //1300 //0.143
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
-	AssetMultiplier (20), //2=MICRO ; 20=MINI
+	AssetMultiplier (20),
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -40,23 +40,22 @@
 	MaxemaGap (0.025), //0.22  
 	Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 	Mingap1 (0.01),
-	Mingap2 (0.03),
-
 	Maxgap (0.12), //0.O5
-	Maxgap1 (0.2), //0.2 //0.02 //0.2
-	Maxgap2 (0.05), //0.2
+	Maxgap1 (0.05), //0.2 //0.02 //0.2
+	Maxgap2 (0.15), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.1), //0.13
+	maxgap5 (0.2), //0.13
+	maxgap6 (0.6667), //100 points
 
 
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033 //0.133
-	SmallMinProfit1 (0.05), 
+	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033 //0.133 
+	SmallMinProfit1 (0.033), 
 	largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
-	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
+	SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 	Smallbaseloss (0.03),
 	SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
 	MinProfitforadd (0.01),
@@ -64,7 +63,7 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0133), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
+	SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
 	largeTrail (0.09),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
@@ -95,10 +94,11 @@
 	ppLength (5),
 	os1 (0.0133), //0.03 - offset 
 	os2 (0.01),
-	os3 (0.0133), // 2$ - 0.133 precent 
-
+	os3 (0.0133), // 2$ - 0.133 precent  //0.0133
+	os4 (0.0267),
+	
 	PForDay (6000), //1500 //1950 //100 //800 //15000
-	LForDay (-800), //-1100 //-500 //-50 //-2000
+	LForDay (-2400), //-1100 //-500 //-50 //-2000
 
 	//Donchian 
 	DonchianLength (20), 
@@ -371,11 +371,11 @@
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
 	adxcalc = ADX(adxperiod);
-	longbuyingPower = 6 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 6; // scale in-out
+	longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+	longbuyingPower1 = 4; // scale in-out
 	longbuyingPower2 = 3;
 	shortbuyingPower = 4; //3
-	shortbuyingPower1 = 2 ; // scale in-out
+	shortbuyingPower1 = 4 ; // scale in-out
 	shortbuyingPower2 = 3 ;
 
 
@@ -552,10 +552,10 @@
 
 
 	if marketposition = 0 //Conditions Entry Long
-	//and
-	//(
-	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	//)  
+	and
+	(
+	(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	)  
 	//and
 	//(
 	//(Time > 600.00) and (Time < 2200.00) //long time
@@ -566,6 +566,8 @@
 	//(close-open) >(close[1]-open[1])* 1.3
 	and
 	close > high9
+	//and
+	
 	//and
 	//low5 < emaVerySlow *
 	//and
@@ -601,12 +603,8 @@
 	atr < Atrmax
 	//and
 	//close > lowD (0) * (1+Mingap/100)
-	//and
-	//DonchianDown > DonchianUp * (1-maxgap5/100)
-	//and
-	//DonchianDown > DonchianUp * (1-Mingap2/100)
 	and
-	low9 > high9 * (1-maxgap5/100)
+	DonchianDown > DonchianUp * (1-maxgap5/100)
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -635,15 +633,33 @@
 	//)
 	and
 	Histogram > 0
-	//and
-	//MACDLine >= 0
 	//and 
 	//MACDGradient > 0 
+	and
+(
+stochData1 = 1  //5
+and
+oData1FastK > oData1SlowD 
+//and
+//oData1FastK > StochOverSold 
+//and
+//oData1FastK > StochOverSold
+and  
+(
+(oData1FastK [1] < oData1SlowD [1]) or (oData1FastK [2] < oData1SlowD [2]) or (oData1FastK [3] < oData1SlowD [3])
+) 
+and
+(
+(oData1FastK [1] < StochOverSold) or (oData1FastK [2] < StochOverSold) or (oData1FastK [3] < StochOverSold) 
+)
+)
+//and
+//close < ema2verySlow * (1+maxgap6/100)
 
 	then 
 	begin
 	buy longbuyingPower Shares next bar at market  ;
-	Alert("MNQ Momentum Long Model");
+
 	end;
 
 
@@ -731,18 +747,16 @@
 	buy longbuyingPower2 Shares next bar at market  ;
 	end;
 	}
-
-	{
-	if         
+if         
 	marketposition = 0 //Conditions Entry short
-	//and
-	//(
-	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	//)  
 	and
 	(
-	(Time < 600.00) and (Time > 2200.00) //short time
-	)
+	(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	)  
+	//and
+	//(
+	//(Time < 600.00) and (Time > 2200.00) //short time
+	//)
 	and
 	close < Open //3
 	//and
@@ -754,7 +768,7 @@
 	//and
 	//close < minlist (close [1], open [1]) //low
 	and
-	close < emaverySlow * (1 - os3 /100)  //200
+	close < emaverySlow * (1 - os4 /100)  
 
 	//and
 	//emaMid cross above emaVerySlow
@@ -767,13 +781,32 @@
 	close >= emaverySlow * (1-Maxgap1/100) //*
 	//and
 	//emaMid > emaVerySlow
+	//and 
+	//emaMid >= emaverySlow * (1-Maxgap/100) //*
 	and 
-	emaMid >= emaverySlow * (1-Maxgap/100) //*
-	and 
-	atr < AtrMin
+	atr < Atrmax
+	//and
+	//close < highD (0) * (1-Mingap/100)
 	and
-
-	close < highD (0) * (1-Mingap/100)
+	DonchianDown > DonchianUp * (1-maxgap5/100)
+	and
+(
+stochData1 = 1 //F
+and
+oData1FastK < oData1SlowD 
+//and
+//oData1FastK < StochOverBot 
+//and
+//oData1FastK < StochOverBot
+and  
+(
+(oData1FastK [1] > oData1SlowD [1]) or (oData1FastK [2] > oData1SlowD [2]) or (oData1FastK [3] > oData1SlowD [3])
+)  
+and
+(
+(oData1FastK [1] > StochOverBot) or (oData1FastK [2] > StochOverBot) or(oData1FastK [3] > StochOverBot) 
+)
+)
 
 	//close < highD (0) * (1-Mingap/100)
 
@@ -810,13 +843,14 @@
 	//)
 	and
 	Histogram < 0
-
+       //and	
+       //close > ema2verySlow * (1-maxgap6/100)
 
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
 	end;
-	}
+	
 
 	{
 	if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -940,7 +974,7 @@ if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 //and
-//barssinceentry <= 1
+//barssinceentry <= 5
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -950,7 +984,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-Alert("MNQ Momentum Model - Exit Long");
+
 end;
 
 
@@ -1012,7 +1046,6 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
 end;
 
 
@@ -1035,9 +1068,9 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
 end;
 	
+
 	
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
@@ -1048,7 +1081,7 @@ barssinceentry > 1
 //and
 //Close < longStop * (1-os1/100)
 and
-close cross below vBub1
+close cross below vBub1 
 and
 crossind1 = true
 and
@@ -1060,10 +1093,7 @@ Then
 begin
 Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
 end;
-
-
 
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
@@ -1106,7 +1136,7 @@ or
 Then
 begin
 Sell Next Bar at Market;
-Alert("MNQ Momentum Model - Exit Long");
+
 end;
 
 
@@ -1267,84 +1297,176 @@ end;
 	sell next bar at market;
 	end;
 	}
-{
-	//close long position with trail
-	if marketposition = -1
-	then
-	[IntrabarOrderGeneration = True] //trade intra-bar
+
+// START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
+
+if marketposition = -1
+then
+[IntrabarOrderGeneration = True] //trade intra-bar
+
+//close short position with trail start moving after small profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= SmallMinProfit 
+//and
+//barssinceentry <= 5
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100);
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
+end;
+// END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
+
+// START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
+//close short position with trail (based on low prev) start moving after the first bar from entry
+if marketposition = 0
+then
+begin
+shortStop = 9999999;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind1 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind2 = False;
+end;
+
+//reset crossind 
+if marketposition = 0
+then
+begin
+crossind3 = False;
+end;
+
+if marketposition = -1 //there is short position open
+and
+(1-close/entryprice)*100 >= SmallbaseProfit 
+and
+barssinceentry > 1
+then
+begin
+// Calculate the trailing stop price
+if high [1] < shortStop 
+then
+begin
+shortStop = high[1];
+end;
+end;
 
 
-	//take profit for a short position with trail start moving in the first bar from entry
-	if marketposition = -1 //there is short position open
-	and
-	(1-Close/entryprice)*100 >= SmallMinProfit 
-	and
-	barssinceentry <= 1
-	//and
-	//AngleShort = False
-	//and
-	//entryprice <= vBub2
-	then 
-	begin
-	valuePercentTrail = ((entryprice * SmallTrailStop) /100);
-	trailProfit = Lowest(low , Barssinceentry); 
-	trailExit = trailProfit + valuePercentTrail; //          
-	buytocover next bar at trailExit  stop;
-	end;
+//close 1st short position with trail start moving cross back
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= SmallbaseProfit 
+and
+barssinceentry > 1
+and
+Close > shortStop * (1+os1/100)
+Then
+begin
+buytocover shortbuyingPower1 Shares Next Bar at Market;
+crossind1 = true;
+end;
+
+// END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
+
+//close long position with trail start moving cross back
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= SmallbaseProfit1 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above emaMid30 
+and
+crossind1 = true
+//and
+//close > lastExitPrice 
+
+Then
+begin
+buytocover shortbuyingPower1 Shares Next Bar at Market;
+crossind2 = true;
+end;
+	
+
+	
+//close long position after cross ema 200-1
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= SmallbaseProfit 
+and
+barssinceentry > 1
+//and
+//Close < longStop * (1-os1/100)
+and
+close cross above vBlb1 
+and
+crossind1 = true
+and
+crossind2 = true
+
+//and
+//close > lastExitPrice 
+Then
+begin
+buytocover Next Bar at Market;
+crossind3 = true;
+end;
+
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit 
+//and
+//barssinceentry <= 2
+//and
+//AngleLong = False
+//entryprice >= vBlb2
+then 
+begin
+valuePercentTrail = ((entryprice * largeTrail) /100);
+trailProfit = lowest(low , Barssinceentry); 
+trailExit = trailProfit - valuePercentTrail;        
+buytocover  next bar at trailExit  stop;
+end;
+
+	
+//close long position after cross 1 and go break even
+if marketposition = -1//there is long position open
+and
+close > entryprice * 0.999933
+and
+barssinceentry > 3
+//and
+//Close < longStop * (1-os1/100)
+and
+(
+(crossind1 = true) or (crossind2= true) or (crossind3=true)
+)
+//and
+//close > lastExitPrice 
+Then
+begin
+buytocover Next Bar at Market;
+end;
 
 
-	//close short position with trail start moving after the first bar from entry
-	if marketposition = 0
-	then
-	begin
-	shortStop = 9999999;
-	end;
-
-	if marketposition = -1 //there is long position open
-	and
-	(1-Close/entryprice)*100 >= SmallbaseProfit 
-	and
-	barssinceentry > 1
-	then
-	begin
-	// Calculate the trailing stop price
-	if High[1] < shortStop 
-	then
-	begin
-	shortStop = High[1];
-	end;
-	end;
-
-	//close short position with trail start moving aafter the first bar from entry
-	if marketposition = -1 //there is long position open
-	and
-	(1-Close/entryprice)*100 >= SmallbaseProfit 
-	and
-	barssinceentry > 1
-	and
-	Close > shortStop * (1+os1/100)
-	Then
-	begin
-	buytocover shortbuyingPower1 shares Next Bar at Market;
-	end;
-
-	//close 2st long position with trail start moving cross back
-	if marketposition = 1 //there is long position open
-	and
-	(close/entryprice-1)*100 >= SmallbaseProfit1 
-	and
-	barssinceentry > 1
-	//and
-	//Close < longStop * (1-os1/100)
-	and
-	close cross above emaMid30 
-	//and
-	//close > lastExitPrice 
-	Then
-	begin
-	buytocover Next Bar at Market;
-	end;
-}
 	{
 	//close 2st long position with trail start moving cross back
 	if marketposition = -1 //there is long position open
@@ -1479,13 +1601,13 @@ end;
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 	end;
 
-{
+
 	if marketposition = -1
 	then
 	begin
-	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
+	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
-}
+
 
 	{
 	if marketposition = 0 then 
@@ -1670,8 +1792,6 @@ end;
 	  "MinGapSlowToMid=", MinGapSlowToMid,  
 	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
 	}
-
-
 
 
 

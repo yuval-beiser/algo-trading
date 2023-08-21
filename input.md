@@ -1,11 +1,11 @@
 	//@version=31323-2
 	Inputs:
-	maximumloss(0.143), //120 //160 //1300
+	maximumloss(0.143), //120 //160 //1300 //0.143
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
-	AssetMultiplier (20), //2=MICRO ; 20=MINI
+	AssetMultiplier (20),
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -40,23 +40,22 @@
 	MaxemaGap (0.025), //0.22  
 	Mingap (0.2), //0.06 was too tight according to 8.3.23 , 3:03 AM //0.15
 	Mingap1 (0.01),
-	Mingap2 (0.03),
-
 	Maxgap (0.12), //0.O5
-	Maxgap1 (0.2), //0.2 //0.02 //0.2
-	Maxgap2 (0.05), //0.2
+	Maxgap1 (0.05), //0.2 //0.02 //0.2
+	Maxgap2 (0.15), //0.2
 	maxgap3 (0.09),
 	maxgap4 (0.26),
-	maxgap5 (0.1), //0.13
+	maxgap5 (0.2), //0.13
+	maxgap6 (0.6667), //100 points
 
 
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033 //0.133
-	SmallMinProfit1 (0.05), 
+	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033 //0.133 
+	SmallMinProfit1 (0.033), 
 	largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
-	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
+	SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 	Smallbaseloss (0.03),
 	SmallMinProfitPart2 (0.0375), //after 6 pips limit at the other side of the channel
 	MinProfitforadd (0.01),
@@ -64,7 +63,7 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0133), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
+	SmallTrail (0.0067), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
 	largeTrail (0.09),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
@@ -95,10 +94,11 @@
 	ppLength (5),
 	os1 (0.0133), //0.03 - offset 
 	os2 (0.01),
-	os3 (0.0133), // 2$ - 0.133 precent 
-
+	os3 (0.0133), // 2$ - 0.133 precent  //0.0133
+	os4 (0.0267),
+	
 	PForDay (6000), //1500 //1950 //100 //800 //15000
-	LForDay (-800), //-1100 //-500 //-50 //-2000
+	LForDay (-2400), //-1100 //-500 //-50 //-2000
 
 	//Donchian 
 	DonchianLength (20), 
