@@ -5,7 +5,7 @@
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
-	AssetMultiplier (2),
+	AssetMultiplier (20),
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),

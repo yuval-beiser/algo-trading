@@ -1,5 +1,4 @@
 
-
 	if marketposition = 0 //Conditions Entry Long
 	//and
 	//(
@@ -910,5 +909,4 @@ end;
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
 	end;
-
 
