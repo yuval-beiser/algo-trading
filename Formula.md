@@ -1,5 +1,4 @@
-
-	//[IntrabarOrderGeneration = True] //trade intra-bar
+//[IntrabarOrderGeneration = True] //trade intra-bar
 
 	//when no position reset CurShares - number of micro positions in same time 
 	if marketposition = 0
@@ -24,11 +23,11 @@
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
 	adxcalc = ADX(adxperiod);
-	longbuyingPower = 4 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 4; // scale in-out
+	longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 3;
-	shortbuyingPower = 4; //3
-	shortbuyingPower1 = 4 ; // scale in-out
+	shortbuyingPower = 1; //3
+	shortbuyingPower1 = 1 ; // scale in-out
 	shortbuyingPower2 = 3 ;
 
 

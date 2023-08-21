@@ -1,11 +1,11 @@
-	//@version=31323-2
+//@version=31323-2
 	Inputs:
 	maximumloss(0.143), //120 //160 //1300 //0.143
 	FastLength(9),
 	MidLength(20),
 	MidLength1(30),
 	SlowLength(50),
-	AssetMultiplier (20),
+	AssetMultiplier (2),
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -150,3 +150,4 @@
 	//Zscore
 	longminzscore (-2),
 	shortminzscore (2);
+
