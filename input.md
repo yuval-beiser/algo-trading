@@ -1,4 +1,4 @@
-	//@version=31323-2
+//@version=31323-2
 	Inputs:
 	maximumloss(0.143), //120 //160 //1300 //0.143
 	FastLength(9),
@@ -148,3 +148,4 @@
 	//Zscore
 	longminzscore (-2),
 	shortminzscore (2);
+

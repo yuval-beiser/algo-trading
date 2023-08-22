@@ -372,8 +372,8 @@
 	longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 3;
-	shortbuyingPower = 4; //3
-	shortbuyingPower1 = 2 ; // scale in-out
+	shortbuyingPower = 3; //3
+	shortbuyingPower1 = 1 ; // scale in-out
 	shortbuyingPower2 = 3 ;
 
 
