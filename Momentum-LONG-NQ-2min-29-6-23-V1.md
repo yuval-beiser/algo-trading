@@ -1,21 +1,19 @@
 
 	if marketposition = 0 //Conditions Entry Long
-	and
-	(
-	(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	)  
 	//and
 	//(
-	//(Time > 600.00) and (Time < 2200.00) //long time
-	//)
+	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	//)  
+	and
+	(
+	(Time > 0000.00) and (Time < 1800.00) //long time
+       )
 	and
 	close > Open //3
 	//and
 	//(close-open) >(close[1]-open[1])* 1.3
 	and
 	close > high9
-	//and
-	
 	//and
 	//low5 < emaVerySlow *
 	//and
@@ -101,8 +99,6 @@ and
 (oData1FastK [1] < StochOverSold) or (oData1FastK [2] < StochOverSold) or (oData1FastK [3] < StochOverSold) 
 )
 )
-//and
-//close < ema2verySlow * (1+maxgap6/100)
 
 	then 
 	begin
@@ -195,7 +191,9 @@ and
 	buy longbuyingPower2 Shares next bar at market  ;
 	end;
 	}
-if         
+
+	{
+	if         
 	marketposition = 0 //Conditions Entry short
 	and
 	(
@@ -216,7 +214,7 @@ if
 	//and
 	//close < minlist (close [1], open [1]) //low
 	and
-	close < emaverySlow * (1 - os4 /100)  
+	close < emaverySlow * (1 - os3 /100)  
 
 	//and
 	//emaMid cross above emaVerySlow
@@ -291,14 +289,13 @@ and
 	//)
 	and
 	Histogram < 0
-       //and	
-       //close > ema2verySlow * (1-maxgap6/100)
+
 
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
 	end;
-	
+	}
 
 	{
 	if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -1055,3 +1052,5 @@ end;
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
+
+

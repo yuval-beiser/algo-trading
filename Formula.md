@@ -25,10 +25,10 @@
 	adxcalc = ADX(adxperiod);
 	longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 	longbuyingPower1 = 1; // scale in-out
-	longbuyingPower2 = 3;
+	longbuyingPower2 = 1;
 	shortbuyingPower = 1; //3
 	shortbuyingPower1 = 1 ; // scale in-out
-	shortbuyingPower2 = 3 ;
+	shortbuyingPower2 = 1 ;
 
 
 	CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -201,4 +201,3 @@
 	NetProf = NetProf + NetProfit - NetProf[1];
 	end;
 	PLTarget = Netprofit - NetProf;
-

@@ -193,3 +193,4 @@
 	updatedshortSL(maximumloss),
 	longSL (0),
 	shortSL (0);
+
