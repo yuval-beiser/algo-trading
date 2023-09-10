@@ -6,7 +6,7 @@
 	MidLength1(30),
 	SlowLength(50),
 	MFILength (14),
-	AssetMultiplier (2),
+	AssetMultiplier (20),
 	length (5),
 	VerySlowLength (200),
 	stdDevMultiplier2 (2),
@@ -156,3 +156,4 @@
 	//Zscore
 	longminzscore (-2),
 	shortminzscore (2);
+	
