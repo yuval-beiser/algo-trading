@@ -40,6 +40,9 @@
 	selldbg(""),
 	valsdbg(""),
 	CurShares (0),
+	IntrabarPersist ExitBarNum (0),
+	intrabarpersist LastMarketPosition(0),
+
 
 	//macd
 	vMacd(0), 
@@ -180,9 +183,9 @@
 	//exit
 	lastExitPrice (0),
 
-	crossind1 (false),
-	crossind2 (false),
-	crossind3 (false),
+	IntrabarPersist crossind1 (false),
+	IntrabarPersist crossind2 (false),
+	IntrabarPersist crossind3 (false),
 
 
 	//stop
@@ -191,4 +194,8 @@
 	startshortSL (maximumloss),
 	updatedshortSL(maximumloss),
 	longSL (0),
-	shortSL (0);
+	shortSL (0),
+	
+	IntrabarPersist lastPrintBar(0), 
+	IntrabarPersist lastAlertBar1(0);
+

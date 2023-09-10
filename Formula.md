@@ -1,3 +1,4 @@
+
 	//[IntrabarOrderGeneration = True] //trade intra-bar
 
 	//when no position reset CurShares - number of micro positions in same time 
@@ -202,3 +203,12 @@
 	end;
 	PLTarget = Netprofit - NetProf;
 
+{
+	//Reset ExitBarNum to the last bar number when all position closed
+	if marketposition = 0 and LastMarketPosition <> 0
+	then
+	begin
+	ExitBarNum = BarNumber;
+	end;
+	LastMarketPosition = marketposition;	
+}

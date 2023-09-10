@@ -22,7 +22,6 @@
 	ExitBarNum1(12),
 	ExitBarNum2(24),
 	ExitBarNum3(36),
-	ExitBarNum (5),
 	MinProfitAfter1Hour(100),
 	MinProfitAfter2Hours(150),
 	MinProfitAfter3Hours(180),
@@ -51,7 +50,7 @@
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P
+	SmallMinProfit (0.033),//after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
 	SmallMinProfit1 (0.05), 
 	largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
@@ -62,10 +61,11 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0033), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P
+	SmallTrail (0.0033),//0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
 	largeTrail (0.09),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
+	MinBarsAfterCloseToEntry (1),
 	MinBarsForMove (30), //12
 	MaxBarsforadd (1),
 	maxpositions (6),
