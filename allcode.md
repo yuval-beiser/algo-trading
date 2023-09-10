@@ -751,7 +751,7 @@ and
 	then 
 	begin
 	buy longbuyingPower Shares next bar at market  ;
-
+	Alert("APEX TEST - BREAK MODEL - BUY");
 	end;
 
 
@@ -1020,6 +1020,7 @@ and
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
+	Alert("APEX TEST - BREAK MODEL - SHORT");
 	end;
 	
 
@@ -1156,6 +1157,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
+Alert("APEX TEST - BREAK MODEL - SELL");
 end;
 
 
@@ -1203,6 +1205,7 @@ Close < longStop //* (1-os1/100)
 Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
+Alert("APEX TEST - BREAK MODEL - SELL");
 //crossind1 = true;
 end;
 
@@ -1305,7 +1308,7 @@ crossind1 = true
 Then
 begin
 Sell Next Bar at Market;
-
+Alert("APEX TEST - BREAK MODEL - SELL");
 end;
 
 
@@ -1489,6 +1492,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
+Alert("APEX TEST - BREAK MODEL - BUY TO COVER");
 end;
 
 
@@ -1537,6 +1541,7 @@ Close > shortStop //* (1+os1/100)
 Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
+Alert("APEX TEST - BREAK MODEL - BUY TO COVER");
 //crossind1 = true;
 end;
 
@@ -1639,6 +1644,7 @@ crossind1 = True
 Then
 begin
 buytocover Next Bar at Market;
+Alert("APEX TEST - BREAK MODEL - BUY TO COVER");
 end;
 
 
@@ -1774,6 +1780,7 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
+	Alert("APEX TEST - BREAK MODEL - STOP LOSS LONG");
 	end;
 
 
@@ -1781,6 +1788,7 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
+	Alert("APEX TEST - BREAK MODEL - STOP LOSS SHORT");
 	end;
 
 
