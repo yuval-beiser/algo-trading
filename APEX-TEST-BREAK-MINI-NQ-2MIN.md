@@ -721,7 +721,7 @@ crossind1 = true
 Then
 begin
 Sell Next Bar at Market;
-Alert("APEX TEST - BREAK MODEL - SELL");
+Alert("APEX TEST - BREAK MODEL - SELL AT BREAK EVEN");
 end;
 
 
@@ -1057,7 +1057,7 @@ crossind1 = True
 Then
 begin
 buytocover Next Bar at Market;
-Alert("APEX TEST - BREAK MODEL - BUY TO COVER");
+Alert("APEX TEST - BREAK MODEL - BUY TO COVER AT BREAK EVEN");
 end;
 
 
@@ -1203,4 +1203,3 @@ end;
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	Alert("APEX TEST - BREAK MODEL - STOP LOSS SHORT");
 	end;
-
