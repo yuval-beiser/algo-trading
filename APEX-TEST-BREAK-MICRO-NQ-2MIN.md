@@ -4,16 +4,57 @@
 	//(
 	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
 	//)  
-	and
-	(
-	(Time > 0000.00) and (Time < 1800.00) //long time
-       )
+	//and
+	//(
+	//(Time > 0000.00) and (Time < 1800.00) //long time
+      //)
 	and
 	close > Open //3
+	and
+	close > close [1]
+	and
+	close > high5 * (1+os4 /100)
+	//and
+	//Histogram > 0
+	and
+	Histogram > Histogram [1]
+	and
+	MACDLine < 0
+	and
+	SignalLine < 0 
+	and
+	close < emaFast *(1+maxgap6/100)
+	and
+	close < low * (1+maxgap7/100)
+	and
+	close cross above emaFast
+	and
+	(
+	(close[1] < EHLOCdownband) or (close[2] < EHLOCdownband) or (close[3] < EHLOCdownband) or (close[4] < EHLOCdownband)
+	)
+	//and
+	//(
+	//(close[1] < vBlbHLOC ) or (close[2] < vBlbHLOC ) or (close[3] < vBlbHLOC ) or (close[4] < vBlbHLOC )
+	//)
+	
+	and
+	atr > 6
+	
+	//and
+	//close > vBub1
+	//and
+	//close < vBub2
+	//and
+	//close > high26
+	//and
+	//close > EHLOCqtr3band
+	//and
+	//BullAngle and AngleLong
 	//and
 	//(close-open) >(close[1]-open[1])* 1.3
-	and
-	close > high9
+	//*and
+	//*close > high9
+	
 	//and
 	//low5 < emaVerySlow *
 	//and
@@ -31,26 +72,34 @@
 	//(
 	//(close cross above emaFast) or (close cross above emaMid) or (close cross above emaVerySlow) //20
 	//)
-	and
-	close > emaverySlow * (1 + os3 /100)  //200
+	//*and
+	//close > emaverySlow * (1 + os3 /100)  //200
 
 	//and
 	//emaMid cross above emaVerySlow
 
 	//and
 	//emaMid >= emaverySlow * (1+Mingap/100) //from 10 
-	and
-	emaMid <= emaverySlow * (1+Maxgap/100) //*
-	and 
-	close <= emaverySlow * (1+Maxgap1/100) //*
+	//*and
+	//emaMid <= emaverySlow * (1+Maxgap/100) //*
+	//*and 
+	//close <= emaverySlow * (1+Maxgap1/100) //*
 	//and
 	//emaMid > emaVerySlow
-		and 
-	atr < Atrmax
+	//*and 
+	//atr < Atrmax
+	//and
+	//atr > Atrmin
+
 	//and
 	//close > lowD (0) * (1+Mingap/100)
-	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown < DonchianUp * (1-mingap2/100)
+
+
+
 
 	//and
 	//close < low5 * (1+maxgap4/100) *
@@ -77,11 +126,22 @@
 	//(
 	//(close cross above emaFast) or (close [1] cross above emaFast[1]) or  (close [2] cross above emaFast[2])
 	//)
-	and
-	Histogram > 0
+	//and
+	//(
+	//(close [1] < open [1]) or (close [2] < open [2])
+	//)
+		//and
+	//VMFI > VMFI [1]
+	//and
+	//close cross above emaFast
+	
+	//and
+	//emaFast < emamid
 	//and 
 	//MACDGradient > 0 
-	and
+	//and
+	
+	{
 (
 stochData1 = 1  //5
 and
@@ -99,6 +159,7 @@ and
 (oData1FastK [1] < StochOverSold) or (oData1FastK [2] < StochOverSold) or (oData1FastK [3] < StochOverSold) 
 )
 )
+}
 
 	then 
 	begin
@@ -192,50 +253,115 @@ and
 	end;
 	}
 
-	{
+	
 	if         
 	marketposition = 0 //Conditions Entry short
-	and
-	(
-	(PLTarget < PForDay) and (PLTarget > LForDay) //1
-	)  
+	//and
+	//(
+	//(PLTarget < PForDay) and (PLTarget > LForDay) //1
+	//)  
 	//and
 	//(
 	//(Time < 600.00) and (Time > 2200.00) //short time
 	//)
 	and
 	close < Open //3
+	and
+	close < close [1]
+	and
+	close < low5 * (1+os4 /100)
+	//and
+	//Histogram < 0
+	and
+	Histogram < Histogram [1]
+	and
+	MACDLine > 0
+	and
+	SignalLine > 0 
+	and
+	close > emaFast *(1-maxgap6/100)
+	and
+	close > high * (1-maxgap7/100)
+	and
+	close cross below emaFast
+
+	and
+	(
+	(close[1] > EHLOCupband) or (close[2] > EHLOCupband) or (close[3] > EHLOCupband) or (close[4] > EHLOCupband)
+	)
+	//and
+	//(
+	//(close[1] > vBubHLOC ) or (close[2] > vBubHLOC ) or (close[3] > vBubHLOC ) or (close[4] > vBubHLOC )
+	//)
+	
+	
+
+	and
+	atr > 6
+	
+
+
+	//and
+	//close < vBlb1
+	//and
+	//close > vBlb2
+	//and
+	//close < low26
+
+	//and
+	//close < EHLOCqtr1band
+
+	//and
+	//BearAngle and AngleShort
+
 	//and
 	//(close-open) >(close[1]-open[1])* 1.3
-	and
-	close < low9
+	//*and
+	//close < low9
+
+	
 	//and
 	//high5 > emaVerySlow
 	//and
 	//close < minlist (close [1], open [1]) //low
-	and
-	close < emaverySlow * (1 - os3 /100)  
+	//*and
+	//close < emaverySlow * (1 - os3 /100)  
 
 	//and
 	//emaMid cross above emaVerySlow
 
 	//and
 	//emaMid >= emaverySlow * (1+Mingap/100) //from 10 
-	and
-	emaMid >= emaverySlow * (1-Maxgap/100) //*
-	and 
-	close >= emaverySlow * (1-Maxgap1/100) //*
+	//*and
+	//emaMid >= emaverySlow * (1-Maxgap/100) //*
+	//*and 
+	//close >= emaverySlow * (1-Maxgap1/100) //*
 	//and
 	//emaMid > emaVerySlow
 	//and 
 	//emaMid >= emaverySlow * (1-Maxgap/100) //*
-	and 
-	atr < Atrmax
+	//*and 
+	//atr < Atrmax
+	//and
+	//atr > Atrmin
+
 	//and
 	//close < highD (0) * (1-Mingap/100)
-	and
-	DonchianDown > DonchianUp * (1-maxgap5/100)
-	and
+	//*and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
+	//and
+	//DonchianDown > DonchianUp * (1-maxgap5/100)
+	//*and
+	//DonchianDown < DonchianUp * (1-mingap2/100)
+
+
+	//and
+	//close [1] >= EHLOCupband
+
+	
+	//and
+	
+	{
 (
 stochData1 = 1 //F
 and
@@ -253,6 +379,7 @@ and
 (oData1FastK [1] > StochOverBot) or (oData1FastK [2] > StochOverBot) or(oData1FastK [3] > StochOverBot) 
 )
 )
+}
 
 	//close < highD (0) * (1-Mingap/100)
 
@@ -287,15 +414,27 @@ and
 	//
 	//(close cross below emaFast) or (close [1] cross below emaFast[1]) or  (close [2] cross below emaFast[2])
 	//)
-	and
-	Histogram < 0
+
+	//and
+	//
+	//(
+	//(close [1] >  open [1]) or (close [2] >  open [2])
+	//)
+
+	//and
+	//VMFI < VMFI [1]
+	//*and
+	//close cross below emaFast
+	//*and
+	//emaFast > emamid
+
 
 
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
 	end;
-	}
+	
 
 	{
 	if marketposition = -1 //Scale In  - Conditions Add Entry Short
@@ -414,6 +553,7 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -429,8 +569,8 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-
 end;
+
 
 
 //close short position with trail (based on low prev) start moving after the first bar from entry
@@ -445,20 +585,6 @@ if marketposition = 0
 then
 begin
 crossind1 = False;
-end;
-
-//reset crossind 
-if marketposition = 0
-then
-begin
-crossind2 = False;
-end;
-
-//reset crossind 
-if marketposition = 0
-then
-begin
-crossind3 = False;
 end;
 
 
@@ -486,14 +612,14 @@ and
 and
 barssinceentry > 1
 and
-Close < longStop * (1-os1/100)
+Close < longStop //* (1-os1/100)
 Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
-crossind1 = true;
+//crossind1 = true;
 end;
 
-
+{
 //close long position with trail start moving cross back
 if marketposition = 1 //there is long position open
 and
@@ -514,9 +640,10 @@ begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
 end;
+}
 	
 
-	
+	{
 //close long position after cross ema 200-1
 if marketposition = 1 //there is long position open
 and
@@ -539,7 +666,9 @@ begin
 Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
 end;
+}
 
+{
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -558,6 +687,20 @@ trailProfit = Highest(high , Barssinceentry);
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
 end;
+}
+
+//reset cross ind after fake move
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= smallbaseProfit1 
+and
+barssinceentry < 5
+//and
+//Close < longStop //* (1-os1/100)
+Then
+begin
+crossind1 = true;
+end;
 
 	
 //close long position after cross 1 and go break even
@@ -565,17 +708,11 @@ if marketposition = 1 //there is long position open
 and
 close < (entryprice * 1.000067)
 and
-barssinceentry > 3
+barssinceentry < 5
 //and
 //Close < longStop * (1-os1/100)
 and
-(
-(crossind1 = true)
-or
-(crossind2 = true)
-or
-(crossind3 = true)
-)
+crossind1 = true
 //and
 //close > lastExitPrice 
 Then
@@ -749,6 +886,7 @@ if marketposition = -1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+
 //close short position with trail start moving after small profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -765,7 +903,10 @@ trailProfit = lowest(low , Barssinceentry);
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
 end;
+
+
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
+
 
 // START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 //close short position with trail (based on low prev) start moving after the first bar from entry
@@ -780,20 +921,6 @@ if marketposition = 0
 then
 begin
 crossind1 = False;
-end;
-
-//reset crossind 
-if marketposition = 0
-then
-begin
-crossind2 = False;
-end;
-
-//reset crossind 
-if marketposition = 0
-then
-begin
-crossind3 = False;
 end;
 
 if marketposition = -1 //there is short position open
@@ -819,13 +946,14 @@ and
 and
 barssinceentry > 1
 and
-Close > shortStop * (1+os1/100)
+Close > shortStop //* (1+os1/100)
 Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
-crossind1 = true;
+//crossind1 = true;
 end;
 
+{
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 
 //close long position with trail start moving cross back
@@ -848,9 +976,10 @@ begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
 end;
+}
 	
 
-	
+{	
 //close long position after cross ema 200-1
 if marketposition = -1 //there is long position open
 and
@@ -873,7 +1002,9 @@ begin
 buytocover Next Bar at Market;
 crossind3 = true;
 end;
+}
 
+{
 //close short position with trail start moving after large profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -890,6 +1021,20 @@ trailProfit = lowest(low , Barssinceentry);
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
 end;
+}
+
+//reset cross ind after fake move
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= smallbaseProfit1 
+and
+barssinceentry < 5
+//and
+//Close < longStop //* (1-os1/100)
+Then
+begin
+crossind1 = true;
+end;
 
 	
 //close long position after cross 1 and go break even
@@ -897,13 +1042,11 @@ if marketposition = -1//there is long position open
 and
 close > entryprice * 0.999933
 and
-barssinceentry > 3
+barssinceentry < 5
 //and
 //Close < longStop * (1-os1/100)
 and
-(
-(crossind1 = true) or (crossind2= true) or (crossind3=true)
-)
+crossind1 = True
 //and
 //close > lastExitPrice 
 Then
@@ -1052,5 +1195,4 @@ end;
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 	end;
-
 

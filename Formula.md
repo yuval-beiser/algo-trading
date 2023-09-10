@@ -1,4 +1,5 @@
-//[IntrabarOrderGeneration = True] //trade intra-bar
+
+	//[IntrabarOrderGeneration = True] //trade intra-bar
 
 	//when no position reset CurShares - number of micro positions in same time 
 	if marketposition = 0
@@ -23,11 +24,11 @@
 	//ema2verySlow = XAverage(close,VerySlowLength)of data2;
 	//ema2mid = XAverage(close,MidLength) of data2;
 	adxcalc = ADX(adxperiod);
-	longbuyingPower = 1 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
-	longbuyingPower1 = 1; // scale in-out
+	longbuyingPower = 5 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
+	longbuyingPower1 = 5; // scale in-out
 	longbuyingPower2 = 1;
-	shortbuyingPower = 1; //3
-	shortbuyingPower1 = 1 ; // scale in-out
+	shortbuyingPower = 5; //3
+	shortbuyingPower1 = 5 ; // scale in-out
 	shortbuyingPower2 = 1 ;
 
 
@@ -56,7 +57,7 @@
 	//print(Date, Time, "bar=", BarNumber, marketposition, valsdbg ); 
 
 
-	//BB HLOC 21
+	//BB HLOC 20
 	vBubHLOC = BollingerBand(HLOC ,BUpperBandHLOC,BStedDevHLOC);
 	vBlbHLOC = BollingerBand(HLOC ,BLowerBandHLOC, - BStedDevHLOC);
 	vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
@@ -65,7 +66,7 @@
 	emaHLOC = XAverage (HLOC , BUpperBandHLOC);
 	stdHLOC = StdDev(HLOC , BUpperBandHLOC);
 
-	EHLOCupband = emaHLOC + stdHLOC ;
+	EHLOCupband = emaHLOC + stdHLOC;
 	EHLOCdownband = emaHLOC  - stdHLOC ;
 	EHLOCmidband = (EHLOCupband+EHLOCdownband)/2;
 	EHLOCqtr1band = EHLOCdownband+((EHLOCupband-EHLOCdownband)/4);
@@ -82,8 +83,8 @@
 	vBlb3= BollingerBand(close,BLowerBand, - BStedDev3);
 
 
-	//BB 200 Exponencial
-	stdclose = StdDev (close, VerySlowLength);
+	//BB 20 Exponencial
+	stdclose = StdDev (close, MidLength);
 	evBub2 = emaverySlow + (stdDevMultiplier2 * stdclose) ;
 	evBlb2 = emaverySlow - (stdDevMultiplier2 * stdclose) ;
 
@@ -92,9 +93,9 @@
 	vwap = Average(HLOC * Volume, vwapLength ) / Average(Volume, vwapLength );
 	}
 	//macd
-	vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
-	vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
-	vDiff = vMacd - vMacdAvg ; // Histogram
+	//vMacd = MACD( Close, macdFastLength, macdSlowLength ) ; // Fast line MACD
+	//vMacdAvg = XAverage( vMacd , MACDlineLength) ; // Slow line MACD
+	//vDiff = vMacd - vMacdAvg ; // Histogram
 
 	PrevMACD = MACD(Close, 12, 26)[1];
 	MACDGradient = MACDLine - PrevMACD;
@@ -116,21 +117,23 @@
 
 	//Zaviot
 	MAValue1 = XAverage( Close, FastLength ) ; 
-	MASlope1 = ( MAValue1 - MAValue1[1] );// * (Minmove/Pricescale);  // SLOPE = Shipooaa 
+	MASlope1 = ( MAValue1 - MAValue1[1]);// * (Minmove/Pricescale);  // SLOPE = Shipooaa 
 	MAAngle1 = ArcTangent( MASlope1 ) ; // ZAVIT = Press F1 to see explain
-	         
+	 
+	 
 	MAValue2 = XAverage( Close,MidLength  ) ; 
-	MASlope2 = ( MAValue2 - MAValue2[1]);// * (Minmove/Pricescale)  ; 
+	MASlope2 = ( MAValue2 - MAValue2[1]);// (Minmove/Pricescale)  ; 
 	MAAngle2 = ArcTangent( MASlope2 ) ; 
-	         
+	
+      
 	MAValue3 = XAverage( Close, SlowLength ) ; 
-	MASlope3 = ( MAValue3 - MAValue3[1] );// * (Minmove/Pricescale)  ; 
+	MASlope3 = ( MAValue3 - MAValue3[1]);// * (Minmove/Pricescale)  ; 
 	MAAngle3 = ArcTangent( MASlope3 ) ; 
-
-	BullAngle = ((MAValue1 > MAValue2) And (MAValue2 > MAValue3)) ;//And (Close Crosses Over  MAValue1);
-	BearAngle = ((MAValue1 < MAValue2) And (MAValue2 < MAValue3)) ; //And (Close Crosses Under  MAValue1);
-	AngleLong  = (( MAAngle1 > ANGLE_MA1) And (MAAngle1 < ANGLE_MA2 ));
-	AngleShort = (( MAAngle1 < ANGLE_MA1 * (-1)) And (MAAngle1 > ANGLE_MA2 * (-1)) );
+	
+	//BullAngle = (MAValue1 > MAValue2); //And (MAValue2 > MAValue3)) ;//And (Close Crosses Over  MAValue1);
+	//BearAngle = (MAValue1 < MAValue2); //And (MAValue2 < MAValue3)) ; //And (Close Crosses Under  MAValue1);
+	AngleLong  = ( MAAngle1 > ANGLE_MA1); //And (MAAngle1 < ANGLE_MA2 ));
+	AngleShort = ( MAAngle1 < ANGLE_MA1 * (-1));// And (MAAngle1 > ANGLE_MA2 * (-1)) );
 
 	//Donchian
 	DonchianUp = HighestFC (h, DonchianLength );
@@ -142,6 +145,9 @@
 
 	//RSI
 	vRSI = RSI (close, RsiFastLength);
+	
+	//MFI
+	VMFI = MFI (MFILength );
 
 	//Triangle
 	//The upper boundary or resistance level of the ascending triangle pattern
@@ -161,8 +167,23 @@
 	high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
 	open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
 
+	high26 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
+	open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9],
+	close [10] , open [10], close [11] , open [11] , close [12] , open [12] , close [13] , open [13] , close [14] , open [14] , close [15] , open [15],
+	close [16] , open [16], close [17] , open [17] , close [18] , open [18] , close [19] , open [19] , close [20] , open [20],
+	close [21] , open [21] , close [22] , open [22] , close [23] , open [23], close [24] , open [24] , close [25] , open [25],
+	close [26] , open [26]       );
+
 	low9 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
 	open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+	
+	low26 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , 
+	open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9],
+	close [10] , open [10], close [11] , open [11] , close [12] , open [12] , close [13] , open [13] , close [14] , open [14] , close [15] , open [15],
+	close [16] , open [16], close [17] , open [17] , close [18] , open [18] , close [19] , open [19] , close [20] , open [20],
+	close [21] , open [21] , close [22] , open [22] , close [23] , open [23], close [24] , open [24] , close [25] , open [25],
+	close [26] , open [26]       );
+
 
 	//Macd
 	MACDLine = MACD(Close, 12, 26); // Close price, short period, long period
@@ -201,3 +222,4 @@
 	NetProf = NetProf + NetProfit - NetProf[1];
 	end;
 	PLTarget = Netprofit - NetProf;
+

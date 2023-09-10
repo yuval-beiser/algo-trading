@@ -126,6 +126,9 @@
 
 	//RSI
 	vRSI (0), 
+	
+	//MFI
+	VMFI (0),
 
 	//Zaviot
 	MAValue1( 0 ),
@@ -177,13 +180,12 @@
 	low5 (0),
 	high9 (0),
 	low9 (0),
+	high26 (0),
+	low26 (0),
 
 	//exit
 	lastExitPrice (0),
 
-	crossind1 (false),
-	crossind2 (false),
-	crossind3 (false),
 
 
 	//stop
@@ -192,5 +194,11 @@
 	startshortSL (maximumloss),
 	updatedshortSL(maximumloss),
 	longSL (0),
-	shortSL (0);
+	shortSL (0),
+	
+	IntrabarPersist lastPrintBar(0), 
+	IntrabarPersist lastAlertBar1(0),
+	
+	IntrabarPersist crossind1 (false);
+
 
