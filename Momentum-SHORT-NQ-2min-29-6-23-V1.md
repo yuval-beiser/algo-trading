@@ -1,5 +1,3 @@
-
-
 	if marketposition = 0 //Conditions Entry Long
 	//and
 	//(
@@ -82,11 +80,13 @@
 	Histogram > 0
 	//and 
 	//MACDGradient > 0 
+	//and
+	//BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 
 	then 
 	begin
 	buy longbuyingPower Shares next bar at market  ;
-	Alert("MNQ Momentum Long Model");
+	Alert("Momentum - BUY");
 	end;
 
 
@@ -258,10 +258,14 @@
 	//)
 	and
 	Histogram < 0
+	//and
+	//BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
+
 	
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
+	Alert("Momentum - SELL");
 	end;
 
 
@@ -277,6 +281,8 @@ and
 (close/entryprice-1)*100 >= SmallMinProfit 
 and
 barssinceentry <= 1
+and
+Time <> 832.00 
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -286,7 +292,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-Alert("MNQ Momentum Model - Exit Long");
+Alert("Momentum - SELL AT FAST TRAIL");
 end;
 
 
@@ -348,7 +354,7 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 1");
 end;
 
 
@@ -371,7 +377,7 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 2");
 end;
 	
 
@@ -397,7 +403,7 @@ Then
 begin
 Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 3");
 end;
 
 //close long position with trail start moving after large profit in the first bar from entry
@@ -417,6 +423,7 @@ valuePercentTrail = ((entryprice * largeTrail) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
+Alert("Momentum - SELL AT LARGE TRAIL");
 end;
 
 	
@@ -441,7 +448,7 @@ or
 Then
 begin
 Sell Next Bar at Market;
-Alert("MNQ Momentum Model - Exit Long");
+Alert("Momentum - SELL AT BREAK EVEN");
 end;
 
 
@@ -615,6 +622,9 @@ and
 (1-close/entryprice)*100 >= SmallMinProfit 
 and
 barssinceentry <= 1
+and
+Time <> 832.00 
+
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -624,6 +634,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
+Alert("Momentum - BUY TO COVER AT FAST TRAIL");
 end;
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
@@ -684,6 +695,7 @@ Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 1");
 end;
 
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
@@ -707,6 +719,7 @@ Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 2");
 end;
 	
 
@@ -732,6 +745,7 @@ Then
 begin
 buytocover Next Bar at Market;
 crossind3 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 3");
 end;
 
 //close short position with trail start moving after large profit in the first bar from entry
@@ -749,6 +763,7 @@ valuePercentTrail = ((entryprice * largeTrail) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
+Alert("Momentum - BUY TO COVER AT LARGE TRAIL");
 end;
 
 	
@@ -769,7 +784,9 @@ and
 Then
 begin
 buytocover Next Bar at Market;
+Alert("Momentum - BUY TO COVER AT BREAK EVEN");
 end;
+
 	{
 	//close 2st long position with trail start moving cross back
 	if marketposition = -1 //there is long position open
@@ -902,6 +919,7 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
+	Alert("Momentum - STOP LOSS LONG");
 	end;
 
 
@@ -909,6 +927,5 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
+	Alert("Momentum - STOP LOSS SHORT");
 	end;
-
-

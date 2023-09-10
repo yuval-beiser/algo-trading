@@ -22,7 +22,6 @@
 	ExitBarNum1(12),
 	ExitBarNum2(24),
 	ExitBarNum3(36),
-	ExitBarNum (5),
 	MinProfitAfter1Hour(100),
 	MinProfitAfter2Hours(150),
 	MinProfitAfter3Hours(180),
@@ -51,7 +50,7 @@
 	MinProfit (0.00625),
 	smallbaseProfit (0.033), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P)
 	smallbaseProfit1 (0.059), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P) 
-	SmallMinProfit (0.033), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P
+	SmallMinProfit (0.033),//after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //TRAIL PCT FROM 5P //0.033
 	SmallMinProfit1 (0.05), 
 	largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 	SmallMinProfitPart1 (0.05), //after 3 pips limit 3 at the middle of the chanel //0.05
@@ -62,10 +61,11 @@
 	FastMinProfit (0.0625), //0.1125
 	MinBaseProfit (0.03),
 	MinLossForAdd (0.1), //0.1
-	SmallTrail (0.0033), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P
+	SmallTrail (0.0033),//0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033
 	largeTrail (0.09),
 	MinSQQQTQQQGap (0.09),
 	Minbarsfortake (5), //2
+	MinBarsAfterCloseToEntry (1),
 	MinBarsForMove (30), //12
 	MaxBarsforadd (1),
 	maxpositions (6),
@@ -191,6 +191,9 @@
 	selldbg(""),
 	valsdbg(""),
 	CurShares (0),
+	IntrabarPersist ExitBarNum (0),
+	intrabarpersist LastMarketPosition(0),
+
 
 	//macd
 	vMacd(0), 
@@ -331,9 +334,9 @@
 	//exit
 	lastExitPrice (0),
 
-	crossind1 (false),
-	crossind2 (false),
-	crossind3 (false),
+	IntrabarPersist crossind1 (false),
+	IntrabarPersist crossind2 (false),
+	IntrabarPersist crossind3 (false),
 
 
 	//stop
@@ -342,7 +345,11 @@
 	startshortSL (maximumloss),
 	updatedshortSL(maximumloss),
 	longSL (0),
-	shortSL (0);
+	shortSL (0),
+	
+	IntrabarPersist lastPrintBar(0), 
+	IntrabarPersist lastAlertBar1(0);
+
 
 	//[IntrabarOrderGeneration = True] //trade intra-bar
 
@@ -372,8 +379,8 @@
 	longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 	longbuyingPower1 = 1; // scale in-out
 	longbuyingPower2 = 3;
-	shortbuyingPower = 3; //3
-	shortbuyingPower1 = 1 ; // scale in-out
+	shortbuyingPower = 4; //3
+	shortbuyingPower1 = 2 ; // scale in-out
 	shortbuyingPower2 = 3 ;
 
 
@@ -548,6 +555,15 @@
 	end;
 	PLTarget = Netprofit - NetProf;
 
+{
+	//Reset ExitBarNum to the last bar number when all position closed
+	if marketposition = 0 and LastMarketPosition <> 0
+	then
+	begin
+	ExitBarNum = BarNumber;
+	end;
+	LastMarketPosition = marketposition;	
+}
 
 	if marketposition = 0 //Conditions Entry Long
 	//and
@@ -631,11 +647,13 @@
 	Histogram > 0
 	//and 
 	//MACDGradient > 0 
+	//and
+	//BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 
 	then 
 	begin
 	buy longbuyingPower Shares next bar at market  ;
-	Alert("MNQ Momentum Long Model");
+	Alert("Momentum - BUY");
 	end;
 
 
@@ -807,10 +825,14 @@
 	//)
 	and
 	Histogram < 0
+	//and
+	//BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
+
 	
 	then 
 	begin
 	sellshort shortbuyingPower Shares next bar at market  ;
+	Alert("Momentum - SELL");
 	end;
 
 
@@ -826,6 +848,8 @@ and
 (close/entryprice-1)*100 >= SmallMinProfit 
 and
 barssinceentry <= 1
+and
+Time <> 832.00 
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -835,7 +859,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
-Alert("MNQ Momentum Model - Exit Long");
+Alert("Momentum - SELL AT FAST TRAIL");
 end;
 
 
@@ -897,7 +921,7 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 1");
 end;
 
 
@@ -920,7 +944,7 @@ Then
 begin
 Sell longbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 2");
 end;
 	
 
@@ -946,7 +970,7 @@ Then
 begin
 Sell longbuyingPower Shares Next Bar at Market;
 crossind3 = true;
-Alert("MNQ Momentum Model - Exit Long 1");
+Alert("Momentum - PARTIAL EXIT LONG AT CROSS 3");
 end;
 
 //close long position with trail start moving after large profit in the first bar from entry
@@ -966,6 +990,7 @@ valuePercentTrail = ((entryprice * largeTrail) /100);
 trailProfit = Highest(high , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 sell  next bar at trailExit  stop;
+Alert("Momentum - SELL AT LARGE TRAIL");
 end;
 
 	
@@ -990,7 +1015,7 @@ or
 Then
 begin
 Sell Next Bar at Market;
-Alert("MNQ Momentum Model - Exit Long");
+Alert("Momentum - SELL AT BREAK EVEN");
 end;
 
 
@@ -1164,6 +1189,9 @@ and
 (1-close/entryprice)*100 >= SmallMinProfit 
 and
 barssinceentry <= 1
+and
+Time <> 832.00 
+
 //and
 //AngleLong = False
 //entryprice >= vBlb2
@@ -1173,6 +1201,7 @@ valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
+Alert("Momentum - BUY TO COVER AT FAST TRAIL");
 end;
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
 
@@ -1233,6 +1262,7 @@ Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind1 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 1");
 end;
 
 // END - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
@@ -1256,6 +1286,7 @@ Then
 begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 crossind2 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 2");
 end;
 	
 
@@ -1281,6 +1312,7 @@ Then
 begin
 buytocover Next Bar at Market;
 crossind3 = true;
+Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 3");
 end;
 
 //close short position with trail start moving after large profit in the first bar from entry
@@ -1298,6 +1330,7 @@ valuePercentTrail = ((entryprice * largeTrail) /100);
 trailProfit = lowest(low , Barssinceentry); 
 trailExit = trailProfit - valuePercentTrail;        
 buytocover  next bar at trailExit  stop;
+Alert("Momentum - BUY TO COVER AT LARGE TRAIL");
 end;
 
 	
@@ -1318,7 +1351,9 @@ and
 Then
 begin
 buytocover Next Bar at Market;
+Alert("Momentum - BUY TO COVER AT BREAK EVEN");
 end;
+
 	{
 	//close 2st long position with trail start moving cross back
 	if marketposition = -1 //there is long position open
@@ -1451,6 +1486,7 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
+	Alert("Momentum - STOP LOSS LONG");
 	end;
 
 
@@ -1458,6 +1494,7 @@ end;
 	then
 	begin
 	SetStopLoss(close*AssetMultiplier *maximumloss/100* LONGbuyingPower);
+	Alert("Momentum - STOP LOSS SHORT");
 	end;
 
 
@@ -1526,125 +1563,67 @@ end;
 	 then selldbg = selldbg + "A" else selldbg = selldbg  + "X" ;
 	}
 
-	{
-	if marketposition = 0  
-	and
-	ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
-	//and (close cross over emaFast  or close cross below emaFast )
-	then
-	//Long Prints - but No position
-	print ( "MOMTEST  > symbol=" , symbol," ", "islong=", is_long_symbol,  "no position","  ",
-	 ELDateToString(date),"Time=", time,"buydbg=", buydbg, "  ", "selldbg=", selldbg,
-	 "     ","bar=", BarNumber,
-	"entryprice=","xxxx.xx", 
-	"close=", close, 
-	"longStop =", longStop ,
-	"lastExitPrice =", lastExitPrice ,
-	"shortStop =", shortStop  ,
+{
+//no position prints
+if marketposition = 0 and ELDateToString(date) = "09/07/2023" and lastPrintBar <> BarNumber//and symbol = "soxs" //and Time = 1300
+then 
+begin
+print ( "MOMTEST   > symbol=" , symbol," ",  
+ELDateToString(date),"Time=", time, "time_s=", time_s, " lastPrintBar=",lastPrintBar, " buydbg=", buydbg, "     ",
+ "no   position",
+"close=", close,
+"entryprice=",entryprice, 
+"bar=", BarNumber,
+"ExitBarNum=", ExitBarNum,
+"marketposition=",marketposition,
+"LastMarketPosition =", LastMarketPosition ,
+"MinBarsAfterCloseToEntry  =", MinBarsAfterCloseToEntry ,
+"MinBarsAfterCloseToEntry=" , MinBarsAfterCloseToEntry ,
+"ExitBarNum + MinBarsAfterCloseToEntry=" , ExitBarNum + MinBarsAfterCloseToEntry
+);
+lastPrintBar = BarNumber;
+end;
 
-	"high5=", high5, "low5=", low5,
-	"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-	"EHLOCdownband =", EHLOCdownband ,
-	"EHLOCupband =", EHLOCupband ,
-	"PLTarget=", PLTarget,
-	"emaFast=" , emaFast, 
-	"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-	"dema=", demafast,
-	"vwap=", //vwap,
-	"vKeltUp  =", vKeltUp, "vKeltdown  =", vKeltDown, 
-	"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-	"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-	"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-	"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
-	 "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-	"Close[1]=", Close[1], "Close[2]=", Close[2],
-	"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-	"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-	"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-	"openD0=", OpenD(0), "closeD1=", CloseD(1),
-	"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
-	 ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
-	 "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-	  "MinGapSlowToMid=", MinGapSlowToMid,  
-	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-	}
-
-	{
-	//long position prints
-	if marketposition = 1 
-	and ELDateToString(date) = "07/13/2023" //and symbol = "soxs" //and Time = 1300
-	then 
-	print ( "MOMTEST   > symbol=" , symbol," ",  "in long", "      "
-	,ELDateToString(date),"Time=", time,"buydbg=", buydbg, "     ","bar=", BarNumber,
-	"entryprice=",entryprice, 
-	"close=", close, 
-	"longStop =", longStop ,
-	"lastExitPrice =", lastExitPrice ,
-	"shortStop =", shortStop  ,
-	"high5=", high5, "low5=", low5,
-	"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-	"EHLOCdownband =", EHLOCdownband ,
-	"EHLOCupband =", EHLOCupband ,
-	"PLTarget=", PLTarget,
-	"emaFast=" , emaFast, 
-	"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-	"dema=", demafast,
-	"vwap=", //vwap,
-	"vKeltUp  =", vKeltUp, "vKeltdown  =", vKeltDown, 
-	"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-	"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-	"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-	"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
-	 "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-	"Close[1]=", Close[1], "Close[2]=", Close[2],
-	"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-	"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-	"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-	"openD0=", OpenD(0), "closeD1=", CloseD(1),
-	"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
-	 ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
-	 "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-	  "MinGapSlowToMid=", MinGapSlowToMid,  
-	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-	}
-
-	{
-	//short position prints       
-	if marketposition = -1 
-	//and ELDateToString(date) = "06/14/2023" //and symbol = "soxs"//and Time = 1300
-	then 
-	print ("MOMTEST  > symbol=" , symbol," ", "in short","     ", ELDateToString(date),"Time=", time,"selldbg=", selldbg , "     ","bar=", BarNumber,
-	"entryprice=",entryprice, 
-	"close=", close, 
-	"shortStop =", shortStop  ,
-	"longStop =", longStop ,
-	"high5=", high5, "low5=", low5,
-	"S1=", S1, "S2=", S2, "S3=", S3, "R1=", R1,  "R2=", R2,  "R3=", R3, 
-	"EHLOCdownband =", EHLOCdownband ,
-	"EHLOCupband =", EHLOCupband ,
-	"PLTarget=", PLTarget,
-	"emaFast=" , emaFast, 
-	"LowD(0)=", LowD(0), "HighD(0)=", HighD(0), 
-	"dema=", demafast,
-	"vwap=", //vwap,
-	"vKeltUp  =", vKeltUp, "vKeltdown  =", vKeltDown, 
-	"vBlb1 =", vBlb1, "vBlb2 =", vBlb2,"vBlb3 =", vBlb3,
-	"vBub1 =", vBub1, "vBub2 =", vBub2,"vBub3 =", vBub3,
-	"AvgVolumeLength= ", AvgVolumeLength, "volumeUP =", volumeUP ,
-	"emaslow=", emaSlow, "emaverySlow =", emaverySlow , "ema3verySlow=" , ema3VerySlow , 
-	 "ema2=",ema2Slow , "emaVerySlow=", ema3VerySlow, 
-	"Close[1]=", Close[1], "Close[2]=", Close[2],
-	"open=", Open, "open[1]=", Open[1], "open[2]=", Open[2],
-	"low=", low, "low[1]=", Low[1], "low[2]=", Low[2],
-	"high=", high, "high[1]=", high[1], "high[2]=", High[2],
-	"openD0=", OpenD(0), "closeD1=", CloseD(1),
-	"adxcalc =", adxcalc ,"adxmin=", adxmin , "MinProfit =",SmallMinProfit
-	 ,"MinEMAGap=" , MinEMAGap,"MaxEMAGap=" , MaxEMAGap,
-	 "smaFast=", smaFast, "smaMid=", smaMid, "smaSlow =", smaSlow ,
-	  "MinGapSlowToMid=", MinGapSlowToMid,  
-	"TakeProfitPct =", TakeProfitPct , "StopPct=", StopPct);
-	}
+//long position prints
+if marketposition = 1 and ELDateToString(date) = "09/07/2023" and lastPrintBar <> BarNumber//and symbol = "soxs" //and Time = 1300
+then 
+begin
+print ( "MOMTEST   > symbol=" , symbol," ",  
+ELDateToString(date),"Time=", time, "time_s=", time_s, " lastPrintBar=",lastPrintBar, " buydbg=", buydbg, "     ",
+ "long   position",
+"close=", close,
+"entryprice=",entryprice, 
+"bar=", BarNumber,
+"ExitBarNum=", ExitBarNum,
+"marketposition=",marketposition,
+"LastMarketPosition =", LastMarketPosition ,
+"MinBarsAfterCloseToEntry  =", MinBarsAfterCloseToEntry ,
+"MinBarsAfterCloseToEntry=" , MinBarsAfterCloseToEntry ,
+"ExitBarNum + MinBarsAfterCloseToEntry=" , ExitBarNum + MinBarsAfterCloseToEntry
+);
+lastPrintBar = BarNumber;
+end;
 
 
+//short position prints
+if marketposition = -1 and ELDateToString(date) = "09/07/2023" and lastPrintBar <> BarNumber//and symbol = "soxs" //and Time = 1300
+then 
+begin
+print ( "MOMTEST   > symbol=" , symbol," ",  
+ELDateToString(date),"Time=", time, "time_s=", time_s, " lastPrintBar=",lastPrintBar, " buydbg=", buydbg, "     ",
+ "short   position",
+"close=", close,
+"entryprice=",entryprice, 
+"bar=", BarNumber,
+"ExitBarNum=", ExitBarNum,
+"marketposition=",marketposition,
+"LastMarketPosition =", LastMarketPosition ,
+"MinBarsAfterCloseToEntry  =", MinBarsAfterCloseToEntry ,
+"MinBarsAfterCloseToEntry=" , MinBarsAfterCloseToEntry ,
+"ExitBarNum + MinBarsAfterCloseToEntry=" , ExitBarNum + MinBarsAfterCloseToEntry
+);
+lastPrintBar = BarNumber;
+end;
+}
 
 
