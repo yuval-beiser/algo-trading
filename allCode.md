@@ -506,8 +506,8 @@ LastMarketPosition = marketposition;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
-Time >= 0100.00 and Time <= 2230.00 //open hours
+//and
+//Time >= 0100.00 and Time <= 2230.00 //open hours
 and
 close > Open //3
 and
@@ -540,8 +540,8 @@ end;
 
 if        
 marketposition = 0 //Conditions Entry short
-and 
-Time >= 0100.00 and Time <= 2230.00 //open hours
+//and 
+//Time >= 0100.00 and Time <= 2230.00 //open hours
 and
 (
 (PLTarget < PForDay) and (PLTarget > LForDay) //1
