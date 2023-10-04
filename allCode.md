@@ -382,10 +382,10 @@ emaverySlow = XAverage(close,VerySlowLength);
 adxcalc = ADX(adxperiod);
 longbuyingPower = 3 ;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 longbuyingPower1 = 1; // scale in-out
-longbuyingPower2 = 1;
+longbuyingPower2 = 3;
 shortbuyingPower = 4; //3
 shortbuyingPower1 = 2 ; // scale in-out
-shortbuyingPower2 = 2 ;
+shortbuyingPower2 = 3 ;
 
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -605,12 +605,6 @@ end;
 end;
 
 if marketposition = 1 and close cross below trailExit and rtPosition =1 
-and
-(close/entryprice-1)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
-and
-Time <> 1632.00
 then begin 
 sell  next bar at market;
 Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 3.1",rtPosition, marketposition, trailExit  ));
@@ -747,14 +741,9 @@ end;
 end;
 
 if marketposition = 1 and close cross below trailExit and rtPosition =1 
-and
-(close/entryprice-1)*100 >= largeMinProfit
 then begin 
 sell  next bar at market;
-if crossind1 = false then  longbuyingPower2 = 3
-else if crossind1 = true and crossind2 = false then longbuyingPower2 =2
-else if crossind1 = true and crossind2 = true then longbuyingPower2 =1;
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 3.2",rtPosition, marketposition, trailExit  ));
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 3.2",rtPosition, marketposition, trailExit  ));
 rtPosition = 0;
 alertsGenerated = 0;
 end;
@@ -818,14 +807,7 @@ trailExit = tmpTrailExit;
 end;	
 end;
 
-if 
-marketposition = -1 and close cross above trailExit and rtPosition =-1
-and
-(1-close/entryprice)*100 >= SmallMinProfit 
-and
-barssinceentry <= 1
-and
-Time <> 1632.00 
+if marketposition = -1 and close cross above trailExit and rtPosition =-1 
 then begin 
 buytocover  next bar at market;
 Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 4.1", rtPosition, marketposition, trailExit  ));
@@ -971,18 +953,14 @@ end;
 end;
 
 if marketposition = -1 and close cross above trailExit and rtPosition =-1 
-and
-(1-close/entryprice)*100 >= largeMinProfit
 then begin 
 buytocover  next bar at market;
-if crossind1 = false then  shortbuyingPower2 = 4
-else if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 4.2", rtPosition, marketposition, trailExit  ));
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 4.2", rtPosition, marketposition, trailExit  ));
 rtPosition= 0;
 alertsGenerated  =0;
 end;
 
-//close long position after cross 1 and go break even	
+//close long position after cross 1 and go break even
 if marketposition = -1//there is long position open
 and
 close > entryprice * 0.999933
