@@ -278,9 +278,9 @@ BUpperBandHLOC(21), //39
 
 BLowerBandHLOC(21), //39
 
-BBpart4long (25),
+BBpart4long (28),
 
-BBpart4short (25),
+BBpart4short (28),
 
 
 //Keltner
@@ -1154,8 +1154,14 @@ close > Open //* (1*mingap5/100)
 //(close > low[1]) or  (close > close [1])
 //)
 //price was short but go long 
+
 and
-close [1] < open [1] * (1-mingap6/100)
+//oposite
+(
+(close [1] < open [1]* (1-mingap6/100)) or 
+(close [2] < open [2]* (1-mingap6/100) )
+) 
+
 //and
 //low [1] < close [1] * (1-mingap7/100)
 
@@ -1173,13 +1179,14 @@ and
 close < low * (1+maxgap7/100)
 and
 close <= EHLOC4long 
-
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 and
 zscore < longminzscore
 and
 atr < Atrmax
+
+
 
 //and
 //Histogram > minHistogram
@@ -1226,6 +1233,14 @@ and
 (
 (Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
 ))
+and
+close < Open //* (1-mingap5/100) 
+and
+//oposite
+(
+(close [1] > open [1]* (1+mingap6/100)) or 
+(close [2] > open [2]* (1+mingap6/100) )
+) 
 
 //and
 //(
@@ -1237,16 +1252,11 @@ and
 //(
 //(Time < 600.00) or (Time > 900.00) //trading day start and high volatility in US-EAST hours 
 //)
-and
-close < Open //* (1-mingap5/100) 
 //and
 //(
 //(close < high[1]) or  (close < close [1])
 //)
 
-//price was long but go short 
-and
-close [1] > open [1] * (1+mingap6/100)
 //and
 //high [1] > close [1] * (1+mingap7/100)
 
