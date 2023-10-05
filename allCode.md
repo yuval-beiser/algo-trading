@@ -785,7 +785,10 @@ Sell Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated >0 
 then begin
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+if crossind1 = true and crossind2 = false then longbuyingPower2 =2
+else if crossind1 = true and crossind2 = true then longbuyingPower2 =1;
+
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
@@ -999,7 +1002,8 @@ buytocover Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1045,3 +1049,4 @@ Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=B
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
