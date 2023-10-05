@@ -91,11 +91,13 @@ mingap2 (0.4),
 mingap3 (0.1469), //0.16 //0.3
 
 mingap4 (0.08),
-mingap5 (0.0033),
+mingap5 (0.02),
 
 mingap6 (0.02),
 
 mingap7 (0.01),
+
+mingap8 (0.02),
 
 Maxgap (0.2), //0.O5  //0.12
 
@@ -178,9 +180,9 @@ SQQQTQQQGap(0.15),
 
 AtrLength (14),
 
-AtrMin(5), //0.6
+AtrMin(2), //0.6
 
-Atrmax (8), //15 //23
+Atrmax (21), //15 //23 //8
 
 
 
@@ -223,12 +225,16 @@ os3 (0.0133), // 2$ - 0.133 precent
 
 os4 (0.0167),
 
+minatrpart (45),
+
+maxatrpart (55),
 
 
 
-PForDay (2000), //1500 //1950 //100 //800 //15000
 
-LForDay (-460), //-1100 //-500 //-50 //-2000
+PForDay (800), //1500 //1950 //100 //800 //15000
+
+LForDay (-400), //-1100 //-500 //-50 //-2000
 
 
 
@@ -1134,45 +1140,21 @@ LastMarketPosition = marketposition;
 
 if marketposition = 0 //Conditions Entry Long
 and
-//(
-//(PLTarget < PForDay) 
-//and 
-//(PLTarget > LForDay) 
-//)  
-//and
-//and
-(
+PLTarget < PForDay
+and 
+PLTarget > LForDay
+and
 Time >= 0100.00 and Time <= 2230.00 //open hours
 and
-(
-(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
-))
-and
 close > Open //* (1*mingap5/100) 
-//and
-//(
-//(close > low[1]) or  (close > close [1])
-//)
-//price was short but go long 
-
 and
-//oposite
-(
-(close [1] < open [1]* (1-mingap6/100)) or 
-(close [2] < open [2]* (1-mingap6/100) )
-) 
-
-//and
-//low [1] < close [1] * (1-mingap7/100)
-
-//and
-//close > close [1]
+close [1] < open [1] 
+and
+close > close [1] //* (1+mingap8/100)
+and
+close > low
 and
 close < emaMid 
-//and
-//close > vBlb2
-//and
-//vRSI < RsiMinForLong
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
 and
@@ -1185,6 +1167,40 @@ and
 zscore < longminzscore
 and
 atr < Atrmax
+and
+atr > atrmin
+
+//and
+//(
+//(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
+//))
+//and
+//(
+//(close > low[1]) or  (close > close [1])
+//)
+//price was short but go long 
+
+//* (1-mingap6/100)  //) or 
+//(close [2] < open [2]* (1-mingap6/100) )
+//) 
+
+//and
+//close > low [1]
+{
+and
+(close - low) >= atr * minatrpart/100
+and
+(close - low) <= atr * maxatrpart/100
+}
+//and
+//low [1] < close [1] * (1-mingap7/100)
+
+//and
+//close > close [1]
+//and
+//close > vBlb2
+//and
+//vRSI < RsiMinForLong
 
 
 
@@ -1227,49 +1243,23 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-(
+//(
 Time >= 0100.00 and Time <= 2230.00 //open hours
 and
-(
-(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
-))
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
 //oposite
-(
-(close [1] > open [1]* (1+mingap6/100)) or 
-(close [2] > open [2]* (1+mingap6/100) )
-) 
-
-//and
-//(
-//(PLTarget < PForDay) 
-//and 
-//(PLTarget > LForDay) //1
-//)  
-//and
-//(
-//(Time < 600.00) or (Time > 900.00) //trading day start and high volatility in US-EAST hours 
-//)
-//and
-//(
-//(close < high[1]) or  (close < close [1])
-//)
-
-//and
-//high [1] > close [1] * (1+mingap7/100)
-
-
+close [1] > open [1] //* (1+mingap6/100)) // or 
+and
+close < close [1] //* (1-mingap8/100)
+and
+close < high 
 and
 close > emaMid
-
-//and
-//close > vBub1 
-//and
-//close < vBub2
-//and
-//vRSI > RsiMaxForShort
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
 and
@@ -1282,6 +1272,30 @@ and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
 atr < Atrmax
+and
+atr > atrmin
+
+//and
+//(
+//(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
+//))
+
+//(close [2] > open [2]* (1+mingap6/100) )
+//and
+//close < high [1]
+
+//and
+//(high - close) >= atr * minatrpart/100
+//and
+//(high - close) <= atr * maxatrpart/100
+
+
+//and
+//close > vBub1 
+//and
+//close < vBub2
+//and
+//vRSI > RsiMaxForShort
 
 //and
 //Histogram < maxHistogram
@@ -1326,7 +1340,7 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
-
+{
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -1356,7 +1370,7 @@ sell  next bar at market;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 3",rtPosition, marketposition, trailExit  ));
 rtPosition = 0;
 end;
-
+}
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
@@ -1376,7 +1390,7 @@ if marketposition = -1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
-
+{
 //close short position with trail start moving after small profit in the first bar from entry
 if marketposition = -1 //there is short position open
 and
@@ -1401,6 +1415,7 @@ buytocover  next bar at market;
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 4", rtPosition, marketposition, trailExit  ));
 rtPosition= 0;
 end;
+}
 																					
 
 
@@ -1455,5 +1470,6 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
