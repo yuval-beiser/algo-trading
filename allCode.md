@@ -976,7 +976,7 @@ Alert(text("-APEX REVERSAL-","NQ-",longbuyingPower ,"-SOLD-", FormatDate("dd-MM-
 }
 if alertsGenerated = 0 
 then begin
-Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 1"));
+Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT"));
 alertsGenerated  =1;
 end;
 end;
@@ -1065,7 +1065,9 @@ Then begin
 Sell Next Bar at Market;
 if alertsGenerated >0 
 then begin
-Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+if crossind1 = true and crossind2 = false then longbuyingPower2 =2;
+
+Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
@@ -1308,8 +1310,8 @@ buytocover Next Bar at Market;
 
 if alertsGenerated  > 0
 then begin
-
-Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
+Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
