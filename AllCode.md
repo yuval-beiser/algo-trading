@@ -232,9 +232,9 @@ maxatrpart (55),
 
 
 
-PForDay (800), //1500 //1950 //100 //800 //15000
+PForDay (300), //1500 //1950 //100 //800 //15000 //600
 
-LForDay (-400), //-1100 //-500 //-50 //-2000
+LForDay (-300), //-1100 //-500 //-50 //-2000 //-400
 
 
 
@@ -1169,6 +1169,8 @@ and
 atr < Atrmax
 and
 atr > atrmin
+and
+Histogram < 0
 
 //and
 //(
@@ -1274,6 +1276,8 @@ and
 atr < Atrmax
 and
 atr > atrmin
+and
+Histogram > 0
 
 //and
 //(
@@ -1470,6 +1474,5 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
