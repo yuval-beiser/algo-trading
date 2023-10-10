@@ -854,6 +854,8 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+
+{
 //close long position with trail start moving after small profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -884,6 +886,7 @@ Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower ," type=SOLD
 rtPosition = 0;
 alertsGenerated = 0;
 end;
+}
 
 
 //close short position with trail (based on low prev) start moving after the first bar from entry
@@ -907,6 +910,7 @@ begin
 crossind1 = False;
 end;
 
+{
 //reset crossind
 if marketposition = 0
 then
@@ -920,6 +924,7 @@ then
 begin
 crossind3 = False;
 end;
+}
 
 {
 if marketposition = 1 //there is long position open
@@ -1009,7 +1014,6 @@ crossind1 = true
 
 Then begin
 Sell longbuyingPower1 Shares Next Bar at Market;
-
 Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1066,12 +1070,10 @@ Sell Next Bar at Market;
 if alertsGenerated >0 
 then begin
 if crossind1 = true and crossind2 = false then longbuyingPower2 =2;
-
 Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
-
 end;
 
 
@@ -1082,6 +1084,7 @@ if marketposition = -1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+{
 //close short position with trail start moving after small profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -1112,6 +1115,7 @@ Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower ," type=BOU
 rtPosition= 0;
 alertsGenerated = 0;
 end;
+}
 
 
 // END--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
@@ -1225,11 +1229,8 @@ Then begin
 buytocover shortbuyingPower1 Shares Next Bar at Market;
 //Alert("Momentum - PARTIAL EXIT SHORT AT CROSS 2");
 
-
-
 if alertsGenerated >0 
 then begin
-
 Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower1 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1307,7 +1308,6 @@ crossind1 = true
 Then
 begin
 buytocover Next Bar at Market;
-
 if alertsGenerated  > 0
 then begin
 if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
@@ -1357,4 +1357,5 @@ Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
