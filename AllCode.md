@@ -1436,7 +1436,6 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower," type=BOUG
 rtPosition = 0;
 end;
 
-
 //SetProfitTarget;
 if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
 then begin
