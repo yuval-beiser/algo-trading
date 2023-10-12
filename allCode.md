@@ -1055,7 +1055,7 @@ then begin
 buytocover next bar at market;
 if crossind1 = false then  shortbuyingPower2 = 4
 else if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
