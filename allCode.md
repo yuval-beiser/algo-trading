@@ -1320,7 +1320,7 @@ end;
 
 
 //SetProfitTarget;
-if marketposition = 1 and (1-close/entryprice)*100 cross above maximumloss and rtPosition = 1
+if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition = 1
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
@@ -1328,7 +1328,7 @@ Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower ," type=SOLD
 rtPosition = 0;
 end;
 
-if marketposition = -1 and (close/entryprice-1)*100 cross above maximumloss and rtPosition = -1
+if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPosition = -1
 then begin 
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
@@ -1344,7 +1344,9 @@ if marketposition = 1
 and Time = 2250.00 
 then begin
 sell next bar at market;
-Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+if crossind1 = false then  longbuyingPower2 = 4
+else if crossind1 = true then longbuyingPower2 =2;
+Alert(text(" model=FISORA instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1353,9 +1355,12 @@ if marketposition = -1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
-Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+if crossind1 = false then  shortbuyingPower2 = 4
+else if crossind1 = true  then shortbuyingPower2 =2;
+Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
