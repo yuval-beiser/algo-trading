@@ -1041,7 +1041,10 @@ if marketposition = 1
 and Time = 2250.00 
 then begin
 sell next bar at market;
-Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+if crossind1 = false then  longbuyingPower2 = 3
+else if crossind1 = true and crossind2 = false then longbuyingPower2 =2
+else if crossind1 = true and crossind2 = true then longbuyingPower2 =1;
+Alert(text(" model=MOMENTUM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1050,6 +1053,8 @@ if marketposition = -1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
+if crossind1 = false then  shortbuyingPower2 = 4
+else if crossind1 = true and crossind2 = false then shortbuyingPower2 =2;
 Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
