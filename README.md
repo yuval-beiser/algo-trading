@@ -2,7 +2,7 @@
 
 RITMIC MODEL 
 
-Works Good 
+Ran Version
 Drowdown - 550
 
 
