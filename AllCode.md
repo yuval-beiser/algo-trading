@@ -8,7 +8,9 @@ FastLength(9),
 
 MidLength(21), //20
 
-MidLength1(30),
+MidLength1(21),
+MidLength2(30),
+MidLength3(50),
 
 SlowLength(50),
 
@@ -115,11 +117,6 @@ maxgap6 (0.01),
 
 maxgap7 (0.1541), //8 points //0.06
 
-
-
-
-
-
 MinProfit (0.00625),
 
 smallbaseProfit (0.0267), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS1:0.033 (5P) //0.033
@@ -184,9 +181,6 @@ AtrMin(2), //0.6
 
 Atrmax (21), //15 //23 //8
 
-
-
-
 ANGLE_MA1(130),
 
 ANGLE_MA2(180),
@@ -243,9 +237,6 @@ LForDay (-300), //-1100 //-500 //-50 //-2000 //-400
 
 DonchianLength (20), // 20
 
-
-
-
 //macd
 
 macdFastLength( 12 ),
@@ -253,8 +244,6 @@ macdFastLength( 12 ),
 macdSlowLength( 26 ),
 
 MACDlineLength( 9 ) ,
-
-
 
 
 //BB
@@ -272,9 +261,6 @@ BLowerBand(200), //26
 MinFromBB (0.24),
 
 MaxFromBB (0.8),
-
-
-
 
 //BB HLOC
 
@@ -296,12 +282,6 @@ KStdAtr(1.5),
 KUpperBand(43),
 
 KLowerBand(43),
-
-
-
-
-
-
 
 //Stoch
 
@@ -330,24 +310,15 @@ TakeProfitPct (6.5),
 
 StopPct (0.025),
 
-
-
-
 //Zscore
 
 longminzscore (-2), //-2
 
 shortminzscore (2), //2
 
-
-
-
 //Alerts
 
 MaxAlertsPerBar (1),
-
-
-
 
 minHistogram (-0.1),
 
@@ -381,7 +352,11 @@ emaSlow (0),
 
 emaMid (0),
 
+emaMid21 (0),
+
 emaMid30 (0),
+
+emaMid50 (0),
 
 emaFast(0),
 
@@ -844,17 +819,14 @@ then
 [IntrabarOrderGeneration = true] //trade intra-bar
 
 
-
-
 emaFast = XAverage(close,FastLength);
 
 emaMid = XAverage(close,MidLength);
-
-emaMid30 = XAverage(close,MidLength1);
-
-emaSlow = XAverage(close,SlowLength);
-
-emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
+emaMid21 = XAverage(close,MidLength1);
+emaMid30 = XAverage(close,MidLength2);
+emaMid50 = XAverage(close,MidLength3);
+//emaSlow = XAverage(close,SlowLength);
+//emafast1 = XAVERAGE(XAVERAGE(close,FastLength),FastLength);
 
 demafast = emaFast * 2 - emafast1  ;    
 
@@ -926,14 +898,9 @@ vBmbHLOC = (vBubHLOC+vBlbHLOC)/2;
 
 HLOC = (HIGH+LOW+OPEN+CLOSE)/4;
 
-
-
-
 emaHLOC = XAverage (HLOC , BUpperBandHLOC);
 
 stdHLOC = StdDev(HLOC , BUpperBandHLOC);
-
-
 
 
 EHLOCupband = emaHLOC + stdHLOC;
@@ -1162,39 +1129,50 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 Time >= 0100.00 and Time <= 2230.00 //open hours
 and
 close > Open //* (1*mingap5/100) 
-and
-close [1] < open [1] 
+//and
+//close [1] < open [1] 
 and
 close > close [1] //* (1+mingap8/100)
+//and
+//emaMid21 > emamid50
 and
-close > low
+emaMid50 > emaVerySlow
 and
-close < emaMid 
+close > emamid21
+//and
+//close > emamid50
 and
-DonchianDown < DonchianUp * (1-mingap3/100)
+close > emaVerySlow
 and
-close < low * (1+maxgap7/100)
-and
-close <= EHLOC4long 
+close cross above high5
+//and
+//close > low
+//and
+//close < emaMid 
+//and
+//DonchianDown < DonchianUp * (1-mingap3/100)
+//and
+//close < low * (1+maxgap7/100)
+//and
+//close <= EHLOC4long 
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
-and
-zscore < longminzscore
-and
-atr < Atrmax
+//and
+//zscore < longminzscore
+//and
+//atr < Atrmax
 and
 atr > atrmin
-and
-Histogram < 0
-
+//and
+//Histogram < 0
 //and
 //(
 //(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
@@ -1269,37 +1247,43 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 Time >= 0100.00 and Time <= 2230.00 //open hours
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
-//oposite
-close [1] > open [1] //* (1+mingap6/100)) // or 
+close < close [1] //* (1+mingap8/100)
+//and
+//emaMid21 < emamid50
 and
-close < close [1] //* (1-mingap8/100)
+emaMid50 < emaVerySlow
 and
-close < high 
+close < emamid21
+//and
+//close < emamid50
 and
-close > emaMid
+close < emaVerySlow
 and
-DonchianDown < DonchianUp * (1-mingap3/100)
-and
-close > high * (1-maxgap7/100)
-and
-close >= EHLOC4short 
-and
-zscore > shortminzscore
+close cross below low5
+
+//and
+//DonchianDown < DonchianUp * (1-mingap3/100)
+//and
+//close > high * (1-maxgap7/100)
+//and
+//close >= EHLOC4short 
+//and
+//zscore > shortminzscore
 and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
-and
-atr < Atrmax
+//and
+//atr < Atrmax
 and
 atr > atrmin
-and
-Histogram > 0
+//and
+//Histogram > 0
 
 //and
 //(
@@ -1442,10 +1426,10 @@ Sell longbuyingPower2 Shares Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
-if alertsGenerated = 1
+if alertsGenerated = 0
 then begin
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
-alertsGenerated  =2;
+alertsGenerated  =1;
 end;
 end;
 
@@ -1469,7 +1453,7 @@ Sell Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated >0 
 then begin
-if crossind1 = true  then longbuyingPower3 =1;
+if crossind1 = true and crossind2 = false then longbuyingPower3 =1;
 //else if crossind1 = true and crossind2 = true then longbuyingPower3 =1;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
@@ -1564,10 +1548,10 @@ buytocover shortbuyingPower2 Shares Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
-if alertsGenerated = 1 
+if alertsGenerated = 0 
 then begin
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
-alertsGenerated  =2;
+alertsGenerated  =1;
 end;
 end;
 
@@ -1591,7 +1575,7 @@ buytocover Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-if crossind1 = true  then shortbuyingPower3 =1;
+if crossind1 = true and crossind2 = false then shortbuyingPower3 =1;
 Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1641,7 +1625,3 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
-
-
-
