@@ -1607,8 +1607,8 @@ and Time = 2250.00
 then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true and crossind2 = false then longbuyingPower2 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+else if crossind1 = true  then longbuyingPower3 =1;
+Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1618,8 +1618,8 @@ and Time = 2250.00
 then begin
 buytocover next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true and crossind2 = false then shortbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+else if crossind1 = true  then shortbuyingPower3 =1;
+Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
