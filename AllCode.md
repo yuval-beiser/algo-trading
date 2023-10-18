@@ -1242,8 +1242,6 @@ rtPosition=1;
 end;
 
 
-
-
 if marketposition = 0 //Conditions Entry short
 and
 Time >= 0100.00 and Time <= 2230.00 //open hours
@@ -1426,10 +1424,10 @@ Sell longbuyingPower2 Shares Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
-if alertsGenerated = 0
+if alertsGenerated = 1
 then begin
 Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
-alertsGenerated  =1;
+alertsGenerated  =2;
 end;
 end;
 
@@ -1453,7 +1451,7 @@ Sell Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated >0 
 then begin
-if crossind1 = true and crossind2 = false then longbuyingPower3 =1;
+if crossind1 = true then longbuyingPower3 =1;
 //else if crossind1 = true and crossind2 = true then longbuyingPower3 =1;
 Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
@@ -1548,10 +1546,10 @@ buytocover shortbuyingPower2 Shares Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
-if alertsGenerated = 0 
+if alertsGenerated = 1
 then begin
 Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
-alertsGenerated  =1;
+alertsGenerated  =2;
 end;
 end;
 
@@ -1575,7 +1573,7 @@ buytocover Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-if crossind1 = true and crossind2 = false then shortbuyingPower3 =1;
+if crossind1 = true  then shortbuyingPower3 =1;
 Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1625,3 +1623,4 @@ Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
