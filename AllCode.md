@@ -20,7 +20,7 @@ AssetMultiplier (20),
 
 length (5),
 
-VerySlowLength (200),
+	VerySlowLength (200),
 
 stdDevMultiplier2 (2),
 
@@ -37,6 +37,9 @@ MinGapSlowToMid(0.1),
 RsiMinForLong(30), 
 
 RsiMaxForShort(70), //80
+
+Rsiforlong(55), 
+Rsiforshort(45), 
 
 MomentumLength(14),
 
@@ -101,9 +104,12 @@ mingap7 (0.01),
 
 mingap8 (0.02),
 
+mingap9 (0.05),
+
+
 Maxgap (0.2), //0.O5  //0.12
 
-Maxgap1 (0.2), //0.2 //0.02 //0.2 // 0.05  //0.05
+Maxgap1 (0.5), //0.2 //0.02 //0.2 // 0.05  //0.05
 
 Maxgap2 (0.15), //0.2 // 0.15
 
@@ -177,7 +183,7 @@ SQQQTQQQGap(0.15),
 
 AtrLength (14),
 
-AtrMin(2), //0.6
+AtrMin(6), //0.6
 
 Atrmax (21), //15 //23 //8
 
@@ -218,6 +224,8 @@ os2 (0.01),
 os3 (0.0133), // 2$ - 0.133 precent
 
 os4 (0.0167),
+
+os5 (0.0033),
 
 minatrpart (45),
 
@@ -1001,6 +1009,13 @@ high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3]
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
 
+//high and low level
+high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+
+low9 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+
 
 //RSI
 
@@ -1124,29 +1139,30 @@ end;
 if marketposition = 0
 then
 begin
-longstop = -9999999;
+longStop = -9999999;
 end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+pLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 Time >= 0100.00 and Time <= 2230.00 //open hours
+
 and
 close > Open //* (1*mingap5/100) 
-//and
-//close [1] < open [1] 
 and
-close > close [1] //* (1+mingap8/100)
-//and
-//emaMid21 > emamid50
+close [1] < open [1] 
+and
+close > open [1] //* (1+mingap8/100)
+and
+emafast > emaMid50 * (1+mingap9/100)
 and
 emaMid50 > emaVerySlow
 and
-close > emamid21
+close > emaFast 
 //and
 //close > emamid50
 and
@@ -1154,7 +1170,16 @@ close > emaVerySlow
 and
 close cross above high5
 //and
-//close > low
+//vRSI > RsiForLong
+and
+close > EHLOCmidband
+and
+close < EHLOCqtr3band
+//and
+//close [1] > low [1] * (1+os5/100)
+//and
+//close <= emaverySlow * (1+Maxgap1/100) //*
+
 //and
 //close < emaMid 
 //and
@@ -1245,26 +1270,39 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 Time >= 0100.00 and Time <= 2230.00 //open hours
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
-close < close [1] //* (1+mingap8/100)
-//and
-//emaMid21 < emamid50
+close < open [1] //* (1+mingap8/100)
+and
+emafast < emaMid50 * (1-mingap9/100)
 and
 emaMid50 < emaVerySlow
 and
-close < emamid21
+close < emaFast 
 //and
 //close < emamid50
 and
 close < emaVerySlow
 and
 close cross below low5
+and
+
+close [1] > open [1]
+//and
+//vRSI < Rsiforshort
+and
+close < EHLOCmidband
+and
+close > EHLOCqtr1band
+//and
+//close [1] < high [1] * (1-os5/100)
+//and
+//close >= emaverySlow * (1-Maxgap1/100) //*
 
 //and
 //DonchianDown < DonchianUp * (1-mingap3/100)
@@ -1402,10 +1440,10 @@ crossind1 = true
 then
 begin
 // Calculate the trailing stop price
-if low [1] > longstop
+if low [1] > longStop
 then
 begin
-longstop = low[1];
+longStop = low[1];
 end;
 end;
 
@@ -1416,7 +1454,7 @@ and
 and
 barssinceentry > 1
 and
-Close < longstop * (1-os1/100) //<
+Close < longStop * (1-os1/100) //<
 and
 crossind1 = true
 then begin
@@ -1581,27 +1619,29 @@ end;
 end;
 
 
-
 //SetStopLoss;
 if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
-if crossind1 = true then 
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ))
-else if crossind1 = false then 
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+if crossind1 = false then  longbuyingPower3 = 3
+else if crossind1 = true  then longbuyingPower3 =1;
+Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
+alertsGenerated  =0;
 end;
 
 if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPosition =-1
 then begin 
+print("exit buy short - EXIT ALL 2");
+//SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
-if crossind1 = true then 
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ))
-else if crossind1 = false then 
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+if crossind1 = false then  longbuyingPower3 = 3
+else if crossind1 = true  then longbuyingPower3 =1;
+
+Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
+alertsGenerated  =0;
 end;
 
 
@@ -1627,3 +1667,4 @@ Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
