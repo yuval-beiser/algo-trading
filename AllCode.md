@@ -2,7 +2,7 @@
 
 Inputs:
 
-maximumloss(0.06),//160 //1300 //0.143 //0.12 //0.0695 //0.05
+maximumloss(0.04),//160 //1300 //0.143 //0.12 //0.0695 //0.05
 
 FastLength(9),
 
@@ -226,6 +226,8 @@ os6 (0.0333),
 
 os7 (0.05), 
 
+os8 (0.0333), 
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -233,9 +235,9 @@ maxatrpart (55),
 
 
 
-PForDay (1000), //1500 //1950 //100 //800 //15000 //600
+PForDay (1200), //1500 //1950 //100 //800 //15000 //600
 
-LForDay (-1000), //-1100 //-500 //-50 //-2000 //-400
+LForDay (-1200), //-1100 //-500 //-50 //-2000 //-400
 
 
 
@@ -1191,7 +1193,8 @@ and
 close cross above high5
 and
 close of data2 cross above high5data2
-
+and
+close < low * (1+os8/100)
 //and
 //close of data2 cross above high5
 //and
@@ -1338,6 +1341,9 @@ and
 close cross below low5
 and
 close of data2 cross below low5data2
+and
+close > high * (1-os8/100)
+
 
 //and
 //close of data2 cross below low5
