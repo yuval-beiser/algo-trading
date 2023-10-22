@@ -194,11 +194,6 @@ ANGLE_MA2(180),
 //ANGLE_MA3(85),
 
 
-
-
-
-
-
 TailHammerRatio (7),
 
 MinChanel (3),
@@ -238,9 +233,9 @@ maxatrpart (55),
 
 
 
-PForDay (300), //1500 //1950 //100 //800 //15000 //600
+PForDay (1000), //1500 //1950 //100 //800 //15000 //600
 
-LForDay (-300), //-1100 //-500 //-50 //-2000 //-400
+LForDay (-1000), //-1100 //-500 //-50 //-2000 //-400
 
 
 
@@ -1022,10 +1017,10 @@ low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3]
 
 
 high5data2 = maxlist(close of data2 [1] , open of data2 [1], close of data2 [2] , open of data2 [2], close of data2 [3] , open of data2 [3], close of data2 [4] , open of data2[4],
- close  [5] , open of data2 [5] );
+ close of data2 [5] , open of data2 [5] );
  
 low5data2 = minlist (close of data2 [1] , open of data2 [1], close of data2 [2] , open of data2 [2], close of data2 [3] , open of data2 [3], close of data2 [4] , open of data2[4],
- close  [5] , open of data2 [5] );
+ close of data2 [5] , open of data2 [5] );
 
 //high and low level
 high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
@@ -1195,7 +1190,7 @@ close > close [1]
 and
 close cross above high5
 and
-close of data2 cross above high5data2 
+close of data2 cross above high5data2
 
 //and
 //close of data2 cross above high5
@@ -1741,4 +1736,3 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
