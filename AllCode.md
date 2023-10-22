@@ -762,6 +762,8 @@ high21 (0),
 
 low21 (0),
 
+high5data2 (0),
+low5data2 (0),
 
 //exit
 
@@ -1019,6 +1021,12 @@ high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3]
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
 
+high5data2 = maxlist(close of data2 [1] , open of data2 [1], close of data2 [2] , open of data2 [2], close of data2 [3] , open of data2 [3], close of data2 [4] , open of data2[4],
+ close  [5] , open of data2 [5] );
+ 
+low5data2 = minlist (close of data2 [1] , open of data2 [1], close of data2 [2] , open of data2 [2], close of data2 [3] , open of data2 [3], close of data2 [4] , open of data2[4],
+ close  [5] , open of data2 [5] );
+
 //high and low level
 high9 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
 open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
@@ -1165,10 +1173,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 (Time >= 0100.00 and Time < 2030.00) //open hours
 and
@@ -1185,11 +1193,14 @@ close > close [1]
 //(emaFast [3] cross above emamid50[3]) or (emaFast [4] cross above emamid50[4]) 
 //)
 and
-close cross above emaFast
+close cross above high5
 and
-close of data2 cross above ema2Fast
-and
-close > emaVerySlow
+close of data2 cross above high5data2 
+
+//and
+//close of data2 cross above high5
+//and
+//close > emaVerySlow
 //and
 //DonchianDown < DonchianUp * (1-mingap3/100)
 and 
@@ -1303,7 +1314,7 @@ and
 
 then begin
 buy longbuyingPower Shares next bar at market  ;
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower," type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower," type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
 rtPosition=1;
 end;
 
@@ -1311,10 +1322,10 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 (Time >= 0100.00 and Time < 2030.00) //open hours
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
@@ -1323,18 +1334,21 @@ close < close [1]
 //close [1] < open [1]
 //and
 //close < close [1] //* (1+mingap8/100)
-and
+//and
 //(
 //(emaFast cross below emamid50) or (emaFast [1] cross below emamid50[1]) or (emaFast [2] cross below emamid50[2]) or 
 //(emaFast [3] cross below emamid50[3]) or (emaFast [4] cross below emamid50[4]) 
 //)
-//and
-close cross below emaFast
 and
-close of data2 cross below ema2Fast
+close cross below low5
+and
+close of data2 cross below low5data2
 
-and
-close < emaVerySlow
+//and
+//close of data2 cross below low5
+
+//and
+//close < emaVerySlow
 //and
 //DonchianDown < DonchianUp * (1-mingap3/100)
 and
@@ -1436,7 +1450,7 @@ atr > atrmin
 
 then begin
 sellshort shortbuyingPower Shares next bar at market  ;
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower ," type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower ," type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
 rtPosition = -1;
 end;
 
@@ -1484,7 +1498,7 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1524,7 +1538,7 @@ crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
 alertsGenerated  =2;
 end;
 end;
@@ -1551,7 +1565,7 @@ if alertsGenerated >0
 then begin
 if crossind1 = true then longbuyingPower3 =1;
 //else if crossind1 = true and crossind2 = true then longbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
@@ -1604,7 +1618,7 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1646,7 +1660,7 @@ crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
 alertsGenerated  =2;
 end;
 end;
@@ -1672,7 +1686,7 @@ buytocover Next Bar at Market;
 if alertsGenerated  > 0
 then begin
 if crossind1 = true  then shortbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1686,7 +1700,7 @@ then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true  then longbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1699,7 +1713,7 @@ buytocover  next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true  then longbuyingPower3 =1;
 
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1712,7 +1726,7 @@ then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true  then longbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1723,7 +1737,8 @@ then begin
 buytocover next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true  then shortbuyingPower3 =1;
-Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
