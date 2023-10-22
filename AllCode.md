@@ -93,7 +93,7 @@ Mingap1 (0.01),
 
 mingap2 (0.4),
 
-mingap3 (0.1469), //0.16 //0.3
+mingap3 (0.35), //0.16 //0.3 //0.1469
 
 mingap4 (0.08),
 mingap5 (0.02),
@@ -183,7 +183,7 @@ SQQQTQQQGap(0.15),
 
 AtrLength (14),
 
-AtrMin(6), //0.6
+AtrMin(5), //0.6
 
 Atrmax (21), //15 //23 //8
 
@@ -226,6 +226,10 @@ os3 (0.0133), // 2$ - 0.133 precent
 os4 (0.0167),
 
 os5 (0.0033),
+
+os6 (0.0333),
+
+os7 (0.05), 
 
 minatrpart (45),
 
@@ -754,7 +758,9 @@ high26 (0),
 
 low26 (0),
 
+high21 (0),
 
+low21 (0),
 
 
 //exit
@@ -828,7 +834,7 @@ then
 
 
 emaFast = XAverage(close,FastLength);
-
+ema2Fast = XAverage(close of data2,FastLength);
 emaMid = XAverage(close,MidLength);
 emaMid21 = XAverage(close,MidLength1);
 emaMid30 = XAverage(close,MidLength2);
@@ -1005,6 +1011,10 @@ oData1FastK, oData1FastD, oData1SlowK, oData1SlowD ) ;
 
 
 //high and low level
+
+high3 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3]);
+low3 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3]);
+
 high5 = maxlist(close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 low5 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] , open [4], close [5] , open [5] );
 
@@ -1015,6 +1025,17 @@ open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], clos
 
 low9 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
 open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9]  );
+
+//high and low level
+high21 = maxlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9],
+ close [10] , open [10] ,  close [11] , open [11] ,  close [12] , open [12] ,  close [13] , open [13] ,  close [14] , open [14] ,  close [15] , open [15] 
+ , close [16] , open [16] , close [17] , open [17] , close [18] , open [18] , close [19] , open [19] , close [20] , open [20] , close [21] , open [21]   );
+
+low21 = minlist (close [1] , open [1], close [2] , open [2], close [3] , open [3], close [4] ,
+open [4], close [5] , open [5], close [6] , open [6], close [7] , open [7], close [8] , open [8], close [9] , open [9],
+ close [10] , open [10] ,  close [11] , open [11] ,  close [12] , open [12] ,  close [13] , open [13] ,  close [14] , open [14] ,  close [15] , open [15] 
+ , close [16] , open [16] , close [17] , open [17] , close [18] , open [18] , close [19] , open [19] , close [20] , open [20] , close [21] , open [21]   );
 
 
 //RSI
@@ -1139,42 +1160,68 @@ end;
 if marketposition = 0
 then
 begin
-longStop = -9999999;
+longstop = -9999999;
 end;
 
 
 if marketposition = 0 //Conditions Entry Long
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
-pLTarget < PForDay
-and 
-PLTarget > LForDay
-and
-Time >= 0100.00 and Time <= 2230.00 //open hours
-
+(Time >= 0100.00 and Time < 2030.00) //open hours
 and
 close > Open //* (1*mingap5/100) 
 and
-close [1] < open [1] 
-and
-close > open [1] //* (1+mingap8/100)
-and
-emafast > emaMid50 * (1+mingap9/100)
-and
-emaMid50 > emaVerySlow
-and
-close > emaFast 
+close > close [1]
 //and
-//close > emamid50
+//close [1] > open [1]
+//and
+//close > close [1] //* (1+mingap8/100)
+//and
+//(
+//(emaFast cross above emamid50) or (emaFast [1] cross above emamid50[1]) or (emaFast [2] cross above emamid50[2]) or 
+//(emaFast [3] cross above emamid50[3]) or (emaFast [4] cross above emamid50[4]) 
+//)
+and
+close cross above emaFast
+and
+close of data2 cross above ema2Fast
 and
 close > emaVerySlow
+//and
+//DonchianDown < DonchianUp * (1-mingap3/100)
+and 
+BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 and
-close cross above high5
+atr > atrmin
+
+//and
+//close > emamid50
+//and
+//close cross above high9
+
+
+//and
+//close < low * (1+os6/100)
+//and
+//close < emaMid21 * (1+os7/100)
+//and
+//close cross above emaFast
+
+
+//and
+//close cross above high5
+//and
+//close > emamid50
+
 //and
 //vRSI > RsiForLong
-and
-close > EHLOCmidband
-and
-close < EHLOCqtr3band
+//and
+//close > EHLOCmidband
+//and
+//close < EHLOCqtr3band
 //and
 //close [1] > low [1] * (1+os5/100)
 //and
@@ -1183,19 +1230,13 @@ close < EHLOCqtr3band
 //and
 //close < emaMid 
 //and
-//DonchianDown < DonchianUp * (1-mingap3/100)
-//and
 //close < low * (1+maxgap7/100)
 //and
 //close <= EHLOC4long 
-and 
-BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 //and
 //zscore < longminzscore
 //and
 //atr < Atrmax
-and
-atr > atrmin
 //and
 //Histogram < 0
 //and
@@ -1269,55 +1310,74 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-Time >= 0100.00 and Time <= 2230.00 //open hours
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+(Time >= 0100.00 and Time < 2030.00) //open hours
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
-close < open [1] //* (1+mingap8/100)
-and
-emafast < emaMid50 * (1-mingap9/100)
-and
-emaMid50 < emaVerySlow
-and
-close < emaFast 
+close < close [1]
 //and
-//close < emamid50
+//close [1] < open [1]
+//and
+//close < close [1] //* (1+mingap8/100)
+and
+//(
+//(emaFast cross below emamid50) or (emaFast [1] cross below emamid50[1]) or (emaFast [2] cross below emamid50[2]) or 
+//(emaFast [3] cross below emamid50[3]) or (emaFast [4] cross below emamid50[4]) 
+//)
+//and
+close cross below emaFast
+and
+close of data2 cross below ema2Fast
+
 and
 close < emaVerySlow
+//and
+//DonchianDown < DonchianUp * (1-mingap3/100)
 and
-close cross below low5
+BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
+atr > atrmin
 
-close [1] > open [1]
+
+//and
+//close < emamid50
+//and
+//close cross below low9
+//and
+//close > high * (1-os6/100)
+//and
+//close cross below emaFast
+//and
+//close > emaMid21 * (1-os7/100)
+
+//and
+//close cross below low5
+//and
+//close cross below EHLOCdownband
 //and
 //vRSI < Rsiforshort
-and
-close < EHLOCmidband
-and
-close > EHLOCqtr1band
+//and
+//close < EHLOCmidband
+
+//and
+//close > EHLOCqtr1band
 //and
 //close [1] < high [1] * (1-os5/100)
 //and
 //close >= emaverySlow * (1-Maxgap1/100) //*
 
 //and
-//DonchianDown < DonchianUp * (1-mingap3/100)
-//and
 //close > high * (1-maxgap7/100)
 //and
 //close >= EHLOC4short 
 //and
 //zscore > shortminzscore
-and
-BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 //and
 //atr < Atrmax
-and
-atr > atrmin
 //and
 //Histogram > 0
 
@@ -1440,10 +1500,10 @@ crossind1 = true
 then
 begin
 // Calculate the trailing stop price
-if low [1] > longStop
+if low [1] > longstop
 then
 begin
-longStop = low[1];
+longstop = low[1];
 end;
 end;
 
@@ -1454,7 +1514,7 @@ and
 and
 barssinceentry > 1
 and
-Close < longStop * (1-os1/100) //<
+Close < longstop * (1-os1/100) //<
 and
 crossind1 = true
 then begin
@@ -1475,7 +1535,7 @@ if marketposition = 1 //there is long position open
 and
 close < (entryprice * 1.000067)
 and
-barssinceentry >= 2
+barssinceentry >= 1
 //and
 //Close < longStop * (1-os1/100)
 and
@@ -1597,7 +1657,7 @@ if marketposition = -1//there is long position open
 and
 close > entryprice * 0.999933
 and
-barssinceentry >= 2
+barssinceentry >= 1
 //and
 //(
 //(crossind1 = true) or (crossind2= true)
@@ -1667,4 +1727,3 @@ Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
