@@ -20,7 +20,7 @@ AssetMultiplier (20),
 
 length (5),
 
-	VerySlowLength (200),
+VerySlowLength (200),
 
 stdDevMultiplier2 (2),
 
@@ -121,7 +121,7 @@ maxgap5 (0.2), //0.13 // 0.2
 
 maxgap6 (0.01),
 
-maxgap7 (0.1541), //8 points //0.06
+maxgap7 (0.15), //8 points //0.06
 
 MinProfit (0.00625),
 
@@ -231,6 +231,8 @@ os6 (0.0333),
 
 os7 (0.05), 
 
+os8 (0.0267), 
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -238,9 +240,9 @@ maxatrpart (55),
 
 
 
-PForDay (300), //1500 //1950 //100 //800 //15000 //600
+PForDay (500), //1500 //1950 //100 //800 //15000 //600
 
-LForDay (-300), //-1100 //-500 //-50 //-2000 //-400
+LForDay (-500), //-1100 //-500 //-50 //-2000 //-400
 
 
 
@@ -1165,16 +1167,16 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
 and
-(Time >= 0100.00 and Time < 2030.00) //open hours
+PLTarget < PForDay
+and 
+PLTarget > LForDay
+and
+(Time >= 0100.00 and Time < 2230.00) //open hours
 and
 close > Open //* (1*mingap5/100) 
-and
-close > close [1]
+//and
+//close > close [1]
 //and
 //close [1] > open [1]
 //and
@@ -1189,7 +1191,12 @@ close cross above emaFast
 and
 close of data2 cross above ema2Fast
 and
-close > emaVerySlow
+close > emaVerySlow 
+and
+close < emaMid50 * (1+maxgap7)
+and
+close < low * (1+os8/100)
+
 //and
 //DonchianDown < DonchianUp * (1-mingap3/100)
 and 
@@ -1310,15 +1317,16 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-(Time >= 0100.00 and Time < 2030.00) //open hours
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+(Time >= 0100.00 and Time < 2230.00) //open hours
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
-and
-close < close [1]
+
+//and
+//close < close [1]
 //and
 //close [1] < open [1]
 //and
@@ -1335,6 +1343,11 @@ close of data2 cross below ema2Fast
 
 and
 close < emaVerySlow
+and
+close > emaMid50 * (1-maxgap7)
+and
+close > high * (1-os8/100)
+
 //and
 //DonchianDown < DonchianUp * (1-mingap3/100)
 and
