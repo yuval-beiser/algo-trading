@@ -228,6 +228,8 @@ os7 (0.05),
 
 os8 (0.05), //0.0333
 
+os9 (0.15),
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -1211,6 +1213,13 @@ close of data2 cross above high9data2
 and
 close < low * (1+os8/100)
 and
+close < low [3] * (1+os9/100)
+and
+close < low [2] * (1+os9/100)
+and
+close < low [1] * (1+os9/100)
+
+and
 DonchianDown < DonchianUp * (1-mingap3/100)
 
 //and
@@ -1359,6 +1368,13 @@ and
 close of data2 cross below low9data2
 and
 close > high * (1-os8/100)
+and
+close > high [3] * (1-os9/100)
+and
+close > high [2] * (1-os9/100)
+and
+close > high [1] * (1-os9/100)
+
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
 
