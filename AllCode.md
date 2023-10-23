@@ -1175,7 +1175,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay
 and
-(Time >= 0100.00 and Time < 2030.00) //open hours
+(Time >= 0130.00 and Time < 2030.00) //open hours
 and
 close > Open //* (1*mingap5/100) 
 and
@@ -1319,7 +1319,7 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-(Time >= 0100.00 and Time < 2030.00) //open hours
+(Time >= 0130.00 and Time < 2030.00) //open hours
 and
 PLTarget < PForDay
 and 
