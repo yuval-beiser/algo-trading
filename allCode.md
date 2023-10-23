@@ -77,7 +77,7 @@ adxmin(25),
 vwapLength (20),
 SQQQTQQQGap(0.15),
 AtrLength (14),
-AtrMin(15), //0.6
+AtrMin(4), //0.6
 Atrmax (15),
 ANGLE_MA1( 8), //25
 ANGLE_MA2( 60 ),
@@ -530,6 +530,10 @@ and
 Histogram > 0
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
+and
+vAvgTicks> 80
+and
+atr > AtrMin
 
 then begin
 buy longbuyingPower Shares next bar at market  ;
@@ -566,7 +570,10 @@ and
 DonchianDown > DonchianUp * (1-maxgap5/100)
 and
 Histogram < 0
-
+and
+vAvgTicks> 80
+and
+atr > AtrMin
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 
@@ -1059,5 +1066,6 @@ Alert(text(" model=MOMENTUM instrument=","NQ shares=",shortbuyingPower2 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
