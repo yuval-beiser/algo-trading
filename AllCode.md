@@ -1167,7 +1167,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay
 and
-Time >= 0100.00 and Time <= 2230.00 //open hours
+Time >= 0130.00 and Time <= 2230.00 //open hours
 and
 close > Open //* (1*mingap5/100) 
 and
@@ -1268,7 +1268,7 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-Time >= 0100.00 and Time <= 2230.00 //open hours
+Time >= 0130.00 and Time <= 2230.00 //open hours
 and
 PLTarget < PForDay
 and 
@@ -1647,5 +1647,4 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
