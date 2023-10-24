@@ -860,7 +860,7 @@ longbuyingPower1 = 2; // scale in-out
 
 longbuyingPower2 = 1;
 
-longbuyingPower3 = 1;
+longbuyingPower3 = 3;
 
 shortbuyingPower = 3; //3
 
@@ -868,7 +868,7 @@ shortbuyingPower1 = 2 ; // scale in-out
 
 shortbuyingPower2 = 1 ;
 
-shortbuyingPower3 = 1 ;
+shortbuyingPower3 = 3 ;
 
 
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
@@ -1746,8 +1746,8 @@ then begin
 print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
-if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+if crossind1 = false then  shortbuyingPower3 = 3
+else if crossind1 = true  then shortbuyingPower3 =2;
 
 Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
@@ -1777,4 +1777,3 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
