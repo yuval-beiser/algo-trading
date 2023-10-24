@@ -128,9 +128,9 @@ smallbaseProfit1 (0.02), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P)
 
 SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //0.08
 
-//TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
+SmallMinProfit1 (0.0533), 
 
-SmallMinProfit1 (0.0333),
+//TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
 largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 
@@ -1366,9 +1366,6 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
-//close short position with trail (based on low prev) start moving after the first bar from entry
-
-{
 //reset crossind
 if marketposition = 0
 then
@@ -1389,7 +1386,6 @@ then
 begin
 crossind2 = False;
 end;
-}
 
 
 //close long position with take profit after small profit
@@ -1404,12 +1400,33 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
 
+//close long position 2 with take profit after small profit
+if marketposition = 1 //there is long position open
+and
+rtPosition =1 
+and
+(close/entryprice-1)*100 >= SmallMinProfit1
+and
+crossind1 = true
+then begin  
+sell  longbuyingPower1 Shares next bar at market;
+crossind2 = true;
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
+
+
+{
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
@@ -1448,7 +1465,7 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower1 ," type=SOL
 alertsGenerated  =2;
 end;
 end;
-
+}
 
  //close long position after cross 1 and go break even
 if marketposition = 1 //there is long position open
@@ -1487,7 +1504,7 @@ then
 // START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 //close short position with trail (based on low prev) start moving after the first bar from entry
 
-{
+
 //reset crossind
 if marketposition = 0
 then
@@ -1508,7 +1525,7 @@ then
 begin
 crossind2 = False;
 end;
-}
+
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
@@ -1524,12 +1541,35 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
+//close short position 2 with take profit after small profit
+if marketposition = -1 //there is short position open
+and
+rtPosition =-1 
+and
+(1-close/entryprice)*100 >= SmallMinProfit1
+and
+crossind1 = true
+//and alertsGenerated = 0
+then begin  
+buytocover shortbuyingPower1 shares  next bar at market;
+crossind2 = true;
 
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
+
+
+
+{
 if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
@@ -1570,6 +1610,7 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower1 ," type=BO
 alertsGenerated  =2;
 end;
 end;
+}
 
 
 //close long position after cross 1 and go break even	
@@ -1647,4 +1688,5 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
