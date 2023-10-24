@@ -1166,10 +1166,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 (Time >= 0130.00 and Time < 2230.00) //open hours
 and
@@ -1317,10 +1317,10 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 (Time >= 0130.00 and Time < 2230.00) //open hours
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 
