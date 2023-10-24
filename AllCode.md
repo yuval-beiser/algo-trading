@@ -133,7 +133,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
-SmallMinProfit1 (0.0333),
+SmallMinProfit1 (0.0533),
 
 largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 
@@ -1539,7 +1539,28 @@ alertsGenerated  =1;
 end;
 end;
 
+//close long position 2 with take profit after small profit
+if marketposition = 1 //there is long position open
+and
+rtPosition =1 
+and
+(close/entryprice-1)*100 >= SmallMinProfit1
+and
+crossind1 = true
+then begin  
+sell  longbuyingPower1 Shares next bar at market;
+crossind2 = true;
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
 
+
+
+{
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
@@ -1578,6 +1599,7 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower1 ," type=S
 alertsGenerated  =2;
 end;
 end;
+}
 
 
  //close long position after cross 1 and go break even
@@ -1660,6 +1682,28 @@ end;
 end;
 
 
+//close short position 2 with take profit after small profit
+if marketposition = -1 //there is short position open
+and
+rtPosition =-1 
+and
+(1-close/entryprice)*100 >= SmallMinProfit1
+and
+crossind1 = true
+//and alertsGenerated = 0
+then begin  
+buytocover shortbuyingPower1 shares  next bar at market;
+crossind2 = true;
+
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
+
+{
 if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
@@ -1700,7 +1744,7 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower1 ," type=
 alertsGenerated  =2;
 end;
 end;
-
+}
 
 //close long position after cross 1 and go break even	
 if marketposition = -1//there is long position open
@@ -1777,3 +1821,4 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
