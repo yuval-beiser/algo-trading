@@ -866,7 +866,6 @@ shortbuyingPower2 = 1 ;
 
 shortbuyingPower3 = 3 ;
 
-
 CurShares = GetPositionQuantity (getsymbolname, GetAccountID);
 
 
@@ -1503,6 +1502,27 @@ end;
 end;
 
 
+//close long position 2 with take profit after small profit
+if marketposition = 1 //there is long position open
+and
+rtPosition =1 
+and
+(close/entryprice-1)*100 >= SmallMinProfit1
+and
+crossind1 = true
+then begin  
+sell  longbuyingPower1 Shares next bar at market;
+crossind2 = true;
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
+
+
+{
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
@@ -1541,7 +1561,7 @@ Alert(text(" model=TREND instrument=","NQ shares=",longbuyingPower1 ," type=SOLD
 alertsGenerated  =2;
 end;
 end;
-
+}
 
  //close long position after cross 1 and go break even
 if marketposition = 1 //there is long position open
@@ -1622,7 +1642,28 @@ alertsGenerated  =1;
 end;
 end;
 
+//close short position 2 with take profit after small profit
+if marketposition = -1 //there is short position open
+and
+rtPosition =-1 
+and
+(1-close/entryprice)*100 >= SmallMinProfit1
+and
+crossind1 = true
+//and alertsGenerated = 0
+then begin  
+buytocover shortbuyingPower1 shares  next bar at market;
+crossind2 = true;
 
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =2;
+end;
+end;
+
+{
 if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
@@ -1663,6 +1704,7 @@ Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower1 ," type=BOU
 alertsGenerated  =2;
 end;
 end;
+}
 
 
 //close long position after cross 1 and go break even	
@@ -1740,3 +1782,4 @@ Alert(text(" model=TREND instrument=","NQ shares=",shortbuyingPower3 ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
