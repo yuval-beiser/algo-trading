@@ -133,7 +133,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
-SmallMinProfit1 (0.0333),
+SmallMinProfit1 (0.0533), 
 
 largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 
