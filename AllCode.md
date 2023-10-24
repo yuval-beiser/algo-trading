@@ -856,17 +856,17 @@ adxcalc = ADX(adxperiod);
 
 longbuyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 
-longbuyingPower1 = 2; // scale in-out
+longbuyingPower1 = 3; // scale in-out
 
-longbuyingPower2 = 1;
+//longbuyingPower2 = 1;
 
 longbuyingPower3 = 3;
 
 shortbuyingPower = 3; //3
 
-shortbuyingPower1 = 2 ; // scale in-out
+shortbuyingPower1 = 3 ; // scale in-out
 
-shortbuyingPower2 = 1 ;
+//shortbuyingPower2 = 1 ;
 
 shortbuyingPower3 = 3 ;
 
@@ -1529,16 +1529,17 @@ rtPosition =1
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
-sell  longbuyingPower2 Shares next bar at market;
+sell  longbuyingPower1 Shares next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
+{
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open
 and
@@ -1557,7 +1558,7 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower1 ," type=S
 alertsGenerated  =2;
 end;
 end;
-
+}
 
 
 {
@@ -1601,7 +1602,7 @@ end;
 end;
 }
 
-
+{
  //close long position after cross 1 and go break even
 if marketposition = 1 //there is long position open
 and
@@ -1628,6 +1629,7 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
+}
 
  
 
@@ -1670,18 +1672,18 @@ and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower2 shares  next bar at market;
+buytocover shortbuyingPower1 shares  next bar at market;
 crossind1 = true;
 
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
-
+{
 //close short position 2 with take profit after small profit
 if marketposition = -1 //there is short position open
 and
@@ -1702,6 +1704,7 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower1," type=B
 alertsGenerated  =2;
 end;
 end;
+}
 
 {
 if marketposition = -1 //there is short position open
@@ -1746,6 +1749,7 @@ end;
 end;
 }
 
+{
 //close long position after cross 1 and go break even	
 if marketposition = -1//there is long position open
 and
@@ -1771,15 +1775,15 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 //SetStopLoss;
 if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
-if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+//if crossind1 = false then  longbuyingPower3 = 3
+//else if crossind1 = true  then longbuyingPower3 =2;
 Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
@@ -1790,8 +1794,8 @@ then begin
 print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
-if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
+//if crossind1 = false then  shortbuyingPower3 = 3
+//else if crossind1 = true  then shortbuyingPower3 =2;
 
 Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
@@ -1804,8 +1808,8 @@ if marketposition = 1
 and Time = 2250.00 
 then begin
 sell next bar at market;
-if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+//if crossind1 = false then  longbuyingPower3 = 3
+//else if crossind1 = true  then longbuyingPower3 =2;
 Alert(text(" model=BREAKOUT instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1815,10 +1819,11 @@ if marketposition = -1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
-if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
+//if crossind1 = false then  shortbuyingPower3 = 3
+//else if crossind1 = true  then shortbuyingPower3 =2;
 Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
