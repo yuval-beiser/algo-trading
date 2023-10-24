@@ -1366,6 +1366,7 @@ if marketposition = 1
 then
 [IntrabarOrderGeneration = True] //trade intra-bar
 
+{
 //reset crossind
 if marketposition = 0
 then
@@ -1386,7 +1387,7 @@ then
 begin
 crossind2 = False;
 end;
-
+}
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
@@ -1504,7 +1505,7 @@ then
 // START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 //close short position with trail (based on low prev) start moving after the first bar from entry
 
-
+{
 //reset crossind
 if marketposition = 0
 then
@@ -1525,7 +1526,7 @@ then
 begin
 crossind2 = False;
 end;
-
+}
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
