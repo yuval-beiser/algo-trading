@@ -1650,7 +1650,7 @@ then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+else if crossind1 = true and crossind2 = False  then longbuyingPower3 =2;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
@@ -1662,7 +1662,7 @@ print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
+else if crossind1 = true and crossind2 = False then shortbuyingPower3 =2;
 
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
