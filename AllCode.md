@@ -1671,7 +1671,7 @@ end;
 
 
 // CLOSE POSITION AT THE END OF THE DAY
-if marketposition = 1
+if marketposition = 1 and rtPosition =1
 and Time = 2250.00 
 then begin
 sell next bar at market;
@@ -1682,7 +1682,7 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 
-if marketposition = -1
+if marketposition = -1 and rtPosition =-1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
