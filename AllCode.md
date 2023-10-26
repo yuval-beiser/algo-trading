@@ -1559,7 +1559,7 @@ crossind2 = true;
 if alertsGenerated = 1
 then begin
 Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
-alertsGenerated  =0;
+alertsGenerated  =2;
 //rtPosition = 0;
 {
 if
@@ -1711,7 +1711,6 @@ then
 print (ELDateToString(date),"rt0", "Time=", time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
 }
 
-
 //close short position 2 with take profit after small profit
 if marketposition = -1 //there is short position open
 and
@@ -1729,7 +1728,7 @@ crossind2 = true;
 if alertsGenerated = 1
 then begin
 Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
-alertsGenerated  =0;
+alertsGenerated  =2;
 //rtPosition = 0;
 {
 if
