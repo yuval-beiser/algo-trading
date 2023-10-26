@@ -225,6 +225,8 @@ os3 (0.0133), // 2$ - 0.133 precent
 
 os4 (0.0167),
 
+os5 (0.01),
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -1169,7 +1171,7 @@ if marketposition = 0 //Conditions Entry Long
 and
 Time >= 0130.00 and Time <= 2230.00 //open hours
 and
-close > Open //* (1*mingap5/100) 
+close cross above (Open *(1+os5/100)) 
 and
 close [1] < open [1] 
 and
@@ -1274,7 +1276,7 @@ Time >= 0130.00 and Time <= 2230.00 //open hours
 //and 
 //PLTarget > LForDay
 and
-close < Open //* (1-mingap5/100) 
+close cross below (Open *(1-os5/100))
 and
 //oposite
 close [1] > open [1] //* (1+mingap6/100)) // or 
