@@ -1893,3 +1893,4 @@ print (ELDateToString(date),"rt8", "Time=",time, "bar=", BarNumber, "marketposit
 end;
 
 
+
