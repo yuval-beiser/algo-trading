@@ -858,17 +858,17 @@ adxcalc = ADX(adxperiod);
 
 longbuyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 
-longbuyingPower1 = 2; // scale in-out
+longbuyingPower1 = 1; // scale in-out
 
-longbuyingPower2 = 1;
+longbuyingPower2 = 2;
 
 longbuyingPower3 = 3;
 
 shortbuyingPower = 3; //3
 
-shortbuyingPower1 = 2 ; // scale in-out
+shortbuyingPower1 = 1 ; // scale in-out
 
-shortbuyingPower2 = 1 ;
+shortbuyingPower2 = 2 ;
 
 shortbuyingPower3 = 3 ;
 
@@ -1168,39 +1168,54 @@ print (ELDateToString(date),"-rt0","-Time=",time, "-bar=", BarNumber, "-marketpo
 
 
 //reset crossind
-if marketposition = 0 and rtPosition= 0
+if marketposition = 0
 then
 begin
 crossind1 = False;
 end;
 
 //reset crossind
-if marketposition = 0 and rtPosition= 0
+if marketposition = 0 
 then
 begin
 crossind2 = False;
 end;
 
 //reset shortStop 
-if marketposition = 0 and rtPosition= 0
+if marketposition = 0 
 then
 begin
 shortStop = 9999999;
 end;
 
 //reset longstop 
-if marketposition = 0 and rtPosition= 0
+if marketposition = 0 
 then
 begin
 longstop = -9999999;
 end;
 
 //reset alertsGenerated
-if marketposition = 0 and rtPosition= 0
+if marketposition = 0 
 then
 begin
 alertsGenerated = 0;
 end;
+
+//reset longbuyingPower3 
+if marketposition = 0 
+then
+begin
+longbuyingPower3 = 3;
+end;
+
+//reset shortbuyingPower3 
+if marketposition = 0 
+then
+begin
+shortbuyingPower3 = 3;
+end;
+
 
 if
 ELDateToString(date) = "08/03/2023" and Time >= 1630.00 and Time < 1700.00 and Alertswitch = true
@@ -1571,12 +1586,12 @@ rtPosition =1
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
-sell  longbuyingPower2 Shares next bar at market;
+sell  longbuyingPower1 Shares next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower2 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
 
 
@@ -1600,12 +1615,12 @@ and
 and
 crossind1 = true
 then begin  
-sell  longbuyingPower1 Shares next bar at market;
+sell  longbuyingPower2 Shares next bar at market;
 crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower2 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
 alertsGenerated  =0;
 rtPosition = 0;
 
@@ -1678,7 +1693,9 @@ crossind1 = true
 //close > lastExitPrice
 Then
 begin
-Sell Next Bar at Market;
+if crossind1 = true and crossind2 = False
+then longbuyingPower3 =2;
+Sell longbuyingPower3 shares Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated >0 
@@ -1689,7 +1706,6 @@ then longbuyingPower3 =2;
 Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
-
 
 
 if
@@ -1743,13 +1759,13 @@ and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower2 shares  next bar at market;
+buytocover shortbuyingPower1 shares  next bar at market;
 crossind1 = true;
 
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower2,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 
 
@@ -1775,13 +1791,13 @@ and
 crossind1 = true
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower1 shares  next bar at market;
+buytocover shortbuyingPower2 shares  next bar at market;
 crossind2 = true;
 
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower2,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
 alertsGenerated  =0;
 rtPosition = 0;
 
@@ -1844,7 +1860,7 @@ if marketposition = -1 //and rtPosition = -1//there is long position open
 and
 close > (entryprice * 0.999933)
 and
-barssinceentry > 1
+barssinceentry > 2
 //and
 //(
 //(crossind1 = true) or (crossind2= true)
@@ -1877,10 +1893,11 @@ end;
 
 
 //SetStopLoss;
-if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
+if marketposition=1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
+
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true and crossind2 = False   then longbuyingPower3 =2;
 Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
@@ -1891,8 +1908,8 @@ alertsGenerated  =0;
 if
 ELDateToString(date) = "08/03/2023" and Time >= 1630.00 and Time < 1700.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"-rt10","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition ,"-alertsGenerated=", alertsGenerated ,
-"-crossind1", crossind1, "-crossind2", crossind2, "-entryprice=",entryprice, "-close=", close);
+print (ELDateToString(date),"-rt10","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPo'sition =", rtPosition ,"-alertsGenerated=", alertsGenerated ,
+"-crossind1", crossind1, "-crossind2", crossind2, "-entryprice=",entryprice, "-close=", close, "longbuyingPower3 =", longbuyingPower3 , longbuyingPower3 );
 
 end;
 
@@ -1900,7 +1917,10 @@ if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPositio
 then begin 
 //print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
-buytocover  next bar at market;
+//if crossind1 = false then  shortbuyingPower3 = 3
+//else if crossind1 = true and crossind2 = False  then shortbuyingPower3 =2;
+buytocover next bar at market;
+
 if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true and crossind2 = False  then shortbuyingPower3 =2;
 Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
@@ -1911,13 +1931,13 @@ if
 ELDateToString(date) = "08/03/2023" and Time >= 1630.00 and Time < 1700.00 and Alertswitch = true
 then 
 print (ELDateToString(date),"-rt11","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition ,"-alertsGenerated=", alertsGenerated ,
-"-crossind1", crossind1, "-crossind2", crossind2, "-entryprice=",entryprice, "-close=", close);
+"-crossind1", crossind1, "-crossind2", crossind2, "-entryprice=",entryprice, "-close=", close, "shortbuyingPower3=", shortbuyingPower3  );
 
 end;
 
 
 // CLOSE POSITION AT THE END OF THE DAY
-if marketposition = 1  and rtPosition =1
+if marketposition = 1 and rtPosition =1
 and Time = 2250.00 
 then begin
 sell next bar at market;
@@ -1936,7 +1956,7 @@ print (ELDateToString(date),"-rt12","-Time=",time, "-bar=", BarNumber, "-marketp
 
 end;
 
-if marketposition = -1  and rtPosition =-1
+if marketposition = -1 and rtPosition =-1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
