@@ -128,7 +128,7 @@ smallbaseProfit1 (0.02), //0.035 //0.19 //0.02 //0.1 //0.5 //CROSS2:0.059 (9P)
 
 SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stochastic //0.1 //0.08
 
-SmallMinProfit1 (0.0533), 
+SmallMinProfit1 (0.06), ///0.0533
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
@@ -864,19 +864,20 @@ emaverySlow = XAverage(close,VerySlowLength);
 
 adxcalc = ADX(adxperiod);
 
+
 longbuyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 
-longbuyingPower1 = 2; // scale in-out
+longbuyingPower1 = 1; // scale in-out
 
-longbuyingPower2 = 1;
+longbuyingPower2 = 2;
 
 longbuyingPower3 = 3;
 
 shortbuyingPower = 3; //3
 
-shortbuyingPower1 = 2 ; // scale in-out
+shortbuyingPower1 = 1 ; // scale in-out
 
-shortbuyingPower2 = 1 ;
+shortbuyingPower2 = 2 ;
 
 shortbuyingPower3 = 3 ;
 
@@ -1142,24 +1143,45 @@ crossind1 = False;
 end;
 
 //reset crossind
-if marketposition = 0
+if marketposition = 0 
 then
 begin
 crossind2 = False;
 end;
 
-//close on cross back
-if marketposition = 0
+//reset shortStop 
+if marketposition = 0 
 then
 begin
 shortStop = 9999999;
 end;
 
-//close on cross back
-if marketposition = 0
+//reset longstop 
+if marketposition = 0 
 then
 begin
 longstop = -9999999;
+end;
+
+//reset alertsGenerated
+if marketposition = 0 
+then
+begin
+alertsGenerated = 0;
+end;
+
+//reset longbuyingPower3 
+if marketposition = 0 
+then
+begin
+longbuyingPower3 = 3;
+end;
+
+//reset shortbuyingPower3 
+if marketposition = 0 
+then
+begin
+shortbuyingPower3 = 3;
 end;
 
 
@@ -1398,12 +1420,12 @@ rtPosition =1
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
-sell  longbuyingPower2 Shares next bar at market;
+sell  longbuyingPower1 Shares next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1418,13 +1440,14 @@ and
 and
 crossind1 = true
 then begin  
-sell  longbuyingPower1 Shares next bar at market;
+sell  longbuyingPower2 Shares next bar at market;
 crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
-alertsGenerated  =2;
+Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =0;
+rtPosition = 0;
 end;
 end;
 
@@ -1474,8 +1497,8 @@ end;
 if marketposition = 1 and rtPosition = 1 //there is long position open
 and
 close < (entryprice * 1.000067)
-and
-barssinceentry >= 2
+//and
+//barssinceentry >= 2
 //and
 //Close < longStop * (1-os1/100)
 and
@@ -1486,17 +1509,19 @@ crossind2 = False
 //close > lastExitPrice
 Then
 begin
-Sell Next Bar at Market;
+if crossind1 = true and crossind2 = False
+then longbuyingPower3 =2;
+Sell longbuyingPower3 shares Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated >0 
 then begin
-if crossind1 = true and crossind2 = False 
+if crossind1 = true and crossind2 = False
 then longbuyingPower3 =2;
 //else if crossind1 = true and crossind2 = true then longbuyingPower3 =1;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
-//rtPosition = 0;
+rtPosition = 0;
 end;
 end;
 
@@ -1535,19 +1560,19 @@ end;
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
-and
-rtPosition =-1 
+//and
+//rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower2 shares  next bar at market;
+buytocover shortbuyingPower1 shares  next bar at market;
 crossind1 = true;
 
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1562,14 +1587,16 @@ and
 crossind1 = true
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower1 shares  next bar at market;
+buytocover shortbuyingPower2 shares  next bar at market;
 crossind2 = true;
 
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
-alertsGenerated  =2;
+Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated  =0;
+rtPosition = 0;
+
 end;
 end;
 
@@ -1623,8 +1650,8 @@ end;
 if marketposition = -1 and rtPosition = -1 //there is long position open
 and
 close > entryprice * 0.999933
-and
-barssinceentry >= 2
+//and
+//barssinceentry >= 2
 //and
 //(
 //(crossind1 = true) or (crossind2= true)
@@ -1633,15 +1660,16 @@ and
 crossind1 = true and crossind2 = False
 Then
 begin
-buytocover Next Bar at Market;
+if crossind1 = true   and crossind2 = False then shortbuyingPower3 =2;
+buytocover shortbuyingPower3 shares  Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-if crossind1 = true  and crossind2 = False then shortbuyingPower3 =2;
+if crossind1 = true   and crossind2 = False then shortbuyingPower3 =2;
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated  =0;
-//rtPosition = 0;
+rtPosition = 0;
 end;
 end;
 
@@ -1654,20 +1682,19 @@ sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true and crossind2 = False  then longbuyingPower3 =2;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
-//rtPosition = 0;
+rtPosition = 0;
 alertsGenerated  =0;
 end;
 
 if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPosition =-1
 then begin 
-print("exit buy short - EXIT ALL 2");
+//print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true and crossind2 = False then shortbuyingPower3 =2;
-
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
-//rtPosition = 0;
+rtPosition = 0;
 alertsGenerated  =0;
 end;
 
@@ -1681,7 +1708,7 @@ if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true and crossind2 = False then longbuyingPower3 =2;
 Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
-//rtPosition = 0;
+rtPosition = 0;
 end;
 
 if marketposition = -1 and rtPosition =-1
@@ -1692,6 +1719,7 @@ if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true  and crossind2 = False then shortbuyingPower3 =2;
 Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
-//rtPosition = 0;
+rtPosition = 0;
 end;
+
 
