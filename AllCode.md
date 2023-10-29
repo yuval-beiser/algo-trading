@@ -1224,7 +1224,7 @@ print (ELDateToString(date),"-rt1","-Time=",time, "-bar=", BarNumber, "-marketpo
 "-crossind1", crossind1, "-crossind2", crossind2, "-entryprice=",entryprice, "-close=", close);
 
 
-if rtPosition = 0 //Conditions Entry Long
+if marketposition = 0 //Conditions Entry Long
 //and
 //PLTarget < PForDay
 //and 
@@ -1581,8 +1581,8 @@ end;
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
-and
-rtPosition =1 
+//and
+//rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
@@ -1608,8 +1608,8 @@ end;
 
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open
-and
-rtPosition =1 
+//and
+//rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit1
 and
@@ -1681,8 +1681,8 @@ end;
 if marketposition = 1 //and rtPosition = 1//there is long position open
 and
 close < (entryprice * 1.000067)
-and
-barssinceentry >= 2
+//and
+//barssinceentry >= 2
 //and
 //Close < longStop * (1-os1/100)
 and
@@ -1753,8 +1753,8 @@ end;
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
-and
-rtPosition =-1 
+//and
+//rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
@@ -1783,8 +1783,8 @@ end;
 
 //close short position 2 with take profit after small profit
 if marketposition = -1 //there is short position open
-and
-rtPosition =-1 
+//and
+//rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit1
 and
@@ -1859,8 +1859,8 @@ end;
 if marketposition = -1 //and rtPosition = -1//there is long position open
 and
 close > (entryprice * 0.999933)
-and
-barssinceentry > 2
+//and
+//barssinceentry > 2
 //and
 //(
 //(crossind1 = true) or (crossind2= true)
