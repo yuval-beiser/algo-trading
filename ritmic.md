@@ -2,7 +2,7 @@
 
 Inputs:
 
-maximumloss(0.06),//160 //1300 //0.143 //0.12 //0.0695 //0.05
+maximumloss(0.0387),//160 //1300 //0.143 //0.12 //0.0695 //0.05
 
 FastLength(9),
 
@@ -1364,7 +1364,7 @@ end;
 //close 1st short position with trail start moving cross back
 if marketposition = -1 //there is long position open
 and
-(1-close/entryprice)*100 >= SmallMinProfit
+(1-close/entryprice)*100 >= SmallMinProfit1
 and
 barssinceentry > 1
 and
