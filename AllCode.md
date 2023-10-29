@@ -1161,9 +1161,9 @@ LastMarketPosition = marketposition;
 
 
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt0","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt0","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 
 //reset crossind
@@ -1351,6 +1351,12 @@ rtPosition=1;
 end;
 
 
+if
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+then 
+print (ELDateToString(date),"-rt1","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
+
+
 if marketposition = 0 //Conditions Entry short
 //and
 //(Time >= 0130.00 and Time < 2030.00) //open hours
@@ -1500,6 +1506,13 @@ rtPosition = -1;
 end;
 
 
+
+if
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+then 
+print (ELDateToString(date),"-rt2","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
+
+
 //close long position with trail
 if marketposition = 1
 then
@@ -1545,8 +1558,18 @@ if alertsGenerated = 0
 then begin
 Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower2 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
+
+
+
+if
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+then 
+print (ELDateToString(date),"-rt3","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
+
 end;
 end;
+
+
 
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open
@@ -1567,9 +1590,9 @@ alertsGenerated  =2;
 //rtPosition = 0;
 
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt1","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt4","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 //alertsGenerated  =2;
 end;
@@ -1647,10 +1670,11 @@ alertsGenerated = 0;
 //rtPosition = 0;
 
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt2","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt5","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 
 end;
@@ -1705,14 +1729,17 @@ if alertsGenerated = 0
 then begin
 Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower2,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
-end;
-end;
 
 
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt0", "Time=", time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt6","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
+
+
+end;
+end;
+
 
 
 //close short position 2 with take profit after small profit
@@ -1735,10 +1762,11 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower1,"-type=BO
 alertsGenerated  =2;
 //rtPosition = 0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt3","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt7","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 
 end;
@@ -1815,10 +1843,11 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower3 ,"-type=B
 alertsGenerated  =0;
 //rtPosition = 0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt4", "Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt8","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 end;
 end;
@@ -1835,10 +1864,11 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower3 ,"-type=SO
 //rtPosition = 0;
 alertsGenerated  =0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt5","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt9","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 end;
 
@@ -1853,10 +1883,11 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower3 ,"-type=B
 //rtPosition = 0;
 alertsGenerated  =0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt6", "Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt10","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 end;
 
@@ -1872,10 +1903,11 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",longbuyingPower3 ,"-type=SO
 alertsGenerated  =0;
 //rtPosition = 0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt7","Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt11","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 end;
 
@@ -1889,11 +1921,13 @@ Alert(text(" model=CIMODEL instrument=","NQ shares=",shortbuyingPower3 ,"-type=B
 alertsGenerated  =0;
 //rtPosition = 0;
 
+
 if
-ELDateToString(date) = "10/25/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
+ELDateToString(date) = "08/03/2023" and Time >= 1600.00 and Time < 1630.00 and Alertswitch = true
 then 
-print (ELDateToString(date),"rt8", "Time=",time, "bar=", BarNumber, "marketposition=" , marketposition ,"rtPosition =", rtPosition , "entryprice=",entryprice, "close=", close);
+print (ELDateToString(date),"-rt12","-Time=",time, "-bar=", BarNumber, "-marketposition=" , marketposition ,"-rtPosition =", rtPosition , "-entryprice=",entryprice, "-close=", close);
 
 end;
+
 
 
