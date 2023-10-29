@@ -130,7 +130,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
-SmallMinProfit1 (0.0533), 
+SmallMinProfit1 (0.0333), 
 
 largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
 
@@ -1088,36 +1088,6 @@ PLTarget = Netprofit - NetProf;
 
 
 
-
-//Trail Alerts
-
-{
-
-if marketposition = -1 and close cross above trailExit and rtPosition =-1 
-
-then begin 
-
-Alert(text("-APEX TEST-","NQ-",shortbuyingPower ,"-BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 4", rtPosition, marketposition, trailExit  ));
-
-rtPosition= 0;
-
-end;
-
-
-
-
-if marketposition = 1 and close cross below trailExit and rtPosition =1 
-
-then begin 
-
-Alert(text("-APEX TEST-","NQ-",longbuyingPower ,"-SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL 3",rtPosition, marketposition, trailExit  ));
-
-rtPosition = 0;
-
-end;
-
-}
-
 //reset alertsGenerated when not in possition
 if marketposition = 0 and rtPosition= 0
 then
@@ -1195,71 +1165,9 @@ atr > atrmin
 and
 Histogram < 0
 
-//and
-//(
-//(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
-//))
-//and
-//(
-//(close > low[1]) or  (close > close [1])
-//)
-//price was short but go long 
-
-//* (1-mingap6/100)  //) or 
-//(close [2] < open [2]* (1-mingap6/100) )
-//) 
-
-//and
-//close > low [1]
-{
-and
-(close - low) >= atr * minatrpart/100
-and
-(close - low) <= atr * maxatrpart/100
-}
-//and
-//low [1] < close [1] * (1-mingap7/100)
-
-//and
-//close > close [1]
-//and
-//close > vBlb2
-//and
-//vRSI < RsiMinForLong
-
-
-
-//and
-//Histogram > minHistogram
-
-
-//and
-//vrsi < RsiMinForLong
-
-
- //A
-//and
-
-//low [1] < low [2]
-
-//and
-
-//(
-
-//(close [1] < open [1])or (close [2] < open [2])
-
-//)
-
-
-
-
-//and
-
-//vRSI < 40
-
 then begin
 buy longbuyingPower Shares next bar at market  ;
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower," type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower," type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
 rtPosition=1;
 end;
 
@@ -1304,62 +1212,10 @@ atr > atrmin
 and
 Histogram > 0
 
-//and
-//(
-//(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
-//))
-
-//(close [2] > open [2]* (1+mingap6/100) )
-//and
-//close < high [1]
-
-//and
-//(high - close) >= atr * minatrpart/100
-//and
-//(high - close) <= atr * maxatrpart/100
-
-
-//and
-//close > vBub1 
-//and
-//close < vBub2
-//and
-//vRSI > RsiMaxForShort
-
-//and
-//Histogram < maxHistogram
-
-
-//and
-//vrsi > RsiMaxForShort
-
-
-//and
-
-//high [1] > high [2]
-
-
-//and
-
-//(
-
-//(close [1] > open [1])or (close [2] > open [2])
-
-//)
-
-
-//and
-
-//MACDLine > 0
-
-//and
-
-//SignalLine > 0
-
 
 then begin
 sellshort shortbuyingPower Shares next bar at market  ;
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower ," type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower ," type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
 rtPosition = -1;
 end;
 
@@ -1371,28 +1227,6 @@ then
 
 //close short position with trail (based on low prev) start moving after the first bar from entry
 
-{
-//reset crossind
-if marketposition = 0
-then
-begin
-crossind1 = False;
-end;
-
-//close on cross back
-if marketposition = 0
-then
-begin
-longStop = -9999999;
-end;
-
-//reset crossind
-if marketposition = 0
-then
-begin
-crossind2 = False;
-end;
-}
 
 
 //close long position with take profit after small profit
@@ -1407,7 +1241,7 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1420,15 +1254,13 @@ and
 barssinceentry > 1
 and
 crossind1 = true
-then
-begin
+and 
 // Calculate the trailing stop price
-if low [1] > longstop
-then
-begin
+low [1] > longstop
+then begin
 longstop = low[1];
 end;
-end;
+
 
 //close 1st long position with trail start moving cross back
 if marketposition = 1 //there is long position open
@@ -1447,8 +1279,10 @@ crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
-alertsGenerated  =2;
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
+alertsGenerated  =0;
+rtPosition = 0;
+
 end;
 end;
 
@@ -1465,16 +1299,15 @@ and
 crossind1 = true
 //and
 //close > lastExitPrice
-Then
-begin
+Then begin
 Sell Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated >0 
 then begin
-if crossind1 = true  then longbuyingPower3 =2;
-//else if crossind1 = true and crossind2 = true then longbuyingPower3 =1;
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+if crossind1 = false then  longbuyingPower3 = 3
+else if crossind1 = true  then longbuyingPower3=2;
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
@@ -1489,29 +1322,6 @@ then
 
 // START - EXIT SHORT BASE ON CROSS PREVEVIOS High -------------------------------------------------------
 //close short position with trail (based on low prev) start moving after the first bar from entry
-
-{
-//reset crossind
-if marketposition = 0
-then
-begin
-crossind1 = False;
-end;
-	
-//close on cross back
-if marketposition = 0
-then
-begin
-shortStop = 9999999;
-end;
-
-//reset crossind
-if marketposition = 0
-then
-begin
-crossind2 = False;
-end;
-}
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
@@ -1527,7 +1337,7 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
@@ -1569,8 +1379,10 @@ crossind2 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 1 
 then begin
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower1 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
-alertsGenerated  =2;
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower1 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
+alertsGenerated  =0;
+rtPosition = 0;
+
 end;
 end;
 
@@ -1594,8 +1406,12 @@ buytocover Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+
+if crossind1 = false then  shortbuyingPower3 = 3
+else if crossind1 = true  then shortbuyingPower3 =2;
+
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1609,7 +1425,7 @@ then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1621,34 +1437,31 @@ print("exit buy short - EXIT ALL 2");
 buytocover  next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true  then shortbuyingPower3 =2;
-
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
 
 
 // CLOSE POSITION AT THE END OF THE DAY
-if marketposition = 1
+if marketposition = 1 and rtPosition =1
 and Time = 2250.00 
 then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
 else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=RITMIC instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
 
-if marketposition = -1
+if marketposition = -1 and rtPosition =-1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
 else if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
-
