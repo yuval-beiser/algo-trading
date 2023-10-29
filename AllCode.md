@@ -1843,6 +1843,7 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 
+
 if marketposition = -1  and rtPosition =-1
 and Time = 2250.00 
 then begin
