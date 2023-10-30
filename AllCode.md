@@ -1123,7 +1123,7 @@ end;
 
 
 //reset alertsGenerated when not in possition
-if marketposition = 0 and rtPosition= 0
+if rtPosition= 0
 then
 alertsGenerated = 0;
 
@@ -1394,7 +1394,7 @@ end;
 }
 
 //close long position with take profit after small profit
-if marketposition = 1 //there is long position open
+if marketposition = 1 and rtPosition = 1 //there is long position open
 //and
 //rtPosition =1 
 and
@@ -1412,7 +1412,7 @@ end;
 
 
 //close long position 2 with take profit after small profit
-if marketposition = 1 //there is long position open
+if marketposition = 1 and rtPosition = 1 //there is long position open
 //and
 //rtPosition =1 
 and
@@ -1474,7 +1474,7 @@ end;
 }
 
  //close long position after cross 1 and go break even
-if marketposition = 1 //and rtPosition = 1 //there is long position open
+if marketposition = 1 and rtPosition = 1 ///and rtPosition = 1 //there is long position open
 and
 close < (entryprice * 1.000067)
 //and
@@ -1537,9 +1537,7 @@ end;
 }
 																			
 //close short position with take profit after small profit
-if marketposition = -1 //there is short position open
-//and
-//rtPosition =-1 
+if marketposition = -1 and rtPosition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
@@ -1556,9 +1554,7 @@ end;
 end;
 
 //close short position 2 with take profit after small profit
-if marketposition = -1 //there is short position open
-//and
-//rtPosition =-1 
+if marketposition = -1 and rtPosition =-1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit1
 and
@@ -1625,7 +1621,7 @@ end;
 
 
 //close long position after cross 1 and go break even	
-if marketposition = -1 //and rtPosition = -1 //there is long position open
+if marketposition = -1 and rtPosition =-1//and rtPosition = -1 //there is long position open
 and
 close > entryprice * 0.999933
 //and
