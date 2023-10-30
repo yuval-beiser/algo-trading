@@ -1161,6 +1161,7 @@ longstop = -9999999;
 end;
 
 
+
 if marketposition = 0 //Conditions Entry Long
 //and
 //PLTarget < PForDay
@@ -1389,8 +1390,8 @@ end;
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
-and
-rtPosition =1 
+//and
+//rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
@@ -1401,6 +1402,7 @@ if alertsGenerated = 0
 then begin
 Alert(text(" model=RITMICFAST instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
+rtPosition = 0;
 end;
 end;
 
@@ -1529,20 +1531,20 @@ end;
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
-and
-rtPosition =-1 
+//and
+//rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
 buytocover shortbuyingPower1 shares  next bar at market;
 crossind1 = true;
-
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
 Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
+rtPosition = 0;
 end;
 end;
 
@@ -1688,5 +1690,6 @@ Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower3 ,"-typ
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
