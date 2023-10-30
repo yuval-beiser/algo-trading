@@ -1474,7 +1474,7 @@ end;
 }
 
  //close long position after cross 1 and go break even
-if marketposition = 1 and rtPosition = 1 ///and rtPosition = 1 //there is long position open
+if marketposition = 1 //and rtPosition = 1 ///and rtPosition = 1 //there is long position open
 and
 close < (entryprice * 1.000067)
 //and
@@ -1621,7 +1621,7 @@ end;
 
 
 //close long position after cross 1 and go break even	
-if marketposition = -1 and rtPosition =-1//and rtPosition = -1 //there is long position open
+if marketposition = -1 //and rtPosition =-1//and rtPosition = -1 //there is long position open
 and
 close > entryprice * 0.999933
 //and
@@ -1694,4 +1694,5 @@ Alert(text(" model=RITMIC instrument=","NQ shares=",shortbuyingPower3 ,"-type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
