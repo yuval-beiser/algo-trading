@@ -1145,6 +1145,8 @@ end;
 
 }
 
+
+
 //reset alertsGenerated when not in possition
 if marketposition = 0 and rtPosition= 0
 then
@@ -1167,46 +1169,26 @@ crossind1 = False;
 end;
 
 //reset crossind
-if marketposition = 0 
+if marketposition = 0
 then
 begin
 crossind2 = False;
 end;
 
-//reset shortStop 
-if marketposition = 0 
+//close on cross back
+if marketposition = 0
 then
 begin
 shortStop = 9999999;
 end;
 
-//reset longstop 
-if marketposition = 0 
+//close on cross back
+if marketposition = 0
 then
 begin
 longstop = -9999999;
 end;
 
-//reset alertsGenerated
-if marketposition = 0 
-then
-begin
-alertsGenerated = 0;
-end;
-
-//reset longbuyingPower3 
-if marketposition = 0 
-then
-begin
-longbuyingPower3 = 3;
-end;
-
-//reset shortbuyingPower3 
-if marketposition = 0 
-then
-begin
-shortbuyingPower3 = 3;
-end;
 
 
 if marketposition = 0 //Conditions Entry Long
@@ -1547,8 +1529,8 @@ end;
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
-//and
-//rtPosition =1 
+and
+rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
@@ -1564,8 +1546,8 @@ end;
 
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open
-//and
-//rtPosition =1 
+and
+rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit1
 and
@@ -1636,16 +1618,14 @@ close < (entryprice * 1.000067)
 //Close < longStop * (1-os1/100)
 and
 crossind1 = true
-and
-crossind2 = False
+//and
+//crossind2 = False
 
 //and
 //close > lastExitPrice
 Then
 begin
-if crossind1 = true and crossind2 = False
-then longbuyingPower3 =2;
-Sell longbuyingPower3 shares Next Bar at Market;
+Sell Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated >0 
@@ -1714,8 +1694,8 @@ end;
 
 //close short position 2 with take profit after small profit
 if marketposition = -1 //there is short position open
-//and
-//rtPosition =-1 
+and
+rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit1
 and
@@ -1789,11 +1769,10 @@ close > (entryprice * 0.999933)
 //(crossind1 = true) or (crossind2= true)
 //)
 and
-crossind1 = true and crossind2 = False
+crossind1 = true //and crossind2 = False
 Then
 begin
-if crossind1 = true   and crossind2 = False then shortbuyingPower3 =2;
-buytocover shortbuyingPower3 shares  Next Bar at Market;
+buytocover   Next Bar at Market;
 
 // Generate an intra-bar alert
 if alertsGenerated  > 0
@@ -1843,7 +1822,6 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 
-
 if marketposition = -1  and rtPosition =-1
 and Time = 2250.00 
 then begin
@@ -1854,4 +1832,3 @@ Alert(text(" model=BREAKOUT instrument=","NQ shares=",shortbuyingPower3 ,"-type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
