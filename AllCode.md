@@ -1527,8 +1527,8 @@ end;
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
-and
-rtPosition =1 
+//and
+//rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
@@ -1670,8 +1670,8 @@ end;
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
-and
-rtPosition =-1 
+//and
+//rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
@@ -1827,4 +1827,5 @@ Alert(text(" model=BREAKOUTFAST instrument=","NQ shares=",shortbuyingPower3 ,"-t
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
