@@ -1394,7 +1394,7 @@ end;
 }
 
 //close long position with take profit after small profit
-if marketposition = 1 and rtPosition = 1 //there is long position open
+if marketposition = 1 //and rtPosition = 1 //there is long position open
 //and
 //rtPosition =1 
 and
@@ -1412,9 +1412,11 @@ end;
 
 
 //close long position 2 with take profit after small profit
-if marketposition = 1 and rtPosition = 1 //there is long position open
+if marketposition = 1 //and rtPosition = 1 //there is long position open
 //and
 //rtPosition =1 
+and
+barssinceentry > 1
 and
 (close/entryprice-1)*100 >= SmallMinProfit1
 and
@@ -1537,7 +1539,7 @@ end;
 }
 																			
 //close short position with take profit after small profit
-if marketposition = -1 and rtPosition = -1 //there is short position open
+if marketposition = -1 //and rtPosition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
@@ -1554,7 +1556,9 @@ end;
 end;
 
 //close short position 2 with take profit after small profit
-if marketposition = -1 and rtPosition =-1 //there is short position open
+if marketposition = -1 //and rtPosition =-1 //there is short position open
+and
+barssinceentry > 1
 and
 (1-close/entryprice)*100 >= SmallMinProfit1
 and
