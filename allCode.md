@@ -580,7 +580,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay  
 and
-(Time > 600.00) and (Time < 2200.00) //long time
+(Time >= 0030.00 and Time < 2030.00) //open hours
 //)
 and
 close > Open //3
@@ -625,6 +625,8 @@ and
 close > lowD (0) * (1+Mingap/100)
 and
 DonchianDown > DonchianUp * (1-maxgap5/100)
+and
+vAvgTicks> 100
 
 //and
 //close < low5 * (1+maxgap4/100) *
@@ -759,7 +761,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay  
 and
-(Time > 600.00) and (Time < 2200.00) //long time
+(Time >= 0030.00 and Time < 2030.00) //open hours
 and
 close < Open //3
 //and
@@ -803,6 +805,8 @@ atr < Atrmax
 //close < HIGHD (0) * (1-Mingap/100)
 and
 DonchianDown > DonchianUp * (1-maxgap5/100)
+and
+vAvgTicks> 100
 
 //and
 //close < low5 * (1+maxgap4/100) *
@@ -1357,7 +1361,6 @@ Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower2 ," type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
