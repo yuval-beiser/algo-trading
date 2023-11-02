@@ -1170,7 +1170,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay
 and
-Time >= 0130.00 and Time <= 2230.00 //open hours
+Time >= 0030.00 and Time <= 2230.00 //open hours
 and
 close > Open //* (1*mingap5/100) 
 and
@@ -1199,6 +1199,7 @@ and
 Histogram < 0
 and
 close < lowest (close, 3) * (1+os5/100)
+
 //and
 //(
 //(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
@@ -1270,7 +1271,7 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-Time >= 0130.00 and Time <= 2230.00 //open hours
+Time >= 0030.00 and Time <= 2230.00 //open hours
 and
 PLTarget < PForDay
 and 
