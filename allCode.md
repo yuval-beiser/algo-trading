@@ -95,9 +95,9 @@ os1 (0.0133), //0.03 - offset
 os2 (0.01),
 os3 (0.0133), // 2$ - 0.133 precent
 
-PForDay (6000), //1500 //1950 //100 //800 //15000
-LForDay (-800), //-1100 //-500 //-50 //-2000
-
+PForDay (720), //1500 //1950 //100 //800 //15000 //6000
+LForDay (-720), //-1100 //-500 //-50 //-2000 //-800
+ 
 //Donchian
 DonchianLength (20),
 
@@ -575,12 +575,11 @@ LastMarketPosition = marketposition;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//(
-//(PLTarget < PForDay) and (PLTarget > LForDay) //1
-//)  
 and
-//(
+PLTarget < PForDay
+and 
+PLTarget > LForDay  
+and
 (Time > 600.00) and (Time < 2200.00) //long time
 //)
 and
@@ -753,17 +752,14 @@ end;
 }
 
 
-
 if        
 marketposition = 0 //Conditions Entry short
 and
-(
-(PLTarget < PForDay) and (PLTarget > LForDay) //1
-)  
+PLTarget < PForDay
+and 
+PLTarget > LForDay  
 and
-//(
 (Time > 600.00) and (Time < 2200.00) //long time
-//)
 and
 close < Open //3
 //and
@@ -1361,6 +1357,7 @@ Alert(text(" model=FISORA instrument=","NQ shares=",shortbuyingPower2 ," type=BO
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
