@@ -225,6 +225,8 @@ os3 (0.0133), // 2$ - 0.133 precent
 
 os4 (0.0167),
 
+os5 (0.05),
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -232,9 +234,9 @@ maxatrpart (55),
 
 
 
-PForDay (300), //1500 //1950 //100 //800 //15000 //600
+PForDay (360), //1500 //1950 //100 //800 //15000 //600
 
-LForDay (-300), //-1100 //-500 //-50 //-2000 //-400
+LForDay (-360), //-1100 //-500 //-50 //-2000 //-400
 
 
 
@@ -1195,7 +1197,8 @@ and
 atr > atrmin
 and
 Histogram < 0
-
+and
+close < lowest (close, 3) * (1+os5/100)
 //and
 //(
 //(Time < 1500.00) or (Time > 1700.00) //trading day start and high volatility in US-EAST hours 
@@ -1299,6 +1302,8 @@ and
 atr > atrmin
 and
 Histogram > 0
+and
+close > Highest (close, 3) * (1-os5/100)
 
 //and
 //(
