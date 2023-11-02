@@ -1136,7 +1136,7 @@ PLTarget < PForDay
 and 
 PLTarget > LForDay
 and
-Time >= 0130.00 and Time <= 2230.00 //open hours
+Time >= 0030.00 and Time <= 2230.00 //open hours
 and
 close > Open //* (1*mingap5/100) 
 and
@@ -1175,7 +1175,7 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-Time >= 0130.00 and Time <= 2230.00 //open hours
+Time >= 0030.00 and Time <= 2230.00 //open hours
 and
 PLTarget < PForDay
 and 
@@ -1461,7 +1461,6 @@ Alert(text(" model=HOOLI instrument=","NQ shares=",shortbuyingPower3 ," type=BOU
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
