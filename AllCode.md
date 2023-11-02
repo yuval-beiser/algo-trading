@@ -232,6 +232,8 @@ os9 (0.1), //0.15
 
 os10 (0.06),
 
+os11 (0.25),
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -239,9 +241,9 @@ maxatrpart (55),
 
 
 
-PForDay (400), //1500 //1950 //100 //800 //15000 //600 //1200
+PForDay (600), //1500 //1950 //100 //800 //15000 //600 //1200
 
-LForDay (-400), //-1100 //-500 //-50 //-2000 //-400 //-1200
+LForDay (-600), //-1100 //-500 //-50 //-2000 //-400 //-1200
 
 
 
@@ -1194,10 +1196,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 (Time >= 0130.00 and Time < 2030.00) //open hours
 and
@@ -1239,6 +1241,9 @@ and
 atr > atrmin
 and
 close < Lowest (low,5)  * (1+os10/100)
+//and
+//close < Lowest (low,20)  * (1+os11/100)
+
 
 //and
 //close > emamid50
@@ -1354,10 +1359,10 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 (Time >= 0130.00 and Time < 2030.00) //open hours
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
@@ -1402,6 +1407,8 @@ and
 atr > atrmin
 and
 close > Highest (high, 5)  * (1-os10/100)
+//and
+//close > Highest (high, 20)  * (1-os11/100)
 
 
 
