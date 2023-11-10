@@ -230,7 +230,7 @@ os8 (0.05), //0.0333
 
 os9 (0.15),
 
-os10 (0.06),
+os10 (0.2), //0.06
 
 minatrpart (45),
 
@@ -1236,7 +1236,8 @@ BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
 atr > atrmin
 and
-close < Lowest (low,5)  * (1+os10/100)
+close < Lowest (low,10)  * (1+os10/100)
+
 
 //and
 //close > emamid50
@@ -1399,7 +1400,7 @@ BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
 atr > atrmin
 and
-close > Highest (high, 5)  * (1-os10/100)
+close > Highest (high, 10)  * (1-os10/100)
 
 
 //and
@@ -1833,4 +1834,6 @@ Alert(text(" model=BREAKOUTFAST instrument=","NQ shares=",shortbuyingPower3 ,"-t
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
+
 
