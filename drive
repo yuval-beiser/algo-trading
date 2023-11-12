@@ -1237,7 +1237,7 @@ and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
 sell  longbuyingPower Shares next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD WIN-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 
 end;
 
@@ -1262,7 +1262,7 @@ and
 //and alertsGenerated = 0
 then begin  
 buytocover shortbuyingPower shares  next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower," type=BOUGHT WIN-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 
 end;
 
@@ -1273,7 +1273,7 @@ if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD LOSS-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1283,7 +1283,7 @@ then begin
 print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT LOSS-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1294,7 +1294,7 @@ if marketposition = 1 and rtPosition =1
 and Time = 2250.00 
 then begin
 sell next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+Alert(text(" model=DRIVE instrument=","NQ shares=",longbuyingPower ," type=SOLD LOSS-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1303,10 +1303,11 @@ if marketposition = -1 and rtPosition =-1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
-Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=DRIVE instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT LOSS-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
