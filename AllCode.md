@@ -135,7 +135,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 SmallMinProfit1 (0.06), ///0.0533
 
-largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
+largeMinProfit (0.06), //after 10 pips start trail of 8 pips //0.09375 //0.44
 
 SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 
@@ -153,7 +153,7 @@ MinBaseProfit (0.03),
 
 MinLossForAdd (0.1), //0.1
 
-SmallTrail (0.01), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
+SmallTrail (0.0167), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02 //0.01
 
 largeTrail (0.09),
 
@@ -1562,6 +1562,42 @@ alertsGenerated  =1;
 end;
 end;
 
+//close long position with trail start moving after large profit in the first bar from entry
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100);
+trailProfit = Highest(high , Barssinceentry);
+tmpTrailExit = trailProfit - valuePercentTrail;     
+if tmpTrailExit <> trailExit then begin
+trailExit = tmpTrailExit;	   
+//sell  next bar at trailExit  stop;
+//print(text("Update trailExit to 1 ", trailExit  , marketposition, rtPosition ));
+//alert(text("Update trailExit to  ", trailExit  , marketposition, rtPosition ));
+//rtPosition =1;
+end;	
+end;
+
+if marketposition = 1 and close cross below trailExit and rtPosition =1 
+and
+(close/entryprice-1)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin 
+sell  next bar at market;
+
+if alertsGenerated = 1
+and
+crossind1 = false then longbuyingPower3 = 3
+else if alertsGenerated = 1 and crossind1 = true  then longbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL",rtPosition, marketposition));
+alertsGenerated = 0;
+rtPosition = 0;
+end;
+
 
 
 if marketposition = 1 //there is long position open
@@ -1599,7 +1635,6 @@ then begin
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
 alertsGenerated  =0;
 rtPosition = 0;
-
 end;
 end;
 
@@ -1691,7 +1726,7 @@ Sell Next Bar at Market;
 if alertsGenerated >0 
 then begin
 if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3=2;
+else if crossind1 = true  then longbuyingPower3=1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 alertsGenerated = 0;
 rtPosition = 0;
@@ -1750,6 +1785,39 @@ alertsGenerated  =1;
 end;
 end;
 
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit
+and
+crossind1 = true
+then
+begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100);
+trailProfit = lowest(low , Barssinceentry);
+tmpTrailExit = trailProfit - valuePercentTrail;     
+if tmpTrailExit <> trailExit then begin
+trailExit = tmpTrailExit;	   
+//buytocover  next bar at trailExit  stop;
+//alert(text("buytocover ", trailExit  , marketposition, rtPosition ));
+//rtPosition = -1;
+end;	
+end;
+
+if marketposition = -1 and close cross above trailExit and rtPosition =-1 
+and
+(1-close/entryprice)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin 
+buytocover  next bar at market;
+if alertsGenerated = 1 and crossind1 = false then  shortbuyingPower3 = 3
+else if  alertsGenerated = 1 and crossind1 = true  then shortbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL"));
+rtPosition= 0;
+alertsGenerated  =0;
+end;
+
 
 
 if marketposition = -1 //there is short position open
@@ -1793,7 +1861,6 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
 
 
 {
@@ -1885,10 +1952,8 @@ buytocover Next Bar at Market;
 // Generate an intra-bar alert
 if alertsGenerated  > 0
 then begin
-
 if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
-
+else if crossind1 = true  then shortbuyingPower3 =1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
 
 alertsGenerated  =0;
@@ -1903,7 +1968,7 @@ then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+else if crossind1 = true  then longbuyingPower3 =1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
@@ -1911,11 +1976,10 @@ end;
 
 if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPosition =-1
 then begin 
-print("exit buy short - EXIT ALL 2");
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
+else if crossind1 = true  then shortbuyingPower3 =1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
@@ -1928,7 +1992,7 @@ and Time = 2250.00
 then begin
 sell next bar at market;
 if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =2;
+else if crossind1 = true  then longbuyingPower3 =1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
@@ -1939,7 +2003,7 @@ and Time = 2250.00
 then begin
 buytocover next bar at market;
 if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =2;
+else if crossind1 = true  then shortbuyingPower3 =1;
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
