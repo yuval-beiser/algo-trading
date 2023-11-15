@@ -226,7 +226,7 @@ os6 (0.0333),
 
 os7 (0.05), 
 
-os8 (0.05), //0.0333
+os8 (0.06), //0.0333 //o.05
 
 os9 (0.1), //0.15
 
@@ -1381,7 +1381,7 @@ if marketposition = 0 //Conditions Entry Long
 //and 
 //PLTarget > LForDay
 and
-(Time >= 0030.00 and Time < 2030.00) //open hours
+(Time >= 0030.00 and Time < 2230.00) //open hours
 and
 close > Open 
 and
@@ -1391,7 +1391,7 @@ close cross above high5
 and
 close of data2 cross above high5data2  
 and
-close < low * (1+os8/100)
+close < open * (1+os8/100)
 and
 close < low [3] * (1+os9/100)
 and
@@ -1545,7 +1545,7 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-(Time >= 0030.00 and Time < 2030.00) //open hours
+(Time >= 0030.00 and Time < 2230.00) //open hours
 //and
 //PLTarget < PForDay
 //and 
@@ -1559,7 +1559,7 @@ close cross below low5
 and
 close of data2 cross below low5data2 
 and
-close > high * (1-os8/100)
+close > open * (1-os8/100)
 and
 close > high [3] * (1-os9/100)
 and
