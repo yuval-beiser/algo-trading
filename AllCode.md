@@ -133,9 +133,9 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
-SmallMinProfit1 (0.06), ///0.0533
+SmallMinProfit1 (0.12), ///0.0533
 
-largeMinProfit (0.15), //after 10 pips start trail of 8 pips //0.09375 //0.44 //0.06
+largeMinProfit (0.06), //after 10 pips start trail of 8 pips //0.09375 //0.44 //0.06 //0.15
 
 SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 
@@ -1754,6 +1754,7 @@ alertsGenerated  =1;
 end;
 end;
 
+
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -1783,13 +1784,33 @@ sell  next bar at market;
 
 if alertsGenerated = 1
 and
-crossind1 = false then longbuyingPower3 = 3
-else if alertsGenerated = 1 and crossind1 = true  then longbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL",rtPosition, marketposition));
+crossind1 = true
+then begin
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL",rtPosition, marketposition));
 alertsGenerated = 0;
 rtPosition = 0;
 end;
+end;
 
+
+//close long position 2 with take profit after small profit
+if marketposition = 1 //there is long position open 
+and
+(close/entryprice-1)*100 >= SmallMinProfit1
+and
+crossind1 = true
+then begin  
+sell  next bar at market;
+// Generate an intra-bar alert
+if alertsGenerated = 1
+and
+crossind1 = true
+then begin
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+alertsGenerated = 0;
+rtPosition = 0;
+end;
+end;
 
 
 if marketposition = 1 //there is long position open
@@ -1968,7 +1989,6 @@ and
 then begin  
 buytocover shortbuyingPower1 shares  next bar at market;
 crossind1 = true;
-
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
@@ -1983,8 +2003,7 @@ and
 (1-close/entryprice)*100 >= largeMinProfit
 and
 crossind1 = true
-then
-begin
+then begin
 valuePercentTrail = ((entryprice * SmallTrailStop) /100);
 trailProfit = lowest(low , Barssinceentry);
 tmpTrailExit = trailProfit - valuePercentTrail;     
@@ -2003,14 +2022,35 @@ and
 crossind1 = true
 then begin 
 buytocover  next bar at market;
-if alertsGenerated = 1 and crossind1 = false then  shortbuyingPower3 = 3
-else if  alertsGenerated = 1 and crossind1 = true  then shortbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL"));
+
+if alertsGenerated = -1
+and
+crossind1 = true
+then begin
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL"));
 rtPosition= 0;
 alertsGenerated  =0;
 end;
+end;
 
-
+//close short position 2 with take profit after small profit
+if marketposition = -1 //there is short position open
+and
+(1-close/entryprice)*100 >= SmallMinProfit1
+and
+crossind1 = true
+then begin  
+buytocover next bar at market;
+// Generate an intra-bar alert
+if alertsGenerated = 1
+and
+crossind1 = true
+then begin
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower2," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 2",rtPosition, marketposition));
+rtPosition= 0;
+alertsGenerated  =0;
+end;
+end;
 
 if marketposition = -1 //there is short position open
 and
@@ -2200,6 +2240,7 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
