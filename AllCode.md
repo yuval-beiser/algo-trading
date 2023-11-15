@@ -93,7 +93,7 @@ Mingap1 (0.01),
 
 mingap2 (0.4),
 
-mingap3 (0.15), //0.16 //0.3 //0.1469 //0.25
+mingap3 (0.12), //0.16 //0.3 //0.1469 //0.25 //0.15
 
 mingap4 (0.08),
 mingap5 (0.02),
@@ -135,7 +135,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 SmallMinProfit1 (0.06), ///0.0533
 
-largeMinProfit (0.06), //after 10 pips start trail of 8 pips //0.09375 //0.44
+largeMinProfit (0.15), //after 10 pips start trail of 8 pips //0.09375 //0.44 //0.06
 
 SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 
@@ -226,7 +226,7 @@ os6 (0.0333),
 
 os7 (0.05), 
 
-os8 (0.033), //0.0333
+os8 (0.05), //0.0333
 
 os9 (0.1), //0.15
 
@@ -235,6 +235,8 @@ os10 (0.2),//0.06 //0.2
 os11 (0.25),
 
 OS12 (0.0033),
+
+os13 (0.0167),
 
 minatrpart (45),
 
@@ -1381,13 +1383,13 @@ if marketposition = 0 //Conditions Entry Long
 and
 (Time >= 0030.00 and Time < 2030.00) //open hours
 and
-close > Open //* (1*mingap5/100) 
+close > Open 
 and
 close > close [1]
 and
-close cross above high5
+close cross above high5 
 and
-close of data2 cross above high5data2
+close of data2 cross above high5data2  
 and
 close < low * (1+os8/100)
 and
@@ -1400,6 +1402,8 @@ and
 close < Lowest (low,10)  * (1+os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
+and
+close <= DonchianMid
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 and
@@ -1547,13 +1551,13 @@ and
 //and 
 //PLTarget > LForDay
 and
-close < Open //* (1-mingap5/100) 
+close < Open 
 and
 close < close [1]
 and
-close cross below low5
+close cross below low5 
 and
-close of data2 cross below low5data2
+close of data2 cross below low5data2 
 and
 close > high * (1-os8/100)
 and
@@ -1566,6 +1570,8 @@ and
 close > Highest (high, 10)  * (1-os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
+and
+close >= DonchianMid
 and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
