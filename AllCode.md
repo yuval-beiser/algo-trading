@@ -228,7 +228,7 @@ os7 (0.05),
 
 os8 (0.033), //0.0333
 
-os9 (0.15), //0.15
+os9 (0.1), //0.15
 
 os10 (0.2),//0.06 //0.2
 
@@ -1106,7 +1106,7 @@ DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 
 
-//box in
+//box 
 
 //boxlong
 if 
@@ -2194,7 +2194,6 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
