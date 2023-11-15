@@ -234,6 +234,8 @@ os10 (0.2),//0.06 //0.2
 
 os11 (0.25),
 
+OS12 (0.0033),
+
 minatrpart (45),
 
 maxatrpart (55),
@@ -565,7 +567,6 @@ GapDAYSQQQTQQQ (0),
 
 
 
-
 //PP
 
 // Calculate Support and Resistance Levels
@@ -614,7 +615,9 @@ valuePercentTrail(0),
 is_long_symbol(true),
 
 
-
+//box
+boxlong (false),
+boxshort (false),
 
 //PL for a day
 
@@ -1103,23 +1106,196 @@ DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 
 
+//box in
+
+//boxlong
+if 
+close [1] <= close [2] * (1+os5/100)
+and
+close [1] <= high [2] * (1+os5/100)
+and
+close [1] <= Close [3] * (1+os5/100)
+and
+close [1] <= high [3] * (1+os5/100)
+and
+close [1] <= Close [4] * (1+os5/100)
+and
+close [1] <= high [4] * (1+os5/100)
+and
+close [1] <= Close [5] * (1+os5/100)
+and
+close [1] <= high [5] * (1+os5/100)
+
+and
+close [2] <= close [1] * (1+os5/100)
+and
+close [2] <= high [1] * (1+os5/100)
+and
+close [2] <= Close [3] * (1+os5/100)
+and
+close [2] <= high [3] * (1+os5/100)
+and
+close [2] <= Close [4] * (1+os5/100)
+and
+close [2] <= high [4] * (1+os5/100)
+and
+close [2] <= Close [5] * (1+os5/100)
+and
+close [2] <= high [5] * (1+os5/100)
+
+and
+close [3] <= close [1] * (1+os5/100)
+and
+close [3] <= high [1] * (1+os5/100)
+and
+close [3] <= Close [2] * (1+os5/100)
+and
+close [3] <= high [2] * (1+os5/100)
+and
+close [3] <= Close [4] * (1+os5/100)
+and
+close [3] <= high [4] * (1+os5/100)
+and
+close [3] <= Close [5] * (1+os5/100)
+and
+close [3] <= high [5] * (1+os5/100)
+
+
+and
+close [4] <= close [1] * (1+os5/100)
+and
+close [4] <= high [1] * (1+os5/100)
+and
+close [4] <= Close [2] * (1+os5/100)
+and
+close [4] <= high [2] * (1+os5/100)
+and
+close [4] <= Close [3] * (1+os5/100)
+and
+close [4] <= high [3] * (1+os5/100)
+and
+close [4] <= Close [5] * (1+os5/100)
+and
+close [4] <= high [5] * (1+os5/100)
+
+and
+close [5] <= close [1] * (1+os5/100)
+and
+close [5] <= high [1] * (1+os5/100)
+and
+close [5] <= Close [2] * (1+os5/100)
+and
+close [5] <= high [2] * (1+os5/100)
+and
+close [5] <= Close [3] * (1+os5/100)
+and
+close [5] <= high [3] * (1+os5/100)
+and
+close [5] <= Close [4] * (1+os5/100)
+and
+close [5] <= high [4] * (1+os5/100)
+
+
+then boxlong = True;
+
+//boxshort
+if 
+close [1] >= close [2] * (1-os5/100)
+and
+close [1] >= low [2] * (1-os5/100)
+and
+close [1] >= Close [3] * (1-os5/100)
+and
+close [1] >= low [3] * (1-os5/100)
+and
+close [1] >= Close [4] * (1-os5/100)
+and
+close [1] >= low [4] * (1-os5/100)
+and
+close [1] >= Close [5] * (1-os5/100)
+and
+close [1] >= low [5] * (1-os5/100)
+
+and
+close [2] >= close [1] * (1-os5/100)
+and
+close [2] >= low [1] * (1-os5/100)
+and
+close [2] >= Close [3] * (1-os5/100)
+and
+close [2] >= low [3] * (1-os5/100)
+and
+close [2] >= Close [4] * (1-os5/100)
+and
+close [2] >= low [4] * (1-os5/100)
+and
+close [2] >= Close [5] * (1-os5/100)
+and
+close [2] >= low [5] * (1-os5/100)
+
+and
+close [3] >= close [1] * (1-os5/100)
+and
+close [3] >= low [1] * (1-os5/100)
+and
+close [3] >= Close [2] * (1-os5/100)
+and
+close [3] >= low [2] * (1-os5/100)
+and
+close [3] >= Close [4] * (1-os5/100)
+and
+close [3] >= low [4] * (1-os5/100)
+and
+close [3] >= Close [5] * (1-os5/100)
+and
+close [3] >= low [5] * (1-os5/100)
+
+
+and
+close [4] >= close [1] * (1-os5/100)
+and
+close [4] >= low [1] * (1-os5/100)
+and
+close [4] >= Close [2] * (1-os5/100)
+and
+close [4] >= low [2] * (1-os5/100)
+and
+close [4] >= Close [3] * (1-os5/100)
+and
+close [4] >= low [3] * (1-os5/100)
+and
+close [4] >= Close [5] * (1-os5/100)
+and
+close [4] >= low [5] * (1-os5/100)
+
+and
+close [5] >= close [1] * (1-os5/100)
+and
+close [5] >= low [1] * (1-os5/100)
+and
+close [5] >= Close [2] * (1-os5/100)
+and
+close [5] >= low [2] * (1-os5/100)
+and
+close [5] >= Close [3] * (1-os5/100)
+and
+close [5] >= low [3] * (1-os5/100)
+and
+close [5] >= Close [4] * (1-os5/100)
+and
+close [5] >= low [4] * (1-os5/100)
+
+
+then boxshort = True;
 
 
 //PL for a day
-
 if DATE <> DATE[1]
-
 then
-
 begin
-
 NetProf = NetProf + NetProfit - NetProf[1];
-
 end;
-
 PLTarget = Netprofit - NetProf;
-
-
 
 
 //Trail Alerts
@@ -1198,10 +1374,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 (Time >= 0030.00 and Time < 2030.00) //open hours
 and
@@ -1228,7 +1404,11 @@ and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 and
 atr > atrmin
+and
+boxlong = True
 
+//and
+//close <= EHLOC4long 
 //and
 //close of data2 cross above high5
 //and
@@ -1362,10 +1542,10 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 (Time >= 0030.00 and Time < 2030.00) //open hours
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
@@ -1390,6 +1570,12 @@ and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
 atr > atrmin
+and
+boxshort = True
+
+//and
+//close >= EHLOC4short 
+
 
 //and
 //close [1] < open [1]
@@ -2008,6 +2194,9 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
+
+
 
 
 
