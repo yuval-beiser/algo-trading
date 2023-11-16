@@ -1842,7 +1842,7 @@ Close < longstop * (1-os1/100) //<
 and
 crossind1 = true
 then begin
-Sell longbuyingPower2 Shares Next Bar at Market;
+Sell  Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
@@ -2000,6 +2000,8 @@ alertsGenerated  =1;
 end;
 end;
 
+
+
 //close short position with trail start moving after large profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -2026,7 +2028,7 @@ crossind1 = true
 then begin 
 buytocover  next bar at market;
 
-if alertsGenerated = -1
+if alertsGenerated = 1
 and
 crossind1 = true
 then begin
@@ -2087,7 +2089,7 @@ and
 crossind1 = true
 Then
 begin
-buytocover shortbuyingPower2 Shares Next Bar at Market;
+buytocover  Next Bar at Market;
 crossind2 = true;
 
 // Generate an intra-bar alert
