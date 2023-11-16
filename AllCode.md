@@ -135,7 +135,7 @@ SmallMinProfit (0.02), //after 12 pips start trail of 4 pips //0.075 with stocha
 
 SmallMinProfit1 (0.12), ///0.0533
 
-largeMinProfit (0.06), //after 10 pips start trail of 8 pips //0.09375 //0.44 //0.06 //0.15
+largeMinProfit (0.09), //after 10 pips start trail of 8 pips //0.09375 //0.44 //0.06 //0.15 //0.06
 
 SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 
@@ -153,7 +153,7 @@ MinBaseProfit (0.03),
 
 MinLossForAdd (0.1), //0.1
 
-SmallTrail (0.0167), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02 //0.01
+SmallTrail (0.0167), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02 //0.01 //0.0167
 
 largeTrail (0.09),
 
@@ -1410,6 +1410,9 @@ and
 atr > atrmin
 and
 boxlong = True
+//and
+//zscore < longminzscore
+
 
 //and
 //close <= EHLOC4long 
@@ -1470,8 +1473,6 @@ boxlong = True
 //close < low * (1+maxgap7/100)
 //and
 //close <= EHLOC4long 
-//and
-//zscore < longminzscore
 //and
 //atr < Atrmax
 //and
@@ -1578,6 +1579,8 @@ and
 atr > atrmin
 and
 boxshort = True
+//and
+//zscore > shortminzscore
 
 //and
 //close >= EHLOC4short 
@@ -1639,8 +1642,6 @@ boxshort = True
 //close > high * (1-maxgap7/100)
 //and
 //close >= EHLOC4short 
-//and
-//zscore > shortminzscore
 //and
 //atr < Atrmax
 //and
@@ -1792,7 +1793,7 @@ rtPosition = 0;
 end;
 end;
 
-
+{
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open 
 and
@@ -1811,7 +1812,7 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 if marketposition = 1 //there is long position open
 and
@@ -2033,6 +2034,7 @@ alertsGenerated  =0;
 end;
 end;
 
+{
 //close short position 2 with take profit after small profit
 if marketposition = -1 //there is short position open
 and
@@ -2051,6 +2053,7 @@ rtPosition= 0;
 alertsGenerated  =0;
 end;
 end;
+}
 
 if marketposition = -1 //there is short position open
 and
@@ -2240,7 +2243,6 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
