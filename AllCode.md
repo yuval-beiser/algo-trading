@@ -53,7 +53,7 @@ ExitBarNum2(24),
 
 ExitBarNum3(36),
 
-MinBarsAfterCloseToEntry (3), //1 //3 //20
+MinBarsAfterCloseToEntry (1), //1 //3 //20
 
 //ExitBarNum (5),
 
@@ -93,7 +93,7 @@ Mingap1 (0.01),
 
 mingap2 (0.4),
 
-mingap3 (0.12), //0.16 //0.3 //0.1469 //0.25 //0.15
+mingap3 (0.15), //0.16 //0.3 //0.1469 //0.25 //0.15 //0.12
 
 mingap4 (0.08),
 mingap5 (0.02),
@@ -226,7 +226,7 @@ os6 (0.0333),
 
 os7 (0.05), 
 
-os8 (0.06), //0.0333 //o.05
+os8 (0.05), //0.0333 //0.05 //0.06 //0.033
 
 os9 (0.1), //0.15
 
@@ -1579,6 +1579,8 @@ and
 atr > atrmin
 and
 boxshort = True
+
+
 //and
 //zscore > shortminzscore
 
@@ -2243,7 +2245,6 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
