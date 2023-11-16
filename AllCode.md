@@ -1387,7 +1387,7 @@ close > Open
 and
 close > close [1]
 and
-close cross above high5 
+close cross above high5
 and
 close of data2 cross above high5data2  
 and
@@ -1402,8 +1402,8 @@ and
 close < Lowest (low,10)  * (1+os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
-and
-close <= DonchianMid
+//and
+//close <= DonchianMid
 and 
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry 
 and
@@ -1571,8 +1571,8 @@ and
 close > Highest (high, 10)  * (1-os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
-and
-close >= DonchianMid
+//and
+//close >= DonchianMid
 and
 BarNumber > ExitBarNum + MinBarsAfterCloseToEntry
 and
@@ -2243,6 +2243,7 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
