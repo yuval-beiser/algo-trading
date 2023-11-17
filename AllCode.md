@@ -2,7 +2,7 @@
 
 Inputs:
 
-maximumloss(0.06),//160 //1300 //0.143 //0.12 //0.0695 //0.05
+maximumloss(0.0467),//160 //1300 //0.143 //0.12 //0.0695 //0.05 //0.06
 
 FastLength(9),
 
@@ -132,7 +132,7 @@ SmallMinProfit1 (0.0533),
 
 //TRAIL PCT FROM 5P //0.033 //0.133  //0.033 //0.066 //0.0533 //0.0333 //0.0533
 
-largeMinProfit (0.44), //after 10 pips start trail of 8 pips //0.09375
+largeMinProfit (0.09), //after 10 pips start trail of 8 pips //0.09375 //0.44
 
 SmallMinProfitPart1 (0.033), //after 3 pips limit 3 at the middle of the chanel //0.05
 
@@ -150,7 +150,7 @@ MinBaseProfit (0.03),
 
 MinLossForAdd (0.1), //0.1
 
-SmallTrail (0.01), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02
+SmallTrail (0.0167), //0.04375 with stochastic //0.00625 //0.0125 //0.025 //0.01875 //TRAIL SPREAD: 0.5P //0.0033 //0.02 //0.01
 
 largeTrail (0.09),
 
@@ -864,19 +864,21 @@ emaverySlow = XAverage(close,VerySlowLength);
 
 adxcalc = ADX(adxperiod);
 
+
+
 longbuyingPower = 3;//(AccountBalance/Close)*PctPerTrade/100; // the amount of shares i can buy //1 //3
 
-longbuyingPower1 = 3; // scale in-out
+longbuyingPower1 = 2; // scale in-out
 
-//longbuyingPower2 = 1;
+longbuyingPower2 = 1;
 
 longbuyingPower3 = 3;
 
 shortbuyingPower = 3; //3
 
-shortbuyingPower1 = 3 ; // scale in-out
+shortbuyingPower1 = 2 ; // scale in-out
 
-//shortbuyingPower2 = 1 ;
+shortbuyingPower2 = 1 ;
 
 shortbuyingPower3 = 3 ;
 
@@ -1165,10 +1167,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 Time >= 0030.00 and Time <= 2230.00 //open hours
 and
@@ -1197,8 +1199,10 @@ and
 atr > atrmin
 and
 Histogram < 0
+//and
+//close < lowest (close, 3) * (1+os5/100)
 and
-close < lowest (close, 3) * (1+os5/100)
+close < vBlb1
 
 //and
 //(
@@ -1264,7 +1268,7 @@ and
 
 then begin
 buy longbuyingPower Shares next bar at market  ;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",longbuyingPower,"-type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower,"-type=BOUGHT LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY LONG",rtPosition, marketposition ));
 rtPosition=1;
 end;
 
@@ -1272,10 +1276,10 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 Time >= 0030.00 and Time <= 2230.00 //open hours
-and
-PLTarget < PForDay
-and 
-PLTarget > LForDay
+//and
+//PLTarget < PForDay
+//and 
+//PLTarget > LForDay
 and
 close < Open //* (1-mingap5/100) 
 and
@@ -1303,8 +1307,10 @@ and
 atr > atrmin
 and
 Histogram > 0
+//and
+//close > Highest (close, 3) * (1-os5/100)
 and
-close > Highest (close, 3) * (1-os5/100)
+close > vBub1
 
 //and
 //(
@@ -1361,7 +1367,7 @@ close > Highest (close, 3) * (1-os5/100)
 
 then begin
 sellshort shortbuyingPower Shares next bar at market  ;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower ,"-type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower ,"-type=SOLD SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "-ENTRY SHORT",rtPosition , marketposition ));
 rtPosition = -1;
 end;
 
@@ -1406,8 +1412,110 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
+//rtPosition = 0;
+end;
+end;
+
+//close long position with trail start moving after large profit in the first bar from entry
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100);
+trailProfit = Highest(high , Barssinceentry);
+tmpTrailExit = trailProfit - valuePercentTrail;     
+if tmpTrailExit <> trailExit then begin
+trailExit = tmpTrailExit;	   
+//sell  next bar at trailExit  stop;
+//print(text("Update trailExit to 1 ", trailExit  , marketposition, rtPosition ));
+//alert(text("Update trailExit to  ", trailExit  , marketposition, rtPosition ));
+//rtPosition =1;
+end;	
+end;
+
+if marketposition = 1 and close cross below trailExit and rtPosition =1 
+and
+(close/entryprice-1)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin 
+sell  next bar at market;
+
+if alertsGenerated = 1
+and
+crossind1 = true
+then begin
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL",rtPosition, marketposition));
+alertsGenerated = 0;
+rtPosition = 0;
+end;
+end;
+
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallMinProfit 
+and
+barssinceentry > 1
+and
+crossind1 = true
+and 
+// Calculate the trailing stop price
+low [1] > longstop
+then begin
+longstop = low[1];
+end;
+
+
+//close 1st long position with trail start moving cross back
+if marketposition = 1 //there is long position open
+and
+(close/entryprice-1)*100 >= SmallMinProfit 
+and
+barssinceentry > 1
+and
+Close < longstop * (1-os1/100) //<
+and
+crossind1 = true
+then begin
+Sell  Next Bar at Market;
+crossind2 = true;
+
+// Generate an intra-bar alert
+if alertsGenerated = 1
+then begin
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower2 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2",rtPosition, marketposition));
+alertsGenerated  =0;
+rtPosition = 0;
+end;
+end;
+
+
+ //close long position after cross 1 and go break even
+if marketposition = 1 //there is long position open
+and
+close < (entryprice * 1.000067)
+and
+barssinceentry >= 2
+//and
+//Close < longStop * (1-os1/100)
+and
+crossind1 = true
+//and
+//close > lastExitPrice
+Then begin
+Sell Next Bar at Market;
+
+// Generate an intra-bar alert
+if alertsGenerated >0 
+then begin
+if crossind1 = false then  longbuyingPower3 = 3
+else if crossind1 = true  then longbuyingPower3=1;
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
@@ -1548,11 +1656,122 @@ crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
+//rtPosition = 0;
+end;
+end;
+
+
+
+//close short position with trail start moving after large profit in the first bar from entry
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin
+valuePercentTrail = ((entryprice * SmallTrailStop) /100);
+trailProfit = lowest(low , Barssinceentry);
+tmpTrailExit = trailProfit - valuePercentTrail;     
+if tmpTrailExit <> trailExit then begin
+trailExit = tmpTrailExit;	   
+//buytocover  next bar at trailExit  stop;
+//alert(text("buytocover ", trailExit  , marketposition, rtPosition ));
+//rtPosition = -1;
+end;	
+end;
+
+if marketposition = -1 and close cross above trailExit and rtPosition =-1 
+and
+(1-close/entryprice)*100 >= largeMinProfit
+and
+crossind1 = true
+then begin 
+buytocover  next bar at market;
+
+if alertsGenerated = 1
+and
+crossind1 = true
+then begin
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TRAIL"));
+rtPosition= 0;
+alertsGenerated  =0;
+end;
+end;
+
+if marketposition = -1 //there is short position open
+and
+(1-close/entryprice)*100 >= SmallMinProfit
+and
+barssinceentry > 1
+and
+crossind1 = true
+then
+begin
+// Calculate the trailing stop price
+if high [1] < shortStop
+then
+begin
+shortStop = high[1];
+end;
+end;
+
+
+//close 1st short position with trail start moving cross back
+if marketposition = -1 //there is long position open
+and
+(1-close/entryprice)*100 >= SmallMinProfit
+and
+barssinceentry > 1
+and
+Close > shortStop * (1+os1/100) //>
+and
+crossind1 = true
+Then
+begin
+buytocover  Next Bar at Market;
+crossind2 = true;
+
+// Generate an intra-bar alert
+if alertsGenerated = 1 
+then begin
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower2 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON CROSS 2"));
+alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
+
+
+//close long position after cross 1 and go break even	
+if marketposition = -1//there is long position open
+and
+close > entryprice * 0.999933
+and
+barssinceentry >= 2
+//and
+//(
+//(crossind1 = true) or (crossind2= true)
+//)
+and
+crossind1 = true
+Then
+begin
+buytocover Next Bar at Market;
+
+// Generate an intra-bar alert
+if alertsGenerated  > 0
+then begin
+if crossind1 = false then  shortbuyingPower3 = 3
+else if crossind1 = true  then shortbuyingPower3 =1;
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON BREAK EVEN"));
+
+alertsGenerated  =0;
+rtPosition = 0;
+end;
+end;
+
+
 
 {
 //close short position 2 with take profit after small profit
@@ -1656,7 +1875,7 @@ then begin
 sell next bar at market;
 //if crossind1 = false then  longbuyingPower3 = 3
 //else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1668,7 +1887,7 @@ print("exit buy short - EXIT ALL 2");
 buytocover  next bar at market;
 //if crossind1 = false then  shortbuyingPower3 = 3
 //else if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1681,7 +1900,7 @@ then begin
 sell next bar at market;
 //if crossind1 = false then  longbuyingPower3 = 3
 //else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1692,10 +1911,11 @@ then begin
 buytocover next bar at market;
 //if crossind1 = false then  shortbuyingPower3 = 3
 //else if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=RITMICFAST instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
