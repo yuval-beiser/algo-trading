@@ -93,7 +93,7 @@ Mingap1 (0.01),
 
 mingap2 (0.4),
 
-mingap3 (0.15), //0.16 //0.3 //0.1469 //0.25 //0.15 //0.12
+mingap3 (0.25), //0.16 //0.3 //0.1469 //0.25 //0.15 //0.12 //0.15
 
 mingap4 (0.08),
 mingap5 (0.02),
@@ -105,6 +105,8 @@ mingap7 (0.01),
 mingap8 (0.02),
 
 mingap9 (0.05),
+
+mingap10 (0.15),
 
 
 Maxgap (0.2), //0.O5  //0.12
@@ -1387,9 +1389,9 @@ close > Open
 and
 close > close [1]
 and
-close cross above high5
+close cross above high9
 and
-close of data2 cross above high5data2  
+close of data2 cross above high9data2  
 and
 close < open * (1+os8/100)
 and
@@ -1402,6 +1404,8 @@ and
 close < Lowest (low,10)  * (1+os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
+//and
+//lowest (close, 5) < Highest (close,5) * (1-mingap10/100)
 //and
 //close <= DonchianMid
 and 
@@ -1556,9 +1560,9 @@ close < Open
 and
 close < close [1]
 and
-close cross below low5 
+close cross below low9 
 and
-close of data2 cross below low5data2 
+close of data2 cross below low9data2 
 and
 close > open * (1-os8/100)
 and
@@ -1571,6 +1575,8 @@ and
 close > Highest (high, 10)  * (1-os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
+//and
+//lowest (low, 5) < Highest (high,5) * (1-mingap10/100)
 //and
 //close >= DonchianMid
 and
@@ -2247,6 +2253,7 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
