@@ -1760,6 +1760,7 @@ if alertsGenerated = 0
 then begin
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
+rtPosition = 0;
 end;
 end;
 
@@ -2005,6 +2006,7 @@ if alertsGenerated = 0
 then begin
 Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
+rtPosition = 0;
 end;
 end;
 
@@ -2257,7 +2259,6 @@ Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower ," type=B
 alertsGenerated  =0;
 rtPosition = 0;
 end;
-
 
 
 
