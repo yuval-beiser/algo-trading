@@ -2,7 +2,7 @@
 
 Inputs:
 
-maximumloss(0.0467),//160 //1300 //0.143 //0.12 //0.0695 //0.05 //0.06 //0.0387 //0.0467
+maximumloss(0.045),//160 //1300 //0.143 //0.12 //0.0695 //0.05 //0.06 //0.0387 //0.0467
 
 FastLength(9),
 
@@ -232,7 +232,7 @@ os8 (0.05), //0.0333 //0.05 //0.06 //0.033
 
 os9 (0.1), //0.15
 
-os10 (0.2),//0.06 //0.2
+os10 (0.25),//0.06 //0.2
 
 os11 (0.25),
 
@@ -247,9 +247,9 @@ maxatrpart (55),
 
 
 
-PForDay (500), //1500 //1950 //100 //800 //15000 //600 //1200
+PForDay (550), //1500 //1950 //100 //800 //15000 //600 //1200
 
-LForDay (-500), //-1100 //-500 //-50 //-2000 //-400 //-1200
+LForDay (-550), //-1100 //-500 //-50 //-2000 //-400 //-1200
 
 
 
@@ -1378,10 +1378,10 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 (Time >= 0030.00 and Time < 2230.00) //open hours
 and
@@ -1389,9 +1389,9 @@ close > Open
 and
 close > close [1]
 and
-close cross above high9
+close cross above high5
 and
-close of data2 cross above high9data2  
+close of data2 cross above high5data2  
 and
 close < open * (1+os8/100)
 and
@@ -1401,7 +1401,7 @@ close < low [2] * (1+os9/100)
 and
 close < low [1] * (1+os9/100)
 and
-close < Lowest (low,10)  * (1+os10/100)
+close < Lowest (low,15)  * (1+os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
 //and
@@ -1551,18 +1551,18 @@ end;
 if marketposition = 0 //Conditions Entry short
 and
 (Time >= 0030.00 and Time < 2230.00) //open hours
-//and
-//PLTarget < PForDay
-//and 
-//PLTarget > LForDay
+and
+PLTarget < PForDay
+and 
+PLTarget > LForDay
 and
 close < Open 
 and
 close < close [1]
 and
-close cross below low9 
+close cross below low5 
 and
-close of data2 cross below low9data2 
+close of data2 cross below low5data2 
 and
 close > open * (1-os8/100)
 and
@@ -1572,7 +1572,7 @@ close > high [2] * (1-os9/100)
 and
 close > high [1] * (1-os9/100)
 and
-close > Highest (high, 10)  * (1-os10/100)
+close > Highest (high, 15)  * (1-os10/100)
 and
 DonchianDown < DonchianUp * (1-mingap3/100)
 //and
@@ -1753,17 +1753,17 @@ rtPosition =1
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
-sell  longbuyingPower1 Shares next bar at market;
+sell   next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower1 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
-
+{
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -1800,6 +1800,7 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
+}
 
 {
 //close long position 2 with take profit after small profit
@@ -1822,6 +1823,7 @@ end;
 end;
 }
 
+{
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
@@ -1859,7 +1861,7 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 {
 //close long position 2 with take profit after small profit
@@ -1928,7 +1930,7 @@ end;
 end;
 }
 
-
+{
  //close long position after cross 1 and go break even
 if marketposition = 1 //there is long position open
 and
@@ -1954,7 +1956,7 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
-
+}
  
 
 // START--  EXIT SHORT BASE OF PRECENT -------------------------------------------------------
@@ -1996,18 +1998,18 @@ and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower1 shares  next bar at market;
+buytocover  next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower1," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT",rtPosition, marketposition));
 alertsGenerated  =1;
 end;
 end;
 
 
-
+{
 //close short position with trail start moving after large profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -2043,6 +2045,7 @@ rtPosition= 0;
 alertsGenerated  =0;
 end;
 end;
+}
 
 {
 //close short position 2 with take profit after small profit
@@ -2064,7 +2067,7 @@ alertsGenerated  =0;
 end;
 end;
 }
-
+{
 if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
@@ -2106,7 +2109,7 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 {
 //close short position 2 with take profit after small profit
@@ -2178,6 +2181,7 @@ end;
 end;
 }
 
+{
 //close long position after cross 1 and go break even	
 if marketposition = -1//there is long position open
 and
@@ -2205,16 +2209,16 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 //SetStopLoss;
 if marketposition = 1 and (1-close/entryprice)*100 >= maximumloss and rtPosition =1
 then begin
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*longbuyingPower );
 sell next bar at market;
-if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+//if crossind1 = false then  longbuyingPower3 = 3
+//else if crossind1 = true  then longbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -2223,9 +2227,9 @@ if marketposition = -1 and (close/entryprice-1)*100 >= maximumloss and rtPositio
 then begin 
 //SetStopLoss(close*AssetMultiplier *maximumloss/100*shortbuyingPower );
 buytocover  next bar at market;
-if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+//if crossind1 = false then  shortbuyingPower3 = 3
+//else if crossind1 = true  then shortbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -2236,9 +2240,9 @@ if marketposition = 1 and rtPosition =1
 and Time = 2250.00 
 then begin
 sell next bar at market;
-if crossind1 = false then  longbuyingPower3 = 3
-else if crossind1 = true  then longbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower3 ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+//if crossind1 = false then  longbuyingPower3 = 3
+//else if crossind1 = true  then longbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",longbuyingPower ," type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -2247,9 +2251,9 @@ if marketposition = -1 and rtPosition =-1
 and Time = 2250.00 
 then begin
 buytocover next bar at market;
-if crossind1 = false then  shortbuyingPower3 = 3
-else if crossind1 = true  then shortbuyingPower3 =1;
-Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower3 ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+//if crossind1 = false then  shortbuyingPower3 = 3
+//else if crossind1 = true  then shortbuyingPower3 =1;
+Alert(text(" model=IRONBEAM instrument=","NQ shares=",shortbuyingPower ," type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
