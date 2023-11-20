@@ -2,7 +2,7 @@
 
 Inputs:
 
-maximumloss(0.0467),//160 //1300 //0.143 //0.12 //0.0695 //0.05 //0.06
+maximumloss(0.045),//160 //1300 //0.143 //0.12 //0.0695 //0.05 //0.06
 
 FastLength(9),
 
@@ -91,13 +91,15 @@ mingap2 (0.4),
 mingap3 (0.1469), //0.16 //0.3
 
 mingap4 (0.08),
-mingap5 (0.02),
+mingap5 (0.0067),
 
 mingap6 (0.02),
 
 mingap7 (0.01),
 
 mingap8 (0.02),
+
+mingap9 (0.03),
 
 Maxgap (0.2), //0.O5  //0.12
 
@@ -225,7 +227,7 @@ os3 (0.0133), // 2$ - 0.133 precent
 
 os4 (0.0167),
 
-os5 (0.05),
+os5 (90),
 
 minatrpart (45),
 
@@ -814,8 +816,9 @@ IntrabarPersist crossind2 (false),
 
 IntrabarPersist alertsGenerated(0),
 
-
-
+//SPIKE ind
+SPIKElong (false),
+SPIKEshort (false),
 
 IntrabarPersist ExitBarNum (0),
 
@@ -1074,7 +1077,37 @@ DevRatio = StdDev (MeanRatio , RatioLength);
 Zscore = (Ratio - MeanRatio) / DevRatio ;
 
 
+//SPIKE 
+//LONG SPIKE
+if 
+(
+(close - low) >= (atr * (os5/100))
+)
+or
+(
+(close [1] - low [1]) >= (atr * (os5/100))
+)
+or
+(
+(close [2] - low [2]) >= (atr * (os5/100))
+)
+then SPIKElong = True;
 
+//SPIKE 
+//LONG SPIKE
+if 
+(
+(high - close) >= (atr * (os5/100))
+)
+or
+(
+(high [1] - close [1]) >= (atr * (os5/100))
+)
+or
+(
+(high [2] - close [2])  >= (atr * (os5/100))
+)
+then SPIKEshort = True;
 
 //PL for a day
 
@@ -1167,20 +1200,20 @@ end;
 
 
 if marketposition = 0 //Conditions Entry Long
-//and
+and
 //PLTarget < PForDay
 //and 
 //PLTarget > LForDay
+//and
+Time >= 0130.00 and Time <= 2230.00 //open hours
 and
-Time >= 0030.00 and Time <= 2230.00 //open hours
-and
-close > Open //* (1*mingap5/100) 
+close > Open * (1*mingap5/100) 
 and
 close [1] < open [1] 
 and
 close > close [1] //* (1+mingap8/100)
 and
-close > low
+close > low 
 and
 close < emaMid 
 and
@@ -1198,11 +1231,15 @@ atr < Atrmax
 and
 atr > atrmin
 and
-Histogram < 0
+SPIKElong = true
+and
+close <vBub1
+//and
+//Histogram < 0
 //and
 //close < lowest (close, 3) * (1+os5/100)
-and
-close < vBlb1
+//and
+//close < vBlb2
 
 //and
 //(
@@ -1275,13 +1312,13 @@ end;
 
 if marketposition = 0 //Conditions Entry short
 and
-Time >= 0030.00 and Time <= 2230.00 //open hours
+Time >= 0130.00 and Time <= 2230.00 //open hours
 //and
 //PLTarget < PForDay
 //and 
 //PLTarget > LForDay
 and
-close < Open //* (1-mingap5/100) 
+close < Open * (1-mingap5/100) 
 and
 //oposite
 close [1] > open [1] //* (1+mingap6/100)) // or 
@@ -1306,11 +1343,16 @@ atr < Atrmax
 and
 atr > atrmin
 and
-Histogram > 0
+SPIKEshort = true
+and
+close >vBlb1
+
+//and
+//Histogram > 0
 //and
 //close > Highest (close, 3) * (1-os5/100)
-and
-close > vBub1
+//and
+//close > vBub2
 
 //and
 //(
@@ -1402,22 +1444,23 @@ end;
 
 //close long position with take profit after small profit
 if marketposition = 1 //there is long position open
-//and
-//rtPosition =1 
+and
+rtPosition =1 
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
 then begin  
-sell  longbuyingPower1 Shares next bar at market;
+sell   next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower1 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
-//rtPosition = 0;
+rtPosition = 0;
 end;
 end;
 
+{
 //close long position with trail start moving after large profit in the first bar from entry
 if marketposition = 1 //there is long position open
 and
@@ -1454,7 +1497,9 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
+}
 
+{
 if marketposition = 1 //there is long position open
 and
 (close/entryprice-1)*100 >= SmallMinProfit 
@@ -1492,8 +1537,9 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
+}
 
-
+{
  //close long position after cross 1 and go break even
 if marketposition = 1 //there is long position open
 and
@@ -1519,7 +1565,7 @@ alertsGenerated = 0;
 rtPosition = 0;
 end;
 end;
-
+}
 {
 //close long position 2 with take profit after small profit
 if marketposition = 1 //there is long position open
@@ -1645,25 +1691,25 @@ end;
 																			
 //close short position with take profit after small profit
 if marketposition = -1 //there is short position open
-//and
-//rtPosition =-1 
+and
+rtPosition =-1 
 and
 (1-close/entryprice)*100 >= SmallMinProfit
 //and alertsGenerated = 0
 then begin  
-buytocover shortbuyingPower1 shares  next bar at market;
+buytocover  next bar at market;
 crossind1 = true;
 // Generate an intra-bar alert
 if alertsGenerated = 0
 then begin
-Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower1,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)),"EXIT ON TAKE PROFIT 1",rtPosition, marketposition));
 alertsGenerated  =1;
-//rtPosition = 0;
+rtPosition = 0;
 end;
 end;
 
 
-
+{
 //close short position with trail start moving after large profit in the first bar from entry
 if marketposition = -1 //there is long position open
 and
@@ -1699,7 +1745,9 @@ rtPosition= 0;
 alertsGenerated  =0;
 end;
 end;
+}
 
+{
 if marketposition = -1 //there is short position open
 and
 (1-close/entryprice)*100 >= SmallMinProfit
@@ -1741,8 +1789,9 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
+}
 
-
+{
 //close long position after cross 1 and go break even	
 if marketposition = -1//there is long position open
 and
@@ -1770,7 +1819,7 @@ alertsGenerated  =0;
 rtPosition = 0;
 end;
 end;
-
+}
 
 
 {
@@ -1875,7 +1924,7 @@ then begin
 sell next bar at market;
 //if crossind1 = false then  longbuyingPower3 = 3
 //else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG ", rtPosition , marketposition ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1887,7 +1936,7 @@ print("exit buy short - EXIT ALL 2");
 buytocover  next bar at market;
 //if crossind1 = false then  shortbuyingPower3 = 3
 //else if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT", rtPosition , marketposition  ));
 rtPosition = 0;
 alertsGenerated  =0;
 end;
@@ -1900,7 +1949,7 @@ then begin
 sell next bar at market;
 //if crossind1 = false then  longbuyingPower3 = 3
 //else if crossind1 = true  then longbuyingPower3 =2;
-Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower3 ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",longbuyingPower ,"-type=SOLD LONG-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL LONG EOD", rtPosition , marketposition ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
@@ -1911,10 +1960,11 @@ then begin
 buytocover next bar at market;
 //if crossind1 = false then  shortbuyingPower3 = 3
 //else if crossind1 = true  then shortbuyingPower3 =2;
-Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower3 ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
+Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower ,"-type=BOUGHT SHORT-", FormatDate("dd-MM-yyyy", DateToJulian(Date)), "EXIT ALL SHORT EOD", rtPosition , marketposition  ));
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
 
 
 
