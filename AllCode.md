@@ -91,7 +91,7 @@ mingap2 (0.4),
 mingap3 (0.1469), //0.16 //0.3
 
 mingap4 (0.08),
-mingap5 (0.0067),
+mingap5 (0.005),
 
 mingap6 (0.02),
 
@@ -1217,6 +1217,8 @@ close > low
 and
 close < emaMid 
 and
+close < emaFast
+and
 DonchianDown < DonchianUp * (1-mingap3/100)
 and
 close < low * (1+maxgap7/100)
@@ -1230,10 +1232,12 @@ and
 atr < Atrmax
 and
 atr > atrmin
+//and
+//SPIKElong = true
 and
-SPIKElong = true
-and
-close <vBub1
+vRSI < 20
+//and
+//close <vBub1
 //and
 //Histogram < 0
 //and
@@ -1329,6 +1333,8 @@ close < high
 and
 close > emaMid
 and
+close > emaFast
+and
 DonchianDown < DonchianUp * (1-mingap3/100)
 and
 close > high * (1-maxgap7/100)
@@ -1342,10 +1348,12 @@ and
 atr < Atrmax
 and
 atr > atrmin
+//and
+//SPIKEshort = true
 and
-SPIKEshort = true
-and
-close >vBlb1
+vrsi > 80
+//and
+//close >vBlb1
 
 //and
 //Histogram > 0
@@ -1964,6 +1972,8 @@ Alert(text(" model=SPIKE instrument=","NQ shares=",shortbuyingPower ,"-type=BOUG
 alertsGenerated  =0;
 rtPosition = 0;
 end;
+
+
 
 
 
