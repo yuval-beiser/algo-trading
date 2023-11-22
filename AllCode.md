@@ -48,7 +48,7 @@ ExitBarNum2(24),
 
 ExitBarNum3(36),
 
-MinBarsAfterCloseToEntry (3), //1 //3 //20
+MinBarsAfterCloseToEntry (1), //1 //3 //20
 
 //ExitBarNum (5),
 
@@ -1235,7 +1235,7 @@ atr > atrmin
 //and
 //SPIKElong = true
 and
-vRSI < 20
+vRSI < 25
 //and
 //close <vBub1
 //and
@@ -1351,7 +1351,7 @@ atr > atrmin
 //and
 //SPIKEshort = true
 and
-vrsi > 80
+vrsi > 75
 //and
 //close >vBlb1
 
